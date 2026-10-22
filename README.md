@@ -9,6 +9,7 @@ Interaktive SCORM-1.2-Pakete zu Networking- und IT-Grundlagen für Fachinformati
 | `packages/plug-and-pray` | Plug & Pray – Aufbau eines modernen PCs | ja |
 | `packages/netzwerktopologien` | Netzwerktopologien erleben | ja |
 | `packages/shell-yeah` | Shell Yeah! – Linux im Terminal | ja |
+| `packages/get-going` | Get-Going! – Windows PowerShell | ja |
 | `packages/strukturierte-verkabelung` | Strukturierte Verkabelung – Planspiel | ja |
 
 `tools/bycs-lernmodul` enthält den Skill zum Bauen weiterer Module im einheitlichen Look.

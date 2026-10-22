@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get-Going! – PowerShell für Fachinformatiker</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-theme="a" data-mode="start">
+<div id="app">
+  <header id="topbar">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 4h22l-4 24H3z" fill="currentColor" opacity=".18"/><path d="M7 4h22l-4 24H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m10 11 7 5-9 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22h6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+      <span class="bt">Get-Going!</span><span class="bs">PowerShell für Fachinformatiker</span>
+    </div>
+    <nav id="modes" aria-label="Bereiche">
+      <button data-mode="start">Start</button>
+      <button data-mode="tut">① Tutorial <span class="pb" id="prog-tut"></span></button>
+      <button data-mode="ueb">② Üben <span class="pb" id="prog-ueb"></span></button>
+      <button data-mode="exam">③ Nachweis <span class="pb" id="prog-exam"></span></button>
+    </nav>
+    <div class="tright">
+      <span id="student"></span>
+      <label class="theme" title="Farbschema">Farbschema
+        <select id="themePick">
+          <option value="a">A · Klassisch PowerShell</option>
+          <option value="b">B · Windows Terminal</option>
+          <option value="c">C · Dunkel</option>
+        </select>
+      </label>
+    </div>
+  </header>
+  <main id="main">
+    <section id="side" aria-label="Lernbereich"></section>
+    <section id="termwrap" aria-label="Terminal">
+      <div id="term" class="wt"></div>
+    </section>
+  </main>
+  <div id="modal-root"></div>
+</div>
+<script src="js/ps-core.js"></script>
+<script src="js/ps-parser.js"></script>
+<script src="js/ps-interp.js"></script>
+<script src="js/ps-members.js"></script>
+<script src="js/ps-format.js"></script>
+<script src="js/world.js"></script>
+<script src="js/cmd-core.js"></script>
+<script src="js/cmd-fs.js"></script>
+<script src="js/cmd-sys.js"></script>
+<script src="js/cmd-net.js"></script>
+<script src="js/cmd-ad.js"></script>
+<script src="js/cmd-remote.js"></script>
+<script src="js/help.js"></script>
+<script src="js/typemeta.js"></script>
+<script src="js/scenario-korbwerk.js"></script>
+<script src="js/scenario-maier.js"></script>
+<script src="js/checks.js"></script>
+<script src="js/runner.js"></script>
+<script src="js/content-tutorial.js"></script>
+<script src="js/content-tutorial2.js"></script>
+<script src="js/content-missions.js"></script>
+<script src="js/content-exam.js"></script>
+<script src="js/scorm.js"></script>
+<script src="js/terminal.js"></script>
+<script src="js/ui-dialogs.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="get-going-powershell" version="1.0"
+  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+  <organizations default="org-get-going">
+    <organization identifier="org-get-going">
+      <title>Get-Going! – PowerShell für Fachinformatiker</title>
+      <item identifier="item-get-going" identifierref="res-get-going" isvisible="true">
+        <title>Get-Going! – PowerShell für Fachinformatiker</title>
+        <adlcp:masteryscore>70</adlcp:masteryscore>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="res-get-going" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <file href="css/style.css"/>
+      <file href="fonts/cascadia-mono-latin-400-normal.woff2"/>
+      <file href="fonts/cascadia-mono-latin-700-normal.woff2"/>
+      <file href="fonts/LICENSE-CascadiaMono.txt"/>
+      <file href="js/ps-core.js"/>
+      <file href="js/ps-parser.js"/>
+      <file href="js/ps-interp.js"/>
+      <file href="js/ps-members.js"/>
+      <file href="js/ps-format.js"/>
+      <file href="js/world.js"/>
+      <file href="js/cmd-core.js"/>
+      <file href="js/cmd-fs.js"/>
+      <file href="js/cmd-sys.js"/>
+      <file href="js/cmd-net.js"/>
+      <file href="js/cmd-ad.js"/>
+      <file href="js/cmd-remote.js"/>
+      <file href="js/help.js"/>
+      <file href="js/typemeta.js"/>
+      <file href="js/scenario-korbwerk.js"/>
+      <file href="js/scenario-maier.js"/>
+      <file href="js/checks.js"/>
+      <file href="js/runner.js"/>
+      <file href="js/content-tutorial.js"/>
+      <file href="js/content-tutorial2.js"/>
+      <file href="js/content-missions.js"/>
+      <file href="js/content-exam.js"/>
+      <file href="js/scorm.js"/>
+      <file href="js/terminal.js"/>
+      <file href="js/ui-dialogs.js"/>
+      <file href="js/app.js"/>
+    </resource>
+  </resources>
+</manifest>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shell Yeah!</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body data-theme="yaru-light">
+<header class="topbar">
+  <button class="brand" id="brand" type="button" title="Zur Startseite"><span class="brand-mark" aria-hidden="true">~$</span><span>Shell Yeah!</span></button>
+  <nav class="tabs" aria-label="Bereiche">
+    <button class="tab" type="button" data-view="tut"><span class="n" aria-hidden="true">①</span><span class="lbl">Tutorial</span></button>
+    <button class="tab" type="button" data-view="prac"><span class="n" aria-hidden="true">②</span><span class="lbl">Üben</span></button>
+    <button class="tab" type="button" data-view="exam"><span class="n" aria-hidden="true">③</span><span class="lbl">Kompetenznachweis</span></button>
+  </nav>
+  <div class="top-right">
+    <button class="ghost" type="button" id="treeBtn" hidden>Kursbaum</button>
+    <span id="who"></span>
+  </div>
+</header>
+<main id="app"></main>
+<div id="printArea" aria-hidden="true"></div>
+
+<script src="js/vfs.js"></script>
+<script src="js/net.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/cmds.js"></script>
+<script src="js/man.js"></script>
+<script src="js/worlds.js"></script>
+<script src="js/content-tutorial.js"></script>
+<script src="js/content-practice.js"></script>
+<script src="js/content-exam.js"></script>
+<script src="js/flow.js"></script>
+<script src="js/term.js"></script>
+<script src="js/scorm.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

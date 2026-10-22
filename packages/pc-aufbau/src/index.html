@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aufbau eines modernen PCs</title>
+<style>
+:root{
+  --bg:#eef2f8; --card:#ffffff; --card2:#f6f8fc; --ink:#1b2333; --ink-soft:#4a5568; --muted:#6b7588; --line:#dbe2ec;
+  --accent:#2f6fde; --accent-soft:#e3ecfd; --ok:#1f9d55; --ok-soft:#e2f5e9; --bad:#d64545; --bad-soft:#fde8e8;
+  --warn:#b67d00; --warn-soft:#fff3d1; --wire:#7b879b; --canvas:#fbfcfe; --grid:#e6ebf3;
+  --shadow:0 1px 2px rgba(20,30,50,.06),0 6px 20px rgba(20,30,50,.07); --r:14px;
+}
+/*@dark*/@media (prefers-color-scheme: dark){:root{
+  --bg:#0e131b; --card:#161d28; --card2:#1c2431; --ink:#e6ebf2; --ink-soft:#b3bccb; --muted:#8b95a7; --line:#2a3443;
+  --accent:#5b8ff0; --accent-soft:#1b2944; --ok:#3cc47a; --ok-soft:#14301f; --bad:#f06c6c; --bad-soft:#3a1d20;
+  --warn:#e6b23a; --warn-soft:#352c14; --wire:#8592a8; --canvas:#111720; --grid:#1b2330;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.3);}}/*@end*/
+*{box-sizing:border-box}
+html,body{margin:0;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.45}
+body{background:var(--bg)}
+.app{max-width:1400px;margin:0 auto;padding:14px;background:var(--bg);min-height:100vh}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px}
+.hdr{display:flex;align-items:center;gap:14px}
+.hdr h1{font-size:1.45rem;margin:0;line-height:1.2}
+.hdr p{margin:2px 0 0;color:var(--muted)}
+.hdr .grow{flex:1;min-width:0}
+.tabs{display:flex;gap:6px;padding:6px;margin:12px 0;border-radius:999px;flex-wrap:wrap}
+.tabs button{border:0;border-radius:999px;background:transparent;padding:8px 16px;font-weight:700;color:var(--ink-soft)}
+.tabs button:hover{background:var(--card2)}
+.tabs button.active{background:var(--accent);color:#fff}
+button{font:inherit;border-radius:10px;background:var(--card2);border:1px solid var(--line);color:var(--ink);padding:7px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+button.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.5;cursor:not-allowed;border-color:var(--line)}
+input[type=text]{font:inherit;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--ink);width:100%}
+select{font:inherit;padding:6px 8px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--ink);max-width:100%}
+details.lz{margin-bottom:12px}
+details.lz summary{cursor:pointer;font-weight:700}
+.lzgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.lzt{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px}
+.lzt b{display:block;margin-bottom:2px}
+.lzt span{color:var(--ink-soft);font-size:.92rem}
+.work{display:grid;grid-template-columns:220px minmax(0,1fr) 330px;gap:12px;align-items:start}
+@media (max-width:1150px){.work{grid-template-columns:200px minmax(0,1fr)}.work>.right{grid-column:1/-1}.part svg{width:44px;height:33px}}
+@media (max-width:760px){.work{grid-template-columns:1fr}.tabs button{flex:1}}
+@media (max-width:600px){.hdr{flex-wrap:wrap}.hdr .grow{flex:1 1 calc(100% - 64px)}.hdr h1{font-size:1.25rem}.tabs{border-radius:16px}.tabs button{flex:1 1 100%}}
+.stage{padding:10px;position:relative}
+.pop{position:absolute;left:14px;right:14px;top:56px;background:var(--card);border:2px solid var(--accent);border-radius:14px;padding:14px;box-shadow:0 10px 40px rgba(0,0,0,.25);z-index:5;max-width:560px;margin:0 auto}
+.pop h3{margin:0 0 6px;font-size:1.05rem}
+.stagebar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.stagebar .sp{flex:1}
+.pcsvg{width:100%;height:auto;display:block;border-radius:12px;background-color:var(--canvas);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;touch-action:none;user-select:none;-webkit-user-select:none}
+.subh{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin:12px 0 6px}
+.subh:first-child{margin-top:0}
+.msg{border-radius:12px;padding:9px 11px;background:var(--card2);border:1px solid var(--line);margin:8px 0;font-size:.95rem}
+.msg.ok{background:var(--ok-soft);border-color:var(--ok)}
+.msg.bad{background:var(--bad-soft);border-color:var(--bad)}
+.msg.warn{background:var(--warn-soft);border-color:var(--warn)}
+.bar{height:10px;background:var(--grid);border-radius:999px;overflow:hidden;margin-top:8px}
+.bar>i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+.bar.ok>i{background:var(--ok)}.bar.warn>i{background:var(--warn)}.bar.bad>i{background:var(--bad)}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.82rem;font-weight:700;margin:2px 4px 2px 0}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}.chip.bad{background:var(--bad-soft);color:var(--bad)}.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.good{background:var(--warn-soft);border:1px solid var(--warn);border-radius:12px;padding:9px 11px;margin-top:10px;font-size:.93rem}
+.good b{display:block;margin-bottom:2px}
+.info h3{margin:0 0 4px;font-size:1.12rem;display:flex;align-items:center;gap:8px}
+.dot{width:12px;height:12px;border-radius:4px;display:inline-block;flex:none}
+.info p.lead{margin:4px 0 8px;color:var(--ink-soft)}
+.info ul{margin:6px 0;padding-left:18px}
+.info li{margin:3px 0}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+.parts{max-height:680px;overflow:auto;padding-right:2px}
+.part{display:flex;gap:8px;align-items:center;padding:7px;border:1px solid var(--line);border-radius:12px;background:var(--card2);margin-bottom:7px;padding-right:22px;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;position:relative}
+.part:hover{border-color:var(--accent)}
+.part.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent) inset}
+.part.used,.part.rej{opacity:.45;cursor:default}
+.part.used:hover,.part.rej:hover{border-color:var(--line)}
+.part.lock{opacity:.4;cursor:not-allowed}
+.part svg{width:56px;height:42px;flex:none}
+.part .pn{font-weight:700;font-size:.9rem;line-height:1.2}
+.part .ps{font-size:.76rem;color:var(--ink-soft);line-height:1.25;margin-top:2px}
+.part .badge{position:absolute;right:6px;top:4px;font-size:.8rem}
+.ghost{position:fixed;left:0;top:0;pointer-events:none;z-index:9999;background:var(--card);border:2px solid var(--accent);border-radius:12px;padding:4px;box-shadow:var(--shadow);opacity:.92}
+.ghost svg{width:70px;height:52px;display:block}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding:8px}
+.steps button{border-radius:999px;font-weight:600;font-size:.9rem}
+.steps button.cur{background:var(--accent);border-color:var(--accent);color:#fff}
+.steps button.done{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.tips button{margin:4px 0;width:100%;text-align:left}
+.tip{background:var(--card2);border:1px dashed var(--line);border-radius:10px;padding:7px 10px;margin:4px 0;font-size:.93rem}
+.opts{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.opts button{text-align:left;line-height:1.3}
+.opts button.right{background:var(--ok-soft);border-color:var(--ok)}
+.opts button.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+table.cmp{width:100%;border-collapse:collapse;font-size:.9rem}
+table.cmp th,table.cmp td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+table.cmp th{font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+table.cmp td.unk{color:var(--muted);font-style:italic}
+.tblwrap{overflow-x:auto}
+.auftrag{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:9px 11px;font-size:.88rem}
+.auftrag b{display:block;margin-bottom:4px}
+.auftrag ul{margin:0;padding-left:16px}
+.kn-intro{max-width:820px;margin:0 auto}
+.q{max-width:820px;margin:0 auto}
+.q h3{margin:6px 0 10px;font-size:1.1rem}
+.q .qsvg{max-width:520px;margin:6px auto;display:block;width:100%}
+.match{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:8px 10px;align-items:center;margin:8px 0}
+.match .l{font-weight:600}
+.lzrow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 110px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.lzrow .bar{margin-top:0}
+@media (max-width:600px){.lzrow{grid-template-columns:1fr}.match{grid-template-columns:1fr}}
+.big{font-size:2.2rem;font-weight:800;line-height:1}
+.resgrid{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.proto{font-size:.88rem}
+.proto td:first-child{width:28px}
+svg .comp{cursor:pointer}
+svg .comp:hover{filter:drop-shadow(0 0 5px #ffd166)}
+svg .comp.sel{filter:drop-shadow(0 0 6px #ffd166) drop-shadow(0 0 3px #ffd166)}
+svg .hot{fill:transparent;stroke:transparent;stroke-width:2;cursor:pointer}
+svg .hot:hover{fill:rgba(255,209,102,.22);stroke:#ffd166}
+svg .hot.seen{stroke:rgba(255,209,102,.55);stroke-dasharray:4 3}
+svg .hot.cur{fill:rgba(255,209,102,.3);stroke:#ffd166}
+svg .zone{fill:rgba(47,111,222,.16);stroke:#2f6fde;stroke-width:2;stroke-dasharray:6 4;pointer-events:none}
+svg .zone.near{fill:rgba(47,111,222,.38);stroke-width:3}
+svg .lbl{font:700 13px system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;paint-order:stroke;stroke:var(--canvas);stroke-width:4px;fill:var(--ink);pointer-events:none}
+svg .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+svg .fade{transition:transform .38s ease-in,opacity .38s ease-in}
+.noprint{}
+/*@print*/@media print{.tabs,.hdr .chip,.noprint,details.lz{display:none!important}.app{background:#fff}.card{box-shadow:none}}/*@end*/
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hdr card">
+    <svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true">
+      <rect width="46" height="46" rx="12" fill="#2f6fde"/>
+      <rect x="11" y="8" width="18" height="30" rx="3" fill="none" stroke="#fff" stroke-width="2.5"/>
+      <rect x="14.5" y="12" width="11" height="9" rx="1.5" fill="#fff"/>
+      <circle cx="20" cy="29" r="3.2" fill="none" stroke="#fff" stroke-width="2"/>
+      <rect x="31" y="14" width="5" height="18" rx="1.5" fill="#ffd166"/>
+    </svg>
+    <div class="grow">
+      <h1>Aufbau eines modernen PCs</h1>
+      <p>Zerlegen · Zusammenbauen · Kompetenznachweis – Fachinformatik, Einstiegsklasse</p>
+    </div>
+    <span class="chip" id="scormChip">Vorschau</span>
+  </header>
+
+  <nav class="tabs card" id="tabs">
+    <button data-tab="exp" class="active">① Entdecken: PC zerlegen</button>
+    <button data-tab="ueb">② Üben: PC zusammenbauen</button>
+    <button data-tab="kn">③ Kompetenznachweis</button>
+  </nav>
+
+  <details class="card lz" id="lzCard">
+    <summary>🎯 Lernziele dieses Moduls</summary>
+    <div class="lzgrid" id="lzGrid"></div>
+  </details>
+
+  <section id="tab-exp" class="tab">
+    <div class="work">
+      <aside class="left card" id="expLeft"></aside>
+      <div class="stage card">
+        <div class="stagebar">
+          <button id="expViewCase" class="active">🖥 Gehäuse</button>
+          <button id="expViewBoard" disabled>🔒 Mainboard erkunden</button>
+          <span class="sp"></span>
+          <button id="expReset">↺ Wieder zusammensetzen</button>
+        </div>
+        <svg id="expSvg" class="pcsvg" viewBox="0 -22 664 606" role="img" aria-label="PC zum Zerlegen"></svg>
+        <div class="bar"><i id="expBar"></i></div>
+        <div class="small muted" id="expStat" style="margin-top:4px"></div>
+      </div>
+      <aside class="right card info" id="expInfo"></aside>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="subh">Steckbrief-Übersicht – füllt sich, sobald du ein Bauteil untersuchst</div>
+      <div class="tblwrap" id="expTable"></div>
+    </div>
+  </section>
+
+  <section id="tab-ueb" class="tab" hidden>
+    <div class="card steps" id="uebSteps"></div>
+    <div class="work">
+      <aside class="left card" id="uebLeft"></aside>
+      <div class="stage card">
+        <div class="stagebar">
+          <span class="small muted" id="uebHint">Ziehe ein Teil aus der Teilekiste an seinen Platz – oder tippe erst das Teil, dann den Platz an.</span>
+          <span class="sp"></span>
+          <button id="uebReset">↺ Übung neu starten</button>
+        </div>
+        <svg id="uebSvg" class="pcsvg" viewBox="0 -22 664 606" role="img" aria-label="PC zum Zusammenbauen"></svg>
+      </div>
+      <aside class="right card info" id="uebRight"></aside>
+    </div>
+  </section>
+
+  <section id="tab-kn" class="tab" hidden>
+    <div id="knRoot"></div>
+  </section>
+
+  <div class="ghost" id="ghost" hidden></div>
+</div>
+<script>
+var ROOT = document;
+var $ = function(s, r){ return (r || ROOT).querySelector(s); };
+var $$ = function(s, r){ return Array.prototype.slice.call((r || ROOT).querySelectorAll(s)); };
+var NS = 'http://www.w3.org/2000/svg';
+
+/* ---------- Helfer ---------- */
+function S_(tag, a, p){ var e = document.createElementNS(NS, tag); if (a) for (var k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; }
+function R(p, r, a){ a = a || {}; a.x = r.x; a.y = r.y; a.width = r.w; a.height = r.h; return S_('rect', a, p); }
+function T(p, x, y, s, a){ a = a || {}; a.x = x; a.y = y; var t = S_('text', a, p); t.textContent = s; return t; }
+function G(p, a){ return S_('g', a || {}, p); }
+function pad(r, d){ return { x: r.x - d, y: r.y - d, w: r.w + 2 * d, h: r.h + 2 * d }; }
+function H(tag, cls, html){ var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function shuffle(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
+function clear(n){ while (n && n.firstChild) n.removeChild(n.firstChild); }
+function svgPoint(svg, cx, cy, ref){ var pt = svg.createSVGPoint(); pt.x = cx; pt.y = cy; var m = (ref || svg).getScreenCTM(); return m ? pt.matrixTransform(m.inverse()) : { x: -1, y: -1 }; }
+function inR(r, x, y, d){ d = d || 0; return x >= r.x - d && x <= r.x + r.w + d && y >= r.y - d && y <= r.y + r.h + d; }
+
+/* ---------- SCORM 1.2 ---------- */
+var SC = { api: null, ok: false, done: false };
+function findAPI(win){
+  var n = 0;
+  try {
+    while (win && !win.API && win.parent && win.parent !== win && n < 12){ n++; win = win.parent; }
+    return (win && win.API) ? win.API : null;
+  } catch (e){ return null; }
+}
+function scGet(k){ try { return SC.ok ? String(SC.api.LMSGetValue(k)) : ''; } catch (e){ return ''; } }
+function scSet(k, v){ try { if (SC.ok) SC.api.LMSSetValue(k, String(v)); } catch (e){} }
+function scCommit(){ try { if (SC.ok) SC.api.LMSCommit(''); } catch (e){} }
+function scInit(){
+  var a = findAPI(window);
+  try { if (!a && window.opener) a = findAPI(window.opener); } catch (e){}
+  if (a){
+    SC.api = a;
+    try { SC.ok = String(a.LMSInitialize('')) === 'true'; } catch (e){ SC.ok = false; }
+  }
+  var raw = '';
+  if (SC.ok){
+    raw = scGet('cmi.suspend_data');
+    var st = scGet('cmi.core.lesson_status');
+    if (st === '' || st === 'not attempted') scSet('cmi.core.lesson_status', 'incomplete');
+    scSet('cmi.core.exit', 'suspend');
+    var nm = scGet('cmi.core.student_name');
+    if (nm && !STORE.name){ var parts = nm.split(','); STORE.name = parts.length === 2 ? (parts[1].trim() + ' ' + parts[0].trim()) : nm; }
+    scCommit();
+  } else {
+    try { raw = localStorage.getItem('pc-aufbau-v1') || ''; } catch (e){}
+  }
+  if (raw){ try { var d = JSON.parse(raw); for (var k in d) STORE[k] = d[k]; } catch (e){} }
+  var chip = $('#scormChip');
+  chip.textContent = SC.ok ? 'SCORM verbunden ✓' : 'Vorschau (ohne Lernplattform)';
+  chip.className = 'chip' + (SC.ok ? ' ok' : '');
+}
+function save(){
+  var s = JSON.stringify(STORE);
+  if (SC.ok){ scSet('cmi.suspend_data', s.slice(0, 4000)); scCommit(); }
+  else { try { localStorage.setItem('pc-aufbau-v1', s); } catch (e){} }
+}
+function scReport(score){
+  var best = STORE.best == null ? -1 : STORE.best;
+  if (score > best){ STORE.best = score; best = score; }
+  if (SC.ok){
+    scSet('cmi.core.score.min', 0); scSet('cmi.core.score.max', 100);
+    scSet('cmi.core.score.raw', best);
+    scSet('cmi.core.lesson_status', best >= PASS ? 'passed' : 'failed');
+  }
+  save();
+}
+function scFinish(){
+  if (!SC.ok || SC.done) return; SC.done = true;
+  try { SC.api.LMSCommit(''); SC.api.LMSFinish(''); } catch (e){}
+}
+window.addEventListener('pagehide', scFinish);
+window.addEventListener('beforeunload', scFinish);
+
+var PASS = 70;
+var STORE = { seen: [], expDone: false, ueb: [], best: null, tries: 0, name: '' };
+
+/* ---------- Lernziele ---------- */
+var LZ = [
+  { id: 'LZ1', t: 'Komponenten erkennen', d: 'Ich erkenne die Komponenten eines modernen PCs – auch in anderer Bauform – und benenne sie fachlich korrekt.' },
+  { id: 'LZ2', t: 'Funktionen beschreiben', d: 'Ich beschreibe die wesentliche Aufgabe jeder Komponente und wichtige Kennzahlen.' },
+  { id: 'LZ3', t: 'Steckplätze & Anschlüsse', d: 'Ich ordne Bauteile und Stromkabel den richtigen Steckplätzen und Anschlüssen zu.' },
+  { id: 'LZ4', t: 'Sicher & in sinnvoller Reihenfolge', d: 'Ich baue sicher (Strom, ESD) und in sinnvoller Reihenfolge ein und aus – inklusive Wärmeleitpaste und Airflow.' },
+  { id: 'LZ5', t: 'Kompatibilität prüfen', d: 'Ich wähle passende Teile nach Kundenauftrag aus: Sockel, RAM-Typ, Formfaktor, Grafikkartenlänge, Netzteilleistung.' }
+];
+var LZ_TIP = {
+  LZ1: 'Zerlege den PC unter ① noch einmal und erkunde das Mainboard auf der Werkbank. Achte darauf, wie Bauteile in anderer Bauform aussehen (z. B. AIO-Kühler statt Tower-Kühler).',
+  LZ2: 'Lies in ① die Steckbriefe und vergleiche sie in der Steckbrief-Übersicht. Erkläre jemandem die Aufgabe jedes Teils in einem Satz.',
+  LZ3: 'Erkunde in ① die Board-Details (Sockel, Slots, Stecker) und baue in ② Aufgabe 4, 6 und 7 noch einmal – zähl bei Steckern die Pins.',
+  LZ4: 'Wiederhole ② Aufgabe 1, 5 und 7: Strom/ESD, Reihenfolge (RAM vor Tower-Kühler, SSD vor GPU), Wärmeleitpaste und Luftrichtung.',
+  LZ5: 'Wiederhole ② Aufgabe 1, 3, 4 und 6 – vergleiche jede Teilekarte mit dem Kundenauftrag: Sockel, DDR-Generation, DIMM/SO-DIMM, Länge, Watt.'
+};
+
+/* ---------- Kategorienfarben ---------- */
+var CAT = { strom: '#d64545', board: '#2f9e5b', cpu: '#e8862a', speicher: '#8e5bd6', gpu: '#2f7fd6', gehaeuse: '#14958a' };
+
+/* ---------- Steckbriefe der Komponenten ---------- */
+var INFO = {
+  power: { name: 'Netzkabel & Sicherheit', cat: 'strom',
+    lead: 'Bevor du einen PC öffnest, wird er vollständig vom Stromnetz getrennt.',
+    facts: ['Netzteilschalter auf „0“ und Netzkabel ziehen – im „ausgeschalteten“ Zustand liegen am Mainboard sonst noch 5 V Standby-Spannung an.',
+      'Danach einmal kurz den Power-Knopf drücken: Die Restladung in den Kondensatoren wird abgebaut.',
+      'ESD-Schutz: Antistatik-Armband an blankem Gehäusemetall erden oder dich vorher am Gehäuse entladen. Eine Entladung kann Chips beschädigen, ohne dass du sie spürst.'],
+    chips: ['230 V AC', 'Kaltgerätestecker C13/C14', '5 V Standby'],
+    good: 'Ein Netzteil wird nie geöffnet – auch ausgesteckt können seine Kondensatoren gefährlich hohe Spannung speichern.',
+    row: ['Verbindung zum Stromnetz', 'Kaltgerätebuchse (C14) am Netzteil', '230 V, 50 Hz'] },
+  panel: { name: 'Gehäuse & Seitenteil', cat: 'gehaeuse',
+    lead: 'Das Gehäuse trägt alle Komponenten, schützt sie und lenkt den Luftstrom.',
+    facts: ['Ein ATX-Midi-Tower nimmt ATX-, Micro-ATX- und Mini-ITX-Mainboards auf – die Bohrungen liegen im selben Raster.',
+      'Abstandshalter (Standoffs) halten das Mainboard auf Abstand zum Blech – sonst gäbe es einen Kurzschluss.',
+      'Wichtige Maße beim Kauf: maximale Grafikkartenlänge, maximale Kühlerhöhe, Netzteillänge und Plätze für Lüfter/Radiatoren.'],
+    chips: ['ATX / mATX / ITX', 'Glas-Seitenteil', 'Staubfilter'],
+    good: 'Glas-Seitenteile sind schwer und zerbrechlich: beim Abnehmen festhalten und weich ablegen.',
+    row: ['Trägt und schützt die Teile, führt die Luft', 'Bohrraster für Mainboards (ATX/mATX/ITX)', 'max. GPU-Länge, max. Kühlerhöhe'] },
+  fans: { name: 'Gehäuselüfter', cat: 'gehaeuse',
+    lead: 'Gehäuselüfter tauschen warme Luft im Gehäuse gegen kühle Außenluft aus.',
+    facts: ['Typische Größen: 120 mm und 140 mm.',
+      'Bewährt: vorne (und unten) Luft hinein = Einlass, hinten (und oben) hinaus = Auslass. Warme Luft steigt ohnehin nach oben.',
+      'Etwas mehr Einlass als Auslass erzeugt leichten Überdruck – dann kommt Staub hauptsächlich durch die Filter herein.',
+      'Die Drehzahl regelt das Mainboard über den 4-Pin-PWM-Anschluss (SYS_FAN).'],
+    chips: ['120 / 140 mm', '4-Pin PWM', 'vorne Einlass'],
+    good: 'Die Blasrichtung erkennst du am Rahmen: Auf der Seite mit den Streben (Halterung des Motors) bläst die Luft heraus. Viele Lüfter haben zusätzlich Pfeile am Rahmen.',
+    row: ['Luftaustausch: kühle Luft rein, Abwärme raus', '4-Pin-Lüfteranschluss (SYS_FAN)', '120/140 mm, U/min, Luftdurchsatz'] },
+  cables: { name: 'Stromkabel vom Netzteil', cat: 'strom',
+    lead: 'Über diese Stecker verteilt das Netzteil die Gleichspannungen an die Komponenten.',
+    facts: ['24-Pin ATX: Hauptversorgung des Mainboards (12 V, 5 V, 3,3 V).',
+      '8-Pin EPS12V (oft 4+4): Versorgung der CPU – sitzt oben links am Mainboard, nahe den Spannungswandlern.',
+      '12V-2x6 (16-polig, ATX 3.1): versorgt moderne Grafikkarten mit bis zu 600 W. Ältere Karten nutzen 6+2-Pin-PCIe-Stecker (je bis 150 W).',
+      'Die Front-Panel-Kabel verbinden Power-Taste, Reset und LEDs des Gehäuses mit dem Header F_PANEL.'],
+    chips: ['24-Pin ATX', '8-Pin EPS', '12V-2x6', 'F_PANEL'],
+    good: 'Stecker immer gerade und vollständig einstecken, bis die Rastnase einrastet. Ein halb steckender 12V-2x6-Stecker kann wegen der hohen Ströme überhitzen.',
+    row: ['Verteilen den Strom an Board, CPU und GPU', '24-Pin ATX, 8-Pin EPS, 12V-2x6, SATA-Strom', 'bis 600 W über 12V-2x6'] },
+  gpu: { name: 'Grafikkarte (GPU)', cat: 'gpu',
+    lead: 'Die Grafikkarte berechnet die Bilder für den Monitor – sie ist Spezialistin für sehr viele gleichartige Rechnungen gleichzeitig.',
+    facts: ['Tausende kleine Rechenkerne arbeiten parallel – ideal für 3D-Grafik, Videobearbeitung und KI.',
+      'Sie hat eigenen, sehr schnellen Grafikspeicher (VRAM, z. B. 12–16 GB GDDR7).',
+      'Steckplatz: PCIe x16 – in der Regel der oberste, direkt mit der CPU verbundene Slot.',
+      'Der Slot selbst liefert höchstens 75 W, den Rest bekommt die Karte über eigene Stromkabel vom Netzteil.'],
+    chips: ['PCIe 5.0 x16', 'GDDR7-VRAM', '150–575 W'],
+    good: 'Den Monitor an die Grafikkarte anschließen – nicht an die Buchsen am Mainboard. Beim Ausbau zuerst die Verriegelung am Ende des PCIe-Slots lösen.',
+    row: ['Berechnet Bilder, viele Rechnungen parallel (auch KI)', 'PCIe-x16-Slot + 12V-2x6-Stromstecker', 'VRAM (GB), Leistung (W), Länge (mm)'] },
+  ssd: { name: 'SSD (M.2, NVMe)', cat: 'speicher',
+    lead: 'Die SSD speichert Betriebssystem, Programme und Dateien dauerhaft – auch ohne Strom.',
+    facts: ['Gespeichert wird in NAND-Flash-Chips – ohne bewegliche Teile.',
+      'M.2 ist der Formfaktor (die Steckkarte), NVMe das Protokoll über PCIe. „2280“ bedeutet 22 mm breit, 80 mm lang.',
+      'Befestigt wird sie mit einer kleinen Schraube oder einem Clip am Ende des Slots.',
+      'Der M.2-Slot liegt oft unter der Grafikkarte – dann muss die GPU zuerst heraus.'],
+    chips: ['M.2 2280', 'PCIe 4.0 x4 ≈ 7 GB/s', 'PCIe 5.0 x4 ≈ 14 GB/s'],
+    good: 'Zum Vergleich: SATA-SSD ≈ 0,55 GB/s, Festplatte (HDD) ≈ 0,2 GB/s. Eine NVMe-SSD ist also mehr als zehnmal so schnell wie eine SATA-SSD.',
+    row: ['Nichtflüchtiger Massenspeicher (System, Programme, Daten)', 'M.2-Slot (Key M), PCIe/NVMe', 'Kapazität (TB), Lesen/Schreiben (GB/s)'] },
+  cooler: { name: 'CPU-Kühler', cat: 'cpu',
+    lead: 'Der Kühler transportiert die Abwärme der CPU weg – ohne ihn würde sie sich in Sekunden drosseln oder abschalten.',
+    facts: ['Tower-Luftkühler: Heatpipes leiten die Wärme in einen Lamellenblock, ein Lüfter bläst sie weg.',
+      'Alternative AIO-Wasserkühlung („All-in-One“): Pumpe auf der CPU, die Flüssigkeit trägt die Wärme zu einem Radiator mit Lüftern.',
+      'Zwischen CPU und Kühler gehört Wärmeleitpaste: Sie füllt winzige Unebenheiten, in denen sonst schlecht leitende Luft wäre.',
+      'Der Kühlerlüfter wird am Header CPU_FAN angeschlossen.'],
+    chips: ['Wärmeleitpaste', 'CPU_FAN', 'Kühlleistung in W'],
+    good: 'Ein großer Tower-Kühler verdeckt oft den ersten RAM-Slot und dessen Clips. Deshalb den RAM vor dem Kühler einbauen.',
+    row: ['Führt die Abwärme der CPU ab', 'Halterung am Sockel, Lüfter an CPU_FAN', 'Kühlleistung (W), Bauhöhe (mm)'] },
+  ram: { name: 'Arbeitsspeicher (RAM)', cat: 'speicher',
+    lead: 'Im Arbeitsspeicher liegen die Programme und Daten, mit denen die CPU gerade arbeitet.',
+    facts: ['RAM ist flüchtig: Beim Ausschalten ist der Inhalt weg.',
+      'Viel schneller als eine SSD, aber kleiner – typisch sind 16–64 GB.',
+      'Desktop-Module heißen DIMM (DDR5: 288 Kontakte), Notebook-Module SO-DIMM. DDR4 und DDR5 haben die Kerbe an unterschiedlicher Stelle – sie lassen sich nicht vertauschen.',
+      'Dual-Channel: Zwei Module gehören laut Handbuch meist in A2 und B2 – den 2. und 4. Slot vom Sockel aus.'],
+    chips: ['DDR5-6000', '2 × 16 GB', 'Dual-Channel'],
+    good: 'Zum Ausbauen die Halteclips am Slot nach außen drücken – das Modul hebt sich dann leicht an.',
+    row: ['Kurzzeitspeicher für laufende Programme (flüchtig)', 'DIMM-Slots (DDR5, 288-polig)', 'Kapazität (GB), Takt (MT/s), Latenz (CL)'] },
+  cpu: { name: 'Prozessor (CPU)', cat: 'cpu',
+    lead: 'Die CPU führt die Befehle aller Programme aus und steuert die Abläufe im PC.',
+    facts: ['Mehrere Kerne arbeiten gleichzeitig; manche Kerne bearbeiten zwei Threads (SMT bzw. Hyper-Threading).',
+      'Kennzahlen: Kerne/Threads, Takt in GHz, Cache in MB, Leistungsaufnahme (TDP) in W.',
+      'Der Sockel muss passen, z. B. AMD AM5 oder Intel LGA1851. LGA heißt: Die Pins sitzen im Sockel, die CPU hat nur Kontaktflächen.',
+      'Viele CPUs haben eine einfache integrierte Grafik (iGPU).'],
+    chips: ['Sockel AM5 / LGA1851', '6–24 Kerne', 'bis ≈ 5,7 GHz'],
+    good: 'Beim Einsetzen das kleine Dreieck auf der CPU an der Markierung am Sockel ausrichten und die CPU ohne Druck einlegen. Die Pins im Sockel verbiegen sehr leicht!',
+    row: ['Führt Programmbefehle aus, steuert die Abläufe', 'CPU-Sockel (z. B. AM5, LGA1851)', 'Kerne/Threads, GHz, Cache, TDP'] },
+  psu: { name: 'Netzteil (PSU)', cat: 'strom',
+    lead: 'Das Netzteil wandelt die Netzspannung (230 V Wechselspannung) in die Gleichspannungen um, die der PC braucht.',
+    facts: ['Ausgänge: vor allem 12 V (CPU, Grafikkarte), außerdem 5 V und 3,3 V.',
+      'Die Nennleistung (z. B. 750 W) muss für alle Komponenten plus Reserve reichen.',
+      'Effizienz-Label wie „80 PLUS Gold“: Rund 90 % der aufgenommenen Energie kommen beim PC an, der Rest wird zu Wärme.',
+      'ATX-3.1-Netzteile bringen den 12V-2x6-Stecker für moderne Grafikkarten mit. Bei modularen Netzteilen steckt man nur die benötigten Kabel an.'],
+    chips: ['750 W', '80 PLUS Gold', 'ATX 3.1'],
+    good: 'Sitzt das Netzteil unten über einem Staubfilter, zeigt sein Lüfter nach unten: So saugt es kühle Luft von außen an.',
+    row: ['Wandelt 230 V AC in 12 V / 5 V / 3,3 V DC', 'liefert 24-Pin, 8-Pin EPS, 12V-2x6, SATA', 'Leistung (W), Effizienz (80 PLUS)'] },
+  board: { name: 'Mainboard (Hauptplatine)', cat: 'board',
+    lead: 'Das Mainboard verbindet alle Komponenten miteinander – die „Verkehrszentrale“ des PCs.',
+    facts: ['Es stellt die Steckplätze bereit: CPU-Sockel, RAM-Slots, PCIe-Slots, M.2-Slots, SATA-Anschlüsse.',
+      'Der Chipsatz stellt zusätzliche Anschlüsse bereit (USB, SATA, weitere PCIe-Lanes) und ist mit der CPU verbunden.',
+      'Die Spannungswandler (VRM) erzeugen aus 12 V die niedrige Kernspannung der CPU (≈ 1–1,4 V).',
+      'Im Flash-Chip steckt die Firmware (UEFI/BIOS), die den PC startet.'],
+    chips: ['ATX: 305 × 244 mm', 'Chipsatz', 'UEFI'],
+    good: 'Ausgebaut liegt das Mainboard auf der Werkbank: Klick oben auf „🔍 Mainboard erkunden“ und entdecke alle Steckplätze und Anschlüsse.',
+    row: ['Verbindet alle Komponenten, stellt Steckplätze bereit', 'Formfaktor (ATX/mATX/ITX), Sockel, Chipsatz', 'Sockel, Chipsatz, Anzahl Slots'] }
+};
+var EXP_ORDER = ['power', 'panel', 'fans', 'cables', 'gpu', 'ssd', 'cooler', 'ram', 'cpu', 'psu', 'board'];
+var EXP_DEPS = { power: [], panel: ['power'], fans: ['panel'], cables: ['panel'], cooler: ['panel'], gpu: ['cables'], ssd: ['gpu'], ram: ['cooler'], cpu: ['cooler'], psu: ['cables'], board: ['gpu', 'ssd', 'ram', 'cpu', 'cables'] };
+var EXP_WHY = {
+  panel: 'Erst den Strom trennen – das Netzkabel steckt noch!',
+  fans: 'Das Seitenteil ist noch zu.', cables: 'Das Seitenteil ist noch zu.', cooler: 'Das Seitenteil ist noch zu.',
+  gpu: 'An der Grafikkarte steckt noch das 12V-2x6-Stromkabel.',
+  ssd: 'Der M.2-Slot liegt unter der Grafikkarte – die muss zuerst raus.',
+  ram: 'Der große Tower-Kühler verdeckt den ersten RAM-Slot und die Clips.',
+  cpu: 'Auf der CPU sitzt noch der Kühler.',
+  psu: 'Am Netzteil hängen noch die Stromkabel.',
+  board: 'Auf dem Mainboard steckt noch etwas.'
+};
+
+/* ---------- Mainboard-Details (Werkbank & Hotspot-Fragen) ---------- */
+var HOT = {
+  socket: { n: 'CPU-Sockel', d: 'Hier sitzt der Prozessor. Bei LGA-Sockeln (AM5, LGA1851) stecken die Pins im Sockel; ein Hebel mit Andruckrahmen hält die CPU fest. Das Dreieck markiert die Einbaulage.' },
+  dimm: { n: 'DIMM-Slots (RAM)', d: 'Vier Steckplätze für DDR5-Module, beschriftet A1, A2, B1, B2. Für Dual-Channel mit zwei Modulen: A2 und B2 – der 2. und 4. Slot vom Sockel aus.' },
+  pcie16: { n: 'PCIe-x16-Steckplatz', d: 'Für die Grafikkarte, direkt an der CPU angebunden. Mit 16 Lanes PCIe 5.0 sind es ≈ 64 GB/s je Richtung. Am Ende sitzt die Verriegelung.' },
+  pcieX: { n: 'PCIe-Steckplatz (x4/x1)', d: 'Für Erweiterungskarten wie Netzwerk-, WLAN- oder Capture-Karten. Weniger Lanes heißt weniger Bandbreite.' },
+  m2: { n: 'M.2-Steckplatz', d: 'Für NVMe-SSDs (Key M, 4 PCIe-Lanes). Am Ende sitzt der Abstandshalter mit Schraube oder Clip – hier für die Länge 80 mm (2280).' },
+  chipset: { n: 'Chipsatz (unter Kühlkörper)', d: 'Verbindet die CPU mit weiteren Anschlüssen: USB, SATA, zusätzliche PCIe- und M.2-Plätze.' },
+  vrm: { n: 'Spannungswandler (VRM)', d: 'Wandeln die 12 V aus dem EPS-Stecker in die niedrige CPU-Kernspannung um. Die Kühlkörper führen ihre Abwärme ab.' },
+  atx: { n: '24-Pin-ATX-Anschluss', d: 'Hauptstromanschluss des Mainboards. Liefert 12 V, 5 V, 3,3 V und die Standby-Spannung.' },
+  eps: { n: '8-Pin-EPS12V-Anschluss', d: 'Stromversorgung der CPU (über die Spannungswandler). Sitzt oben links, nahe den VRM.' },
+  sata: { n: 'SATA-Anschlüsse', d: 'Datenanschlüsse für 2,5″-SSDs, 3,5″-Festplatten oder optische Laufwerke (≈ 6 Gbit/s). Strom kommt separat über SATA-Strom vom Netzteil.' },
+  cmos: { n: 'CMOS-Batterie (CR2032)', d: 'Versorgt die Echtzeituhr (RTC) und gespeicherte Einstellungen, wenn der PC stromlos ist. Ist sie leer, stimmen Datum und Uhrzeit nicht mehr.' },
+  bios: { n: 'UEFI-Flash-Chip', d: 'Enthält die Firmware (UEFI/BIOS). Sie prüft beim Start die Hardware (POST) und übergibt dann an das Betriebssystem.' },
+  io: { n: 'Rear-I/O (Anschlussblende)', d: 'Anschlüsse nach außen: USB-A/USB-C, LAN (RJ45), Audio, ggf. Bildausgänge der CPU-Grafik und WLAN-Antennen.' },
+  fpanel: { n: 'Front-Panel-Header (F_PANEL)', d: 'Hier kommen Power-Taste, Reset-Taste, Power-LED und HDD-LED des Gehäuses an. Bei den LEDs auf + und − achten.' },
+  cpufan: { n: 'CPU_FAN-Header', d: '4-Pin-PWM-Anschluss für den CPU-Lüfter bzw. die AIO-Pumpe. Fehlt hier das Drehzahlsignal, warnen viele Mainboards beim Start.' }
+};
+var HOT_ORDER = ['socket', 'vrm', 'dimm', 'atx', 'eps', 'cpufan', 'pcie16', 'pcieX', 'm2', 'chipset', 'sata', 'cmos', 'bios', 'io', 'fpanel'];
+
+/* ---------- Geometrie der beiden Bauformen ---------- */
+var GEO = {
+  A: {
+    caseO: { x: 32, y: 28, w: 576, h: 544 }, caseI: { x: 38, y: 34, w: 564, h: 532 },
+    shroud: { x: 38, y: 452, w: 564, h: 114 }, psu: { x: 52, y: 466, w: 186, h: 88 }, pin: { x: 22, y: 494, w: 14, h: 30 },
+    board: { x: 84, y: 50, w: 300, h: 376 }, io: { x: 86, y: 72, w: 28, h: 118 },
+    eps: { x: 98, y: 53, w: 32, h: 12 }, vrmT: { x: 152, y: 76, w: 118, h: 16 }, vrmL: { x: 124, y: 96, w: 22, h: 100 },
+    socket: { x: 172, y: 104, w: 68, h: 68 },
+    dimm: [{ x: 276, y: 76, w: 8, h: 158 }, { x: 289, y: 76, w: 8, h: 158 }, { x: 302, y: 76, w: 8, h: 158 }, { x: 315, y: 76, w: 8, h: 158 }],
+    cpufan: { x: 250, y: 58, w: 18, h: 8 }, atx: { x: 364, y: 150, w: 14, h: 66 },
+    pcie16: { x: 104, y: 262, w: 240, h: 10 }, m2: { x: 150, y: 296, w: 150, h: 12 }, pcieX: { x: 104, y: 344, w: 160, h: 9 }, pcieXName: 'PCIe x4',
+    chipset: { x: 290, y: 332, w: 62, h: 48 }, cmos: { x: 188, y: 374, w: 24, h: 24 }, bios: { x: 236, y: 388, w: 18, h: 12 },
+    sata: { x: 364, y: 330, w: 14, h: 52 }, fpanel: { x: 300, y: 390, w: 46, h: 12 },
+    holes: [[92, 58], [220, 58], [376, 58], [92, 250], [220, 250], [376, 250], [92, 418], [220, 418], [376, 418]],
+    cooler: { x: 150, y: 64, w: 132, h: 152 },
+    gpu: { x: 74, y: 262, w: 340, h: 66 }, gpuPwr: { x: 372, y: 266, w: 26, h: 11 }, covers: 252,
+    fan_rear: { x: 38, y: 70, w: 24, h: 120 }, fan_f1: { x: 576, y: 108, w: 26, h: 124 }, fan_f2: { x: 576, y: 258, w: 26, h: 124 },
+
+    cab: { atx: 'M238,474 C300,446 424,470 424,410 L424,200 Q424,183 406,183 L378,183',
+      eps: 'M404,41 L150,41 Q128,41 128,51 L128,55',
+      gpu: 'M470,452 C470,360 452,252 400,258',
+      fp: 'M586,446 L344,446 Q323,446 323,420' },
+    grom: [{ x: 396, y: 36, w: 16, h: 10 }, { x: 418, y: 176, w: 12, h: 44 }, { x: 464, y: 446, w: 14, h: 8 }]
+  },
+  B: {
+    caseO: { x: 32, y: 28, w: 576, h: 544 }, caseI: { x: 38, y: 34, w: 564, h: 532 },
+    shroud: { x: 38, y: 452, w: 564, h: 114 }, psu: { x: 52, y: 466, w: 170, h: 88 }, pin: { x: 22, y: 494, w: 14, h: 30 },
+    board: { x: 84, y: 84, w: 300, h: 300 }, io: { x: 86, y: 96, w: 28, h: 118 },
+    eps: { x: 122, y: 89, w: 32, h: 12 }, vrmT: { x: 150, y: 108, w: 100, h: 16 }, vrmL: { x: 124, y: 128, w: 20, h: 80 },
+    socket: { x: 160, y: 134, w: 66, h: 66 },
+    dimm: [{ x: 262, y: 106, w: 8, h: 150 }, { x: 275, y: 106, w: 8, h: 150 }, { x: 288, y: 106, w: 8, h: 150 }, { x: 301, y: 106, w: 8, h: 150 }],
+    cpufan: { x: 238, y: 92, w: 18, h: 8 }, atx: { x: 364, y: 196, w: 14, h: 66 },
+    m2: { x: 126, y: 216, w: 130, h: 14 }, pcie16: { x: 104, y: 296, w: 240, h: 10 }, pcieX: { x: 104, y: 340, w: 62, h: 9 }, pcieXName: 'PCIe x1',
+    chipset: { x: 296, y: 314, w: 56, h: 44 }, cmos: { x: 178, y: 338, w: 24, h: 24 }, bios: { x: 222, y: 350, w: 18, h: 12 },
+    sata: { x: 364, y: 300, w: 14, h: 44 }, fpanel: { x: 290, y: 366, w: 46, h: 12 },
+    holes: [[92, 92], [220, 92], [376, 92], [92, 300], [376, 300], [92, 376], [220, 376], [376, 376]],
+    pump: { x: 163, y: 137, w: 60, h: 60 }, rad: { x: 130, y: 34, w: 300, h: 24 },
+    tubes: ['M180,140 C176,104 196,84 222,64', 'M206,140 C208,108 238,86 262,64'],
+    gpu: { x: 74, y: 296, w: 314, h: 60 }, gpuPwr: { x: 350, y: 300, w: 26, h: 11 }, covers: 286,
+    fan_rear: { x: 38, y: 100, w: 24, h: 120 }, fan_f1: { x: 576, y: 118, w: 26, h: 124 }, fan_f2: { x: 576, y: 268, w: 26, h: 124 },
+
+    cab: { atx: 'M222,474 C300,446 424,470 424,400 L424,246 Q424,229 406,229 L378,229',
+      eps: 'M404,73 L162,73 Q138,73 138,83 L138,89',
+      gpu: 'M470,452 C470,380 440,286 384,292',
+      fp: 'M586,446 L334,446 Q313,446 313,378' },
+    grom: [{ x: 396, y: 68, w: 16, h: 10 }, { x: 418, y: 222, w: 12, h: 44 }, { x: 464, y: 446, w: 14, h: 8 }]
+  }
+};
+/* Farbpaletten: A = dunkler Midi-Tower, B = weißes Kompaktgehäuse */
+var PAL = {
+  A: { caseO: '#3a404c', caseI: '#262b34', edge: '#171a20', mesh: '#323844', shroud: '#2e333d', pcb: '#1f4a3d', pcbLine: '#2c6352', silk: '#a9d4c4',
+    slot: '#0e1116', slotEdge: '#5b6470', heat: '#59626d', heat2: '#8a939e', gpu: '#2b3039', gpuEdge: '#15181d', acc: '#e8862a',
+    fanHub: '#1a1d22', fanBlade: '#58616d', ram: '#2a2e35', psu: '#202329', psuTxt: '#ffd166', cable: '#15171b', sleeve: '#4a505a',
+    cpu: '#c5cad1', ssd: '#14171b', cooler: '#aab2bb', fin: '#7e8892', fan: '#1d2026', label: '#e8edf3', std: '#d2b55b' },
+  B: { caseO: '#e3e8ee', caseI: '#f4f6f9', edge: '#aab3bf', mesh: '#d5dbe3', shroud: '#e1e6ec', pcb: '#24242a', pcbLine: '#3a3a44', silk: '#9aa1ad',
+    slot: '#4a4a54', slotEdge: '#8a8a96', heat: '#b9c0c8', heat2: '#dde2e8', gpu: '#eef1f5', gpuEdge: '#9aa4b0', acc: '#14958a',
+    fanHub: '#d9dee5', fanBlade: '#aeb6c1', ram: '#eef1f4', psu: '#eceff3', psuTxt: '#14958a', cable: '#e8ebee', sleeve: '#c3cad3',
+    cpu: '#c5cad1', ssd: '#24242a', cooler: '#1e2026', fin: '#3a3d45', fan: '#f1f3f6', label: '#1b2333', std: '#c9a943' }
+};
+
+/* ================== Zeichnen des PCs (Seitenansicht) ================== */
+var UID = 0;
+function pins(p, r, cols, rows, col){
+  var dx = r.w / cols, dy = r.h / rows;
+  for (var i = 0; i < cols; i++) for (var j = 0; j < rows; j++)
+    S_('rect', { x: r.x + i * dx + dx * 0.25, y: r.y + j * dy + dy * 0.25, width: Math.max(1, dx * 0.5), height: Math.max(1, dy * 0.5), fill: col }, p);
+}
+function fanBlades(p, cx, cy, rad, col, hub){
+  for (var i = 0; i < 7; i++){
+    var a = i * Math.PI * 2 / 7, b = a + 0.9;
+    var x1 = cx + Math.cos(a) * rad * 0.28, y1 = cy + Math.sin(a) * rad * 0.28;
+    var x2 = cx + Math.cos(b) * rad * 0.95, y2 = cy + Math.sin(b) * rad * 0.95;
+    var x3 = cx + Math.cos(a + 0.35) * rad * 0.95, y3 = cy + Math.sin(a + 0.35) * rad * 0.95;
+    S_('path', { d: 'M' + x1 + ',' + y1 + ' Q' + (cx + Math.cos(a + 0.2) * rad * 0.7) + ',' + (cy + Math.sin(a + 0.2) * rad * 0.7) + ' ' + x2 + ',' + y2 + ' L' + x3 + ',' + y3 + ' Z', fill: col }, p);
+  }
+  S_('circle', { cx: cx, cy: cy, r: rad * 0.28, fill: hub }, p);
+}
+function makeDefs(svg){
+  var id = 'd' + (++UID);
+  var defs = S_('defs', {}, svg);
+  var g1 = S_('linearGradient', { id: id + 'glass', x1: 0, y1: 0, x2: 1, y2: 1 }, defs);
+  S_('stop', { offset: '0', 'stop-color': '#bcd6ff', 'stop-opacity': '.22' }, g1);
+  S_('stop', { offset: '.5', 'stop-color': '#bcd6ff', 'stop-opacity': '.08' }, g1);
+  S_('stop', { offset: '1', 'stop-color': '#bcd6ff', 'stop-opacity': '.2' }, g1);
+  var g2 = S_('linearGradient', { id: id + 'rgb', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  ['#ff5fa2', '#8e5bd6', '#2f9ee0', '#2fd0a0', '#ffd166'].forEach(function(c, i){ S_('stop', { offset: (i / 4).toFixed(2), 'stop-color': c }, g2); });
+  var g3 = S_('linearGradient', { id: id + 'met', x1: 0, y1: 0, x2: 1, y2: 1 }, defs);
+  S_('stop', { offset: '0', 'stop-color': '#e3e7ec' }, g3); S_('stop', { offset: '1', 'stop-color': '#9aa3ad' }, g3);
+  return id;
+}
+
+
+/* ================== 3D-Schrägbild: Blick schräg von vorne-links-unten ins offene Gehäuse ================== */
+/* Koordinaten: x/y wie auf dem Mainboard-Tray, z = Abstand vom Tray Richtung Glasseitenteil.
+   Projektion: (x, y, z) -> (x + KZ*z, y - KZ*z). Sichtbar sind Vorderseite (z max), linke Seite und Unterseite. */
+var KZ = 0.38, DEP = 120;
+function withKZ(k, fn){ var o = KZ; KZ = k; try { return fn(); } finally { KZ = o; } }
+var BENCH_KZ = 0.85;
+function P3(x, y, z){ return [x + KZ * z, y - KZ * z]; }
+function pb(r, z0, z1){ return { x: r.x + KZ * z0, y: r.y - KZ * z1, w: r.w + KZ * (z1 - z0), h: r.h + KZ * (z1 - z0) }; }
+function poly(p, pts, a){ a = a || {}; a.points = pts.map(function(q){ return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' '); return S_('polygon', a, p); }
+function shade(hex, f){
+  var n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+  function c(v){ return Math.max(0, Math.min(255, Math.round(f < 0 ? v * (1 + f) : v + (255 - v) * f))); }
+  return '#' + ((1 << 24) + (c(r) << 16) + (c(g) << 8) + c(b)).toString(16).slice(1);
+}
+function fG(p, z){ return G(p, { transform: 'translate(' + (KZ * z).toFixed(2) + ',' + (-KZ * z).toFixed(2) + ')' }); }
+/* linke Fläche bei x0: lokale Koordinaten u = z, v = y */
+function lG(p, x0){ return G(p, { transform: 'matrix(' + KZ + ',' + (-KZ) + ',0,1,' + x0 + ',0)' }); }
+/* Unterseite bei y0: lokale Koordinaten u = x, v = z */
+function bG(p, y0){ return G(p, { transform: 'matrix(1,0,' + KZ + ',' + (-KZ) + ',0,' + y0 + ')' }); }
+function box(p, r, z0, z1, col, o){
+  o = o || {};
+  var g = G(p, o.attrs || {});
+  var x0 = r.x, x1 = r.x + r.w, y0 = r.y, y1 = r.y + r.h;
+  var st = o.stroke || shade(col, -0.5), sw = o.sw == null ? 0.8 : o.sw;
+  if (!o.noLeft) poly(g, [P3(x0, y0, z0), P3(x0, y0, z1), P3(x0, y1, z1), P3(x0, y1, z0)], { fill: o.left || shade(col, -0.2), stroke: st, 'stroke-width': sw, 'stroke-linejoin': 'round' });
+  if (!o.noBottom) poly(g, [P3(x0, y1, z0), P3(x1, y1, z0), P3(x1, y1, z1), P3(x0, y1, z1)], { fill: o.bottom || shade(col, -0.34), stroke: st, 'stroke-width': sw, 'stroke-linejoin': 'round' });
+  if (!o.noFront){ var f = P3(x0, y0, z1); S_('rect', { x: f[0], y: f[1], width: r.w, height: r.h, rx: o.rx || 0, fill: o.front || col, stroke: st, 'stroke-width': sw }, g); }
+  return g;
+}
+function hull(r, z0, z1){
+  var x0 = r.x, x1 = r.x + r.w, y0 = r.y, y1 = r.y + r.h;
+  return [P3(x0, y1, z0), P3(x0, y0, z0), P3(x0, y0, z1), P3(x1, y0, z1), P3(x1, y1, z1), P3(x1, y1, z0)];
+}
+function cyl(p, cx, cy, rad, z0, z1, col){
+  var n = Math.max(2, Math.ceil((z1 - z0) / 1.2));
+  for (var i = 0; i < n; i++){ var q = P3(cx, cy, z0 + (z1 - z0) * i / n); S_('circle', { cx: q[0], cy: q[1], r: rad, fill: shade(col, -0.35) }, p); }
+  var t = P3(cx, cy, z1);
+  return S_('circle', { cx: t[0], cy: t[1], r: rad, fill: col, stroke: shade(col, -0.45), 'stroke-width': 0.8 }, p);
+}
+function fan3(p, cx, cy, rx, ry, frame, blade, hub){
+  var g = G(p, { transform: 'translate(' + cx + ',' + cy + ') scale(' + (rx / 40) + ',' + (ry / 40) + ')' });
+  S_('circle', { cx: 0, cy: 0, r: 40, fill: frame }, g);
+  fanBlades(g, 0, 0, 37, blade, hub);
+  S_('circle', { cx: 0, cy: 0, r: 39, fill: 'none', stroke: shade(frame, 0.25), 'stroke-width': 1.5 }, g);
+  return g;
+}
+
+/* ---------- Gehäuse ---------- */
+function drawShell(p, K, S){
+  var g = K.g, P = K.p, o = g.caseO, i = g.caseI;
+  // Decke (Innenseite)
+  var C = bG(p, i.y);
+  R(C, { x: i.x, y: 0, w: i.w, h: DEP }, { fill: shade(P.caseI, K.key === 'A' ? 0.08 : -0.05), stroke: P.edge, 'stroke-width': 1 });
+  for (var x = i.x + 30; x < i.x + i.w - 30; x += 14) R(C, { x: x, y: 30, w: 6, h: 60 }, { rx: 2, fill: shade(P.caseI, -0.25) });
+  // rechte Innenwand (Front mit Mesh)
+  var W = lG(p, i.x + i.w);
+  R(W, { x: 0, y: i.y, w: DEP, h: i.h }, { fill: shade(P.caseI, K.key === 'A' ? 0.12 : -0.08), stroke: P.edge, 'stroke-width': 1 });
+  for (var yy = i.y + 14; yy < 440; yy += 10) for (var u = 10; u < DEP - 6; u += 10) S_('circle', { cx: u + ((yy / 10) % 2 ? 5 : 0), cy: yy, r: 2, fill: shade(P.caseI, -0.3) }, W);
+  // Mainboard-Tray
+  R(p, i, { fill: P.caseI, stroke: P.edge, 'stroke-width': 1 });
+  R(p, { x: 418, y: 150, w: 14, h: 80 }, { rx: 5, fill: P.edge, opacity: 0.8 });
+  R(p, { x: 104, y: 36, w: 60, h: 10 }, { rx: 4, fill: P.edge, opacity: 0.8 });
+  for (var k = 0; k < 4; k++) S_('circle', { cx: 470 + k * 30, cy: 80, r: 3, fill: P.edge, opacity: 0.6 }, p);
+  if (!S.board) g.holes.forEach(function(h){ cyl(p, h[0], h[1], 4.5, 0, 6, P.std); });
+  drawRear(p, K, S);
+}
+/* Rückwand (Außenseite links): I/O-Blende, Lüftergitter, Slotblenden, Netzteil-Rückseite */
+function drawRear(p, K, S){
+  var g = K.g, P = K.p, o = g.caseO;
+  var L = lG(p, o.x);
+  R(L, { x: 0, y: o.y, w: DEP, h: o.h }, { fill: shade(P.caseO, -0.15), stroke: P.edge, 'stroke-width': 1.5 });
+  // I/O-Ausschnitt
+  R(L, { x: 4, y: g.io.y, w: 34, h: g.io.h }, { rx: 2, fill: S.board ? P.heat : '#0b0d10', stroke: P.edge });
+  if (S.board) for (var i = 0; i < 6; i++){ R(L, { x: 9, y: g.io.y + 8 + i * 18, w: 12, h: 9 }, { rx: 1, fill: '#1a1d22' }); R(L, { x: 24, y: g.io.y + 9 + i * 18, w: 9, h: 7 }, { rx: 1, fill: i % 2 ? '#2f7fd6' : '#1a1d22' }); }
+  // Lüftergitter
+  var fr = g.fan_rear, cy = fr.y + fr.h / 2;
+  S_('ellipse', { cx: 62, cy: cy, rx: 46, ry: 56, fill: '#0b0d10' }, L);
+  for (var k = -48; k <= 48; k += 8) S_('line', { x1: 18, y1: cy + k, x2: 106, y2: cy + k, stroke: shade(P.caseO, -0.05), 'stroke-width': 2.5 }, L);
+  // Slotblenden bzw. Grafikkarten-Slotblech
+  for (var s = 0; s < 7; s++){
+    var vy = g.covers + s * 26;
+    if (S.gpu && s < 3) continue;
+    R(L, { x: 8, y: vy, w: 96, h: 21 }, { rx: 2, fill: shade(P.caseO, 0.08), stroke: P.edge, 'stroke-width': 0.8 });
+    for (var h = 0; h < 5; h++) R(L, { x: 22 + h * 14, y: vy + 6, w: 8, h: 9 }, { rx: 1, fill: shade(P.caseO, -0.3) });
+  }
+  if (S.gpu){
+    var by = g.covers;
+    R(L, { x: 6, y: by - 2, w: 100, h: 78 }, { rx: 3, fill: '#c3c9d0', stroke: '#7d858f' });
+    if (K.key === 'A'){
+      for (var d = 0; d < 3; d++) R(L, { x: 14 + d * 24, y: by + 10, w: 16, h: 12 }, { rx: 2, fill: '#1a1d22' });
+      R(L, { x: 86, y: by + 10, w: 12, h: 12 }, { rx: 2, fill: '#1a1d22' });
+      for (var v = 0; v < 6; v++) R(L, { x: 14 + v * 14, y: by + 36, w: 9, h: 30 }, { rx: 2, fill: '#5b636d' });
+    } else {
+      for (var d2 = 0; d2 < 3; d2++) R(L, { x: 14 + d2 * 24, y: by + 8, w: 16, h: 12 }, { rx: 2, fill: '#1a1d22' });
+      for (var v2 = 0; v2 < 9; v2++) R(L, { x: 12 + v2 * 10, y: by + 30, w: 6, h: 40 }, { rx: 2, fill: '#2a2d33' });
+    }
+  }
+  // Netzteil-Rückseite
+  var ps = g.psu;
+  R(L, { x: 8, y: ps.y, w: 104, h: ps.h }, { rx: 3, fill: S.psu ? P.psu : '#0b0d10', stroke: P.edge });
+  if (S.psu){
+    for (var a = 0; a < 7; a++) for (var b = 0; b < 4; b++) S_('circle', { cx: 16 + a * 7, cy: ps.y + 14 + b * 14 + (a % 2) * 7, r: 2.4, fill: '#0b0d10' }, L);
+    R(L, { x: 68, y: 494, w: 22, h: 30 }, { rx: 3, fill: '#0e1013', stroke: '#555' });
+    for (var q = 0; q < 3; q++) R(L, { x: 73 + q * 5, y: 505, w: 2.5, h: 9 }, { fill: '#9aa1aa' });
+    R(L, { x: 94, y: 498, w: 10, h: 18 }, { rx: 2, fill: '#c0392b' });
+  }
+}
+function drawRim(p, K){
+  var o = K.g.caseO, i = K.g.caseI, P = K.p;
+  var B = bG(p, o.y + o.h);
+  R(B, { x: o.x, y: 0, w: o.w, h: DEP }, { fill: shade(P.caseO, -0.32), stroke: P.edge, 'stroke-width': 1 });
+  box(p, { x: 50, y: o.y + o.h, w: 60, h: 7 }, 10, 40, P.edge); box(p, { x: 520, y: o.y + o.h, w: 60, h: 7 }, 10, 40, P.edge);
+  var F = fG(p, DEP);
+  S_('path', { d: 'M' + o.x + ',' + o.y + 'h' + o.w + 'v' + o.h + 'h-' + o.w + 'Z M' + i.x + ',' + i.y + 'v' + i.h + 'h' + i.w + 'v-' + i.h + 'Z', fill: P.caseO, stroke: P.edge, 'stroke-width': 1.2, 'fill-rule': 'evenodd' }, F);
+}
+
+/* ---------- Mainboard ---------- */
+function drawBoard(p, K, extra, noSilk){
+  var g = K.g, P = K.p, b = g.board;
+  var TX = noSilk ? function(){ return null; } : T;
+  var grp = G(p, extra || {});
+  box(grp, b, 0, 3, P.pcb, { stroke: shade(P.pcb, -0.5) });
+  var F = fG(grp, 3);
+  var tr = 'M' + (b.x + 40) + ',' + (b.y + b.h - 30) + ' h70 l20,-20 h60 M' + (b.x + 150) + ',' + (b.y + 30) + ' v-12 h80 M' + (b.x + 60) + ',' + (g.pcie16.y + 30) + ' h90 l10,10 h40 M' + (b.x + b.w - 40) + ',' + (b.y + 40) + ' v80 l-10,10 v40';
+  S_('path', { d: tr, stroke: P.pcbLine, 'stroke-width': 1.4, fill: 'none' }, F);
+  g.holes.forEach(function(h){ S_('circle', { cx: h[0], cy: h[1], r: 4.5, fill: '#cfb262', stroke: '#7b6626', 'stroke-width': 1 }, F); S_('circle', { cx: h[0], cy: h[1], r: 2, fill: P.pcb }, F); });
+  var m = g.m2;
+  R(F, { x: m.x + 9, y: m.y, w: m.w - 9, h: m.h }, { fill: 'none', stroke: P.silk, 'stroke-width': 0.8, 'stroke-dasharray': '3 2', opacity: 0.7 });
+  S_('circle', { cx: m.x + m.w - 3, cy: m.y + m.h / 2, r: 3.4, fill: '#cfb262', stroke: '#7b6626' }, F);
+  var names = ['A1', 'A2', 'B1', 'B2'];
+  g.dimm.forEach(function(d, i){ TX(F, d.x + d.w / 2, d.y + d.h + 14, names[i], { 'text-anchor': 'middle', 'font-size': 7, fill: P.silk, 'font-weight': 700 }); });
+  TX(F, g.pcie16.x + 2, g.pcie16.y - 4, 'PCIEX16_1', { 'font-size': 7, fill: P.silk, 'font-weight': 700 });
+  TX(F, g.pcieX.x + 2, g.pcieX.y - 4, g.pcieXName.replace(' ', '').toUpperCase() + '_2', { 'font-size': 7, fill: P.silk, 'font-weight': 700 });
+  TX(F, m.x + 14, m.y + m.h / 2 + 3, 'M.2_1', { 'font-size': 7, fill: P.silk, 'font-weight': 700 });
+  TX(F, g.atx.x - 2, g.atx.y - 5, 'ATX', { 'font-size': 7, fill: P.silk, 'font-weight': 700, 'text-anchor': 'middle' });
+  TX(F, g.sata.x - 4, g.sata.y - 4, 'SATA', { 'font-size': 7, fill: P.silk, 'font-weight': 700, 'text-anchor': 'middle' });
+  TX(F, g.fpanel.x + g.fpanel.w / 2, g.fpanel.y + g.fpanel.h + 8, 'F_PANEL', { 'font-size': 6, fill: P.silk, 'font-weight': 700, 'text-anchor': 'middle' });
+  TX(F, g.cpufan.x + g.cpufan.w / 2 + 14, g.cpufan.y + 7, 'CPU_FAN', { 'font-size': 6, fill: P.silk, 'font-weight': 700 });
+  TX(F, g.bios.x + g.bios.w / 2, g.bios.y + g.bios.h + 8, 'BIOS', { 'text-anchor': 'middle', 'font-size': 6, fill: P.silk, 'font-weight': 700 });
+  var hd = '#111317', gold = '#c9b26b';
+  var els = [
+    { r: g.io, z: 36, col: P.heat, deco: function(f, r){ R(f, { x: r.x + 4, y: r.y + 6, w: r.w - 8, h: r.h - 12 }, { rx: 3, fill: 'none', stroke: P.heat2, 'stroke-width': 1.5 }); S_('line', { x1: r.x + 6, y1: r.y + 20, x2: r.x + r.w - 6, y2: r.y + 60, stroke: K.key === 'A' ? '#e8862a' : '#14958a', 'stroke-width': 2.5 }, f); } },
+    { r: g.vrmT, z: 17, col: P.heat, deco: function(f, r){ for (var x = r.x + 6; x < r.x + r.w - 2; x += 7) S_('line', { x1: x, y1: r.y + 3, x2: x, y2: r.y + r.h - 3, stroke: P.heat2, 'stroke-width': 1.5 }, f); } },
+    { r: g.vrmL, z: 17, col: P.heat, deco: function(f, r){ for (var y = r.y + 6; y < r.y + r.h - 2; y += 7) S_('line', { x1: r.x + 3, y1: y, x2: r.x + r.w - 3, y2: y, stroke: P.heat2, 'stroke-width': 1.5 }, f); } },
+    { r: pad(g.socket, 3), z: 7, col: '#2a2d33', deco: function(f, r){
+      var s = g.socket; R(f, pad(s, -5), { fill: '#3b3220' });
+      for (var a = 0; a < 9; a++) S_('line', { x1: s.x + 8, y1: s.y + 8 + a * 6.5, x2: s.x + s.w - 8, y2: s.y + 8 + a * 6.5, stroke: '#a88a3a', 'stroke-width': 0.8, 'stroke-dasharray': '1 2' }, f);
+      S_('path', { d: 'M' + (s.x - 2) + ',' + (s.y + s.h + 2) + ' l10,0 l-10,-10 Z', fill: '#ffd166' }, f);
+      S_('line', { x1: s.x + s.w + 7, y1: s.y - 2, x2: s.x + s.w + 7, y2: s.y + s.h + 8, stroke: P.heat2, 'stroke-width': 2.5, 'stroke-linecap': 'round' }, f); } },
+    { r: g.pcie16, z: 12, col: P.slot, deco: function(f, r){ S_('line', { x1: r.x + 4, y1: r.y + r.h / 2, x2: r.x + r.w - 4, y2: r.y + r.h / 2, stroke: '#3a3f47', 'stroke-width': 1.2 }, f); R(f, { x: r.x + r.w - 2, y: r.y - 2, w: 9, h: r.h + 4 }, { rx: 2, fill: P.slotEdge }); } },
+    { r: g.pcieX, z: 11, col: P.slot, deco: function(f, r){ S_('line', { x1: r.x + 4, y1: r.y + r.h / 2, x2: r.x + r.w - 4, y2: r.y + r.h / 2, stroke: '#3a3f47', 'stroke-width': 1.2 }, f); } },
+    { r: { x: m.x, y: m.y - 1, w: 9, h: m.h + 2 }, z: 7, col: P.slot },
+    { r: g.chipset, z: 9, col: P.heat, deco: function(f, r){ S_('path', { d: 'M' + (r.x + 10) + ',' + (r.y + 12) + ' l' + (r.w - 20) + ',' + (r.h - 24), stroke: P.heat2, 'stroke-width': 3, 'stroke-linecap': 'round' }, f); } },
+    { r: g.bios, z: 5, col: '#15171b' },
+    { r: g.sata, z: 12, col: '#1d2a4a', deco: function(f, r){ S_('line', { x1: r.x, y1: r.y + r.h / 2, x2: r.x + r.w, y2: r.y + r.h / 2, stroke: '#4b5e8f', 'stroke-width': 2 }, f); } },
+    { r: g.atx, z: 14, col: hd, deco: function(f, r){ pins(f, pad(r, -2), 2, 12, gold); } },
+    { r: g.eps, z: 12, col: hd, deco: function(f, r){ pins(f, pad(r, -2), 4, 2, gold); } },
+    { r: g.fpanel, z: 9, col: hd, deco: function(f, r){ pins(f, pad(r, -2), 5, 2, gold); } },
+    { r: g.cpufan, z: 8, col: '#e9edf1', deco: function(f, r){ pins(f, pad(r, -1), 4, 1, gold); } },
+    { r: g.cmos, z: 6, cmos: true }
+  ];
+  g.dimm.forEach(function(d){ els.push({ r: d, z: 11, col: P.slot, deco: function(f, r){ R(f, { x: r.x - 1, y: r.y - 6, w: r.w + 2, h: 6 }, { rx: 1, fill: P.slotEdge }); R(f, { x: r.x - 1, y: r.y + r.h, w: r.w + 2, h: 6 }, { rx: 1, fill: P.slotEdge }); } }); });
+  els.sort(function(a, c){ return (c.r.x - c.r.y) - (a.r.x - a.r.y); });
+  els.forEach(function(e){
+    if (e.cmos){ cyl(grp, e.r.x + 12, e.r.y + 12, 12, 3, 6, '#c9ced5'); var t = P3(e.r.x + 12, e.r.y + 12, 6); T(grp, t[0], t[1] + 3, '+', { 'text-anchor': 'middle', 'font-size': 9, fill: '#5d646d', 'font-weight': 700 }); return; }
+    box(grp, e.r, 3, e.z, e.col, { rx: 1.5 });
+    if (e.deco) e.deco(fG(grp, e.z), e.r);
+  });
+  return grp;
+}
+
+/* ---------- Komponenten ---------- */
+function drawCPU(p, K, S){
+  var s = pad(K.g.socket, -5), P = K.p;
+  box(p, s, 3, 10, P.cpu, { rx: 4, stroke: '#8d949d' });
+  var f = fG(p, 10);
+  R(f, pad(s, -6), { rx: 3, fill: 'none', stroke: '#aeb4bc', 'stroke-width': 1 });
+  T(f, s.x + s.w / 2, s.y + s.h / 2 + 4, 'CPU', { 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 800, fill: '#5a6270' });
+  S_('path', { d: 'M' + (s.x + 3) + ',' + (s.y + s.h - 3) + ' l9,0 l-9,-9 Z', fill: '#c9a943' }, f);
+  if (S.paste && !S.cooler){
+    var cx = s.x + s.w / 2, cy = s.y + s.h / 2;
+    if (S.paste === 'much') S_('ellipse', { cx: cx, cy: cy, rx: s.w / 2 + 4, ry: s.h / 2 + 2, fill: '#9aa1aa', opacity: 0.95 }, f);
+    else if (S.paste === 'ok') S_('circle', { cx: cx, cy: cy, r: 6, fill: '#9aa1aa', stroke: '#7c838c' }, f);
+    else if (S.paste === 'pins') S_('circle', { cx: cx, cy: cy, r: 3, fill: '#9aa1aa' }, f);
+  }
+}
+function ramRect(K, i){ var d = K.g.dimm[i]; return { x: d.x - 2, y: d.y - 4, w: d.w + 4, h: d.h + 8 }; }
+function drawRAM(p, K, i, defId){
+  var r = ramRect(K, i), P = K.p, A = K.key === 'A', z0 = 6, z1 = 48;
+  box(p, r, z0, z1, A ? '#2a2e35' : '#eef1f4', { left: A ? '#2a2e35' : '#e3e7ec', stroke: A ? '#0b0d10' : '#9aa4b0' });
+  var L = lG(p, r.x);
+  R(L, { x: z0, y: r.y + 2, w: 7, h: r.h - 4 }, { fill: '#2e6b3a' });
+  for (var k = 0; k < 18; k++) R(L, { x: z0, y: r.y + 6 + k * 9, w: 2, h: 5 }, { fill: '#c9a943' });
+  if (A){
+    R(L, { x: z0 + 8, y: r.y + 4, w: z1 - z0 - 10, h: r.h - 8 }, { rx: 2, fill: P.acc });
+    for (var s = 0; s < 5; s++) S_('line', { x1: z0 + 12, y1: r.y + 20 + s * 30, x2: z1 - 4, y2: r.y + 34 + s * 30, stroke: '#c46a17', 'stroke-width': 3 }, L);
+    T(L, (z0 + z1) / 2 + 2, r.y + r.h / 2, 'DDR5', { 'font-size': 9, 'font-weight': 800, fill: '#fff', transform: 'rotate(90 ' + ((z0 + z1) / 2) + ' ' + (r.y + r.h / 2) + ')', 'text-anchor': 'middle' });
+    R(fG(p, z1), { x: r.x + 2, y: r.y + 2, w: r.w - 4, h: r.h - 4 }, { rx: 1, fill: '#c46a17' });
+  } else {
+    R(L, { x: z0 + 8, y: r.y + 4, w: z1 - z0 - 18, h: r.h - 8 }, { rx: 2, fill: '#f6f8fa', stroke: '#c3cad3' });
+    R(L, { x: z1 - 9, y: r.y + 2, w: 8, h: r.h - 4 }, { rx: 2, fill: 'url(#' + defId + 'rgb)' });
+    R(fG(p, z1), { x: r.x + 1, y: r.y + 1, w: r.w - 2, h: r.h - 2 }, { rx: 2, fill: 'url(#' + defId + 'rgb)' });
+  }
+}
+function drawSSD(p, K){
+  var m = K.g.m2, P = K.p, r = { x: m.x + 3, y: m.y - 1, w: m.w - 2, h: m.h + 2 };
+  box(p, r, 7, 10, P.ssd, { stroke: '#000' });
+  var f = fG(p, 10);
+  if (K.key === 'A'){
+    R(f, { x: r.x + 22, y: r.y + 2, w: 26, h: r.h - 4 }, { rx: 1, fill: '#2b2f36' });
+    R(f, { x: r.x + 56, y: r.y + 2, w: 26, h: r.h - 4 }, { rx: 1, fill: '#2b2f36' });
+    R(f, { x: r.x + 90, y: r.y + 2, w: 40, h: r.h - 4 }, { rx: 1, fill: P.acc });
+    T(f, r.x + 110, r.y + r.h - 3.5, 'NVMe', { 'text-anchor': 'middle', 'font-size': 7, 'font-weight': 800, fill: '#fff' });
+  } else {
+    var hs = { x: r.x + 10, y: r.y - 1, w: r.w - 16, h: r.h + 2 };
+    box(p, hs, 10, 17, '#9aa3ad', { stroke: '#6f7882', rx: 2 });
+    var f2 = fG(p, 17); for (var x = hs.x + 6; x < hs.x + hs.w - 4; x += 7) S_('line', { x1: x, y1: hs.y + 2, x2: x, y2: hs.y + hs.h - 2, stroke: '#c9d0d8', 'stroke-width': 2 }, f2);
+  }
+  cyl(p, m.x + m.w - 3, m.y + m.h / 2, 3, 7, 11, '#cfd4da');
+}
+function drawCooler(p, K, defId){
+  var P = K.p, g = K.g;
+  if (K.key === 'A'){
+    box(p, pad(g.socket, -6), 10, 22, '#c9ced5', { stroke: '#7d858f' });
+    [176, 196, 216, 236].forEach(function(x){ var a = P3(x, 140, 20), b = P3(x, 140, 36); S_('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: '#c48a4a', 'stroke-width': 6, 'stroke-linecap': 'round' }, p); });
+    var fin = { x: 158, y: 70, w: 118, h: 140 };
+    box(p, fin, 34, 110, '#b9c0c8', { bottom: '#8f98a2', stroke: '#6f7882' });
+    var B = bG(p, fin.y + fin.h);
+    for (var v = 36; v < 110; v += 3) S_('line', { x1: fin.x + 1, y1: v, x2: fin.x + fin.w - 1, y2: v, stroke: '#6d767f', 'stroke-width': 0.9 }, B);
+    var F = fG(p, 110);
+    R(F, pad(fin, -10), { rx: 6, fill: '#2a2d33' });
+    T(F, fin.x + fin.w / 2, fin.y + fin.h / 2 + 4, 'TOWER', { 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 800, fill: P.acc });
+    [0, 1, 2, 3].forEach(function(i){ S_('circle', { cx: fin.x + 22 + i * 25, cy: fin.y + 18, r: 4.5, fill: '#c48a4a', stroke: '#8a5a2a' }, F); S_('circle', { cx: fin.x + 22 + i * 25, cy: fin.y + fin.h - 18, r: 4.5, fill: '#c48a4a', stroke: '#8a5a2a' }, F); });
+    var fan = { x: 132, y: 76, w: 26, h: 132 };
+    box(p, fan, 38, 106, '#1d2026', { left: '#1d2026', stroke: '#000' });
+    var L = lG(p, fan.x);
+    fan3(L, 72, fan.y + fan.h / 2, 31, 60, '#0e1013', '#59626d', '#2b3039');
+  } else {
+    var pm = g.pump;
+    box(p, pm, 10, 40, P.cooler, { rx: 12, stroke: '#000' });
+    var F2 = fG(p, 40);
+    S_('circle', { cx: pm.x + pm.w / 2, cy: pm.y + pm.h / 2, r: pm.w / 2 - 8, fill: 'none', stroke: 'url(#' + defId + 'rgb)', 'stroke-width': 4 }, F2);
+    T(F2, pm.x + pm.w / 2, pm.y + pm.h / 2 + 4, 'AIO', { 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 800, fill: '#e6ebf2' });
+    var rad = g.rad, rf = { x: rad.x + 4, y: rad.y + rad.h, w: rad.w - 8, h: 24 };
+    box(p, rad, 12, 104, '#26292f', { stroke: '#000' });
+    var RF = fG(p, 104); for (var x = rad.x + 4; x < rad.x + rad.w - 3; x += 4) S_('line', { x1: x, y1: rad.y + 3, x2: x, y2: rad.y + rad.h - 3, stroke: '#45494f', 'stroke-width': 1.2 }, RF);
+    box(p, rf, 14, 102, '#eef1f4', { stroke: '#9aa4b0' });
+    var BF = bG(p, rf.y + rf.h);
+    [rf.x + rf.w * 0.25, rf.x + rf.w * 0.75].forEach(function(cx){ fan3(BF, cx, 58, 62, 40, '#d9dee5', '#aeb6c1', '#eef1f4'); });
+    [[180, 'M'], [204, 'M']].forEach(function(t, i){
+      var a = P3(t[0], pm.y + 4, 36), c1 = P3(t[0] + 10, pm.y - 40, 52), c2 = P3(380 + i * 16, 120, 56), e = P3(392 + i * 16, rf.y + rf.h, 58);
+      S_('path', { d: 'M' + a + ' C' + c1 + ' ' + c2 + ' ' + e, stroke: '#16181c', 'stroke-width': 8, fill: 'none', 'stroke-linecap': 'round' }, p);
+      S_('path', { d: 'M' + a + ' C' + c1 + ' ' + c2 + ' ' + e, stroke: '#3a3d45', 'stroke-width': 2, fill: 'none', 'stroke-dasharray': '3 4' }, p);
+    });
+  }
+}
+function drawGPU(p, K, S){
+  var g = K.g, P = K.p, r = g.gpu, A = K.key === 'A';
+  box(p, r, 4, 98, P.gpu, { rx: 4, stroke: P.gpuEdge, left: shade(P.gpu, -0.15), bottom: A ? '#1f2329' : '#dfe4ea' });
+  var B = bG(p, r.y + r.h);
+  if (A){
+    [r.x + 70, r.x + 175, r.x + 280].forEach(function(cx){ fan3(B, cx, 51, 44, 40, '#111317', '#4c5460', '#2b3039'); });
+  } else {
+    for (var v = 0; v < 8; v++) R(B, { x: r.x + 14 + v * 22, y: 30, w: 12, h: 40 }, { rx: 3, fill: '#c3cad3' });
+    fan3(B, r.x + r.w - 50, 51, 40, 38, '#c7ced6', '#8f98a4', '#e9edf1');
+  }
+  var F = fG(p, 98);
+  if (A){
+    R(F, { x: r.x + 6, y: r.y + r.h - 12, w: r.w - 12, h: 4 }, { rx: 2, fill: P.acc });
+    S_('path', { d: 'M' + (r.x + 40) + ',' + (r.y + 8) + ' l30,40 h120 l20,-30 h80', stroke: '#3c424c', 'stroke-width': 3, fill: 'none' }, F);
+    T(F, r.x + 26, r.y + 34, 'GPU', { 'font-size': 15, 'font-weight': 900, fill: '#e8edf3', 'letter-spacing': '2' });
+  } else {
+    for (var k = 0; k < 7; k++) S_('line', { x1: r.x + 20 + k * 22, y1: r.y + r.h - 8, x2: r.x + 40 + k * 22, y2: r.y + 10, stroke: '#d5dbe2', 'stroke-width': 5 }, F);
+    R(F, { x: r.x + 6, y: r.y + r.h / 2 - 2, w: 150, h: 4 }, { fill: P.acc });
+    T(F, r.x + 190, r.y + 36, 'GPU', { 'font-size': 15, 'font-weight': 900, fill: '#5a6270', 'letter-spacing': '2' });
+  }
+  if (!S.plugs || !S.plugs.gpu){ R(F, g.gpuPwr, { rx: 2, fill: '#111317', stroke: '#555' }); pins(F, pad(g.gpuPwr, -1.5), 8, 2, '#c9b26b'); }
+}
+function drawPSU(p, K, watt){
+  var r = K.g.psu, P = K.p;
+  box(p, r, 8, 112, P.psu, { rx: 4, stroke: K.key === 'A' ? '#000' : '#9aa4b0' });
+  var F = fG(p, 112);
+  R(F, { x: r.x + 22, y: r.y + 18, w: r.w - 70, h: r.h - 36 }, { rx: 4, fill: 'none', stroke: P.psuTxt, 'stroke-width': 1.5 });
+  T(F, r.x + 22 + (r.w - 70) / 2, r.y + r.h / 2 - 2, (watt || 750) + ' W', { 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 800, fill: P.psuTxt });
+  T(F, r.x + 22 + (r.w - 70) / 2, r.y + r.h / 2 + 13, '80 PLUS GOLD', { 'text-anchor': 'middle', 'font-size': 8, 'font-weight': 700, fill: P.psuTxt });
+  for (var i = 0; i < 4; i++) R(F, { x: r.x + r.w - 30, y: r.y + 12 + i * 17, w: 18, h: 11 }, { rx: 2, fill: '#0e1013', stroke: '#555' });
+}
+function drawShroud(p, K){
+  var r = K.g.shroud, P = K.p, ps = K.g.psu;
+  var g = G(p, { 'pointer-events': 'none' });
+  box(g, r, 0, DEP, P.shroud, { noLeft: true, noFront: true, stroke: P.edge });
+  var F = fG(g, DEP), w = { x: ps.x + 4, y: ps.y + 4, w: ps.w - 6, h: ps.h - 10 };
+  S_('path', { d: 'M' + r.x + ',' + r.y + 'h' + r.w + 'v' + r.h + 'h-' + r.w + 'Z M' + w.x + ',' + w.y + 'v' + w.h + 'h' + w.w + 'v-' + w.h + 'Z', fill: P.shroud, stroke: P.edge, 'stroke-width': 1, 'fill-rule': 'evenodd' }, F);
+  R(F, w, { rx: 4, fill: 'none', stroke: P.edge, 'stroke-width': 1.5 });
+  T(F, r.x + 360, r.y + 64, K.key === 'A' ? 'NETZTEIL-ABDECKUNG' : 'PSU-SHROUD', { 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 800, fill: P.edge, opacity: 0.55, 'letter-spacing': '2' });
+}
+function drawFan(p, K, z, dir){
+  var r = K.g[z], P = K.p, B = K.key === 'B';
+  box(p, r, 8, 112, P.fan, { left: P.fan, stroke: B ? '#9aa4b0' : '#000' });
+  var L = lG(p, r.x);
+  fan3(L, 60, r.y + r.h / 2, 50, 58, B ? '#dfe4ea' : '#0e1013', P.fanBlade, P.fanHub);
+  if (dir){
+    var rear = z === 'fan_rear', inward = dir === 'in';
+    var x0 = rear ? r.x + r.w + 6 : r.x - 6, sgn = rear ? 1 : -1, cy = r.y + r.h / 2;
+    var col = inward ? '#2f7fd6' : '#d64545';
+    [cy - 34, cy, cy + 34].forEach(function(yy){
+      var s0 = inward ? x0 : x0 + sgn * 40, e0 = inward ? x0 + sgn * 40 : x0;
+      var a = P3(s0, yy, 60), e = P3(e0, yy, 60), d = e0 > s0 ? 1 : -1;
+      S_('line', { x1: a[0], y1: a[1], x2: e[0] - d * 8, y2: e[1], stroke: col, 'stroke-width': 4, 'stroke-linecap': 'round' }, p);
+      S_('path', { d: 'M' + e[0] + ',' + e[1] + ' l' + (-d * 11) + ',-7 v14 Z', fill: col }, p);
+    });
+  }
+}
+/* Stecker (Box) + Kabel; Kabel enden hinter dem Tray bzw. in der Netzteil-Abdeckung */
+function drawCable(p, K, w){
+  var g = K.g, P = K.p, c = P.cable, B = K.key === 'B';
+  function wire(pts, wd){ var d = 'M' + pts[0] + ' C' + pts[1] + ' ' + pts[2] + ' ' + pts[3]; S_('path', { d: d, stroke: c, 'stroke-width': wd, fill: 'none', 'stroke-linecap': 'round' }, p); S_('path', { d: d, stroke: P.sleeve, 'stroke-width': wd, fill: 'none', 'stroke-dasharray': '1.5 3', opacity: 0.7 }, p); }
+  if (w === 'atx'){
+    var r = pad(g.atx, 1), cy = r.y + r.h / 2;
+    wire([P3(r.x + r.w, cy, 20), P3(r.x + r.w + 26, cy, 22), P3(424, cy, 14), P3(425, cy, 0)], 13);
+    box(p, r, 14, 30, c, { rx: 2 }); pins(fG(p, 30), pad(r, -3), 2, 12, B ? '#c3cad3' : '#2a2d33');
+  } else if (w === 'eps'){
+    var e = pad(g.eps, 1), cx = e.x + e.w / 2;
+    wire([P3(cx, e.y, 18), P3(cx, e.y - 10, 18), P3(cx, 46, 8), P3(cx, 40, 0)], 9);
+    box(p, e, 12, 26, c, { rx: 2 }); pins(fG(p, 26), pad(e, -3), 4, 2, B ? '#c3cad3' : '#2a2d33');
+  } else if (w === 'gpu'){
+    var q = g.gpuPwr, gx = q.x + q.w / 2;
+    wire([P3(gx, q.y + 2, 104), P3(gx + 50, q.y - 10, 104), P3(480, 380, 70), P3(470, g.shroud.y + 10, 60)], 9);
+    box(p, { x: q.x - 1, y: q.y - 1, w: q.w + 2, h: q.h + 2 }, 98, 110, c, { rx: 2 });
+  } else if (w === 'fp'){
+    var f = g.fpanel, cols = ['#d64545', '#111', '#2f7fd6', '#e8e8e8'];
+    cols.forEach(function(col, i){ var a = P3(f.x + 6 + i * 11, f.y + f.h, 13), b = P3(f.x + 30 + i * 6, g.shroud.y + 20, 30); S_('path', { d: 'M' + a + ' Q' + P3(f.x + 10 + i * 10, f.y + 30, 20) + ' ' + b, stroke: col, 'stroke-width': 2, fill: 'none' }, p); });
+    box(p, pad(f, 0.5), 9, 16, '#2a2d33', { rx: 1 });
+  }
+}
+function drawCord(p, K){
+  var r = { x: 14, y: 494, w: 18, h: 30 };
+  var a = P3(14, 509, 78);
+  S_('path', { d: 'M' + a + ' C' + (a[0] - 30) + ',' + (a[1] + 10) + ' -6,520 -6,600', stroke: '#15171b', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round' }, p);
+  box(p, r, 66, 90, '#1c1f24', { rx: 3, stroke: '#000' });
+}
+function drawPanel(p, K, defId){
+  var r = K.g.caseI, F = fG(p, DEP);
+  R(F, r, { rx: 6, fill: 'url(#' + defId + 'glass)', stroke: 'rgba(160,190,230,.85)', 'stroke-width': 3 });
+  S_('path', { d: 'M' + (r.x + 60) + ',' + (r.y + 10) + ' l-50,90 M' + (r.x + 100) + ',' + (r.y + 10) + ' l-80,150 M' + (r.x + r.w - 40) + ',' + (r.y + r.h - 160) + ' l-80,150', stroke: 'rgba(255,255,255,.35)', 'stroke-width': 6, 'stroke-linecap': 'round' }, F);
+  [[r.x + 10, r.y + 10], [r.x + r.w - 10, r.y + 10], [r.x + 10, r.y + r.h - 10], [r.x + r.w - 10, r.y + r.h - 10]].forEach(function(c){ S_('circle', { cx: c[0], cy: c[1], r: 5.5, fill: '#c3c9d0', stroke: '#6c737c' }, F); });
+}
+
+/* Gesamtzeichnung. S = Zustand, opts.comp = Gruppen anklickbar (Entdecken), opts.zones = Ablageflächen */
+function renderPC(svg, key, S, opts){
+  opts = opts || {};
+  clear(svg);
+  var K = { key: key, g: GEO[key], p: PAL[key] };
+  K.g.shroud = K.g.shroud || { x: 38, y: 452, w: 564, h: 114 };
+  var defId = makeDefs(svg);
+  function grp(id){ return opts.comp ? G(svg, { 'class': 'comp' + (opts.sel === id ? ' sel' : ''), 'data-comp': id }) : G(svg, { 'data-part': id }); }
+  drawShell(svg, K, S);
+  if (S.board) drawBoard(svg, K, opts.comp ? { 'class': 'comp' + (opts.sel === 'board' ? ' sel' : ''), 'data-comp': 'board' } : {});
+  if (S.cpu) drawCPU(grp('cpu'), K, S);
+  if (S.ram && S.ram.some(Boolean)){ var rg = grp('ram'); [3, 2, 1, 0].forEach(function(i){ if (S.ram[i]) drawRAM(rg, K, i, defId); }); }
+  if (S.ssd) drawSSD(grp('ssd'), K);
+  if (S.cooler) drawCooler(grp('cooler'), K, defId);
+  if (S.gpu) drawGPU(grp('gpu'), K, S);
+  var cl = ['atx', 'eps', 'fp', 'gpu'].filter(function(w){ return S.plugs && S.plugs[w]; });
+  if (cl.length){ var cg = grp('cables'); cl.forEach(function(w){ drawCable(cg, K, w); }); }
+  if (S.psu) drawPSU(grp('psu'), K, S.psuW);
+  drawShroud(svg, K);
+  var fz = ['fan_f1', 'fan_f2', 'fan_rear'].filter(function(z){ return S.fans && S.fans[z]; });
+  if (fz.length){
+    if (opts.comp){ var fg = grp('fans'); fz.forEach(function(z){ drawFan(fg, K, z, S.fans[z]); }); }
+    else fz.forEach(function(z){ drawFan(G(svg, { 'data-fan': z, style: 'cursor:pointer' }), K, z, S.fans[z]); });
+  }
+  if (S.power) drawCord(grp('power'), K);
+  drawRim(svg, K);
+  if (S.panel) drawPanel(grp('panel'), K, defId);
+  if (opts.zones){
+    var zl = G(svg, {});
+    opts.zones.forEach(function(z){ var b = zoneBox(K, z); poly(zl, hull(pad(b.r, 2), b.z0, b.z1), { 'class': 'zone' + (opts.near === z ? ' near' : ''), 'data-zone': z, 'stroke-linejoin': 'round' }); });
+  }
+  return K;
+}
+function zoneBox(K, z){
+  var g = K.g;
+  if (/^dimm\d$/.test(z)) return { r: ramRect(K, +z.slice(4)), z0: 3, z1: 30 };
+  var m = {
+    psu: [g.psu, 8, 112], board: [g.board, 0, 3], socket: [g.socket, 3, 10], m2: [g.m2, 3, 8], pcie16: [g.pcie16, 3, 12], pcieX: [g.pcieX, 3, 11], sata: [g.sata, 3, 12],
+    fan_rear: [g.fan_rear, 8, 112], fan_f1: [g.fan_f1, 8, 112], fan_f2: [g.fan_f2, 8, 112],
+    p_atx: [g.atx, 3, 14], p_eps: [g.eps, 3, 12], p_gpu: [g.gpuPwr, 98, 100], p_fp: [g.fpanel, 3, 9], p_cpufan: [g.cpufan, 3, 8]
+  }[z];
+  return m ? { r: m[0], z0: m[1], z1: m[2] } : null;
+}
+function zoneRect(K, z){ var b = zoneBox(K, z); return b ? pb(b.r, b.z0, b.z1) : null; }
+function hotRects(K){
+  var g = K.g, d = g.dimm;
+  return [
+    { id: 'socket', r: pb(pad(g.socket, 3), 3, 7) }, { id: 'vrm', r: pb(g.vrmT, 3, 17) }, { id: 'vrm', r: pb(g.vrmL, 3, 17) },
+    { id: 'dimm', r: pb({ x: d[0].x - 2, y: d[0].y - 6, w: d[3].x + d[3].w - d[0].x + 4, h: d[0].h + 12 }, 3, 11) },
+    { id: 'atx', r: pb(g.atx, 3, 14) }, { id: 'eps', r: pb(g.eps, 3, 12) }, { id: 'cpufan', r: pb(g.cpufan, 3, 8) }, { id: 'pcie16', r: pb(g.pcie16, 3, 12) }, { id: 'pcieX', r: pb(g.pcieX, 3, 11) },
+    { id: 'm2', r: pb(g.m2, 3, 7) }, { id: 'chipset', r: pb(g.chipset, 3, 9) }, { id: 'sata', r: pb(g.sata, 3, 12) }, { id: 'cmos', r: pb(g.cmos, 3, 6) }, { id: 'bios', r: pb(g.bios, 3, 5) },
+    { id: 'io', r: pb(g.io, 3, 36) }, { id: 'fpanel', r: pb(g.fpanel, 3, 9) }
+  ];
+}
+
+/* Helfer für Symbolbilder */
+/* ---------- Kleine Symbolbilder für Teilekarten und Bildfragen ---------- */
+function icon(kind, key){
+  var P = PAL[key || 'A'];
+  var svg = S_('svg', { viewBox: '0 0 120 90', 'aria-hidden': 'true' });
+  var id = makeDefs(svg), B = key === 'B';
+  function rr(x, y, w, h, a){ return R(svg, { x: x, y: y, w: w, h: h }, a); }
+  switch (kind){
+    case 'psu': case 'psuWeak':
+      rr(12, 18, 96, 58, { rx: 6, fill: P.psu, stroke: B ? '#9aa4b0' : '#000', 'stroke-width': 2 });
+      S_('circle', { cx: 48, cy: 47, r: 22, fill: 'none', stroke: P.psuTxt, 'stroke-width': 2 }, svg);
+      for (var i = -2; i <= 2; i++) S_('line', { x1: 28, y1: 47 + i * 8, x2: 68, y2: 47 + i * 8, stroke: P.psuTxt, 'stroke-width': 1.5 }, svg);
+      for (var j = 0; j < 3; j++) rr(84, 26 + j * 15, 16, 10, { rx: 2, fill: '#0e1013' });
+      if (kind === 'psuWeak') T(svg, 92, 82, '400W', { 'text-anchor': 'middle', 'font-size': 9, 'font-weight': 800, fill: '#d64545' });
+      break;
+    case 'board':
+      rr(14, 6, 92, 80, { rx: 4, fill: P.pcb, stroke: P.pcbLine, 'stroke-width': 2 });
+      rr(44, 18, 22, 22, { fill: '#3b3220', stroke: P.heat2 }); for (var d = 0; d < 4; d++) rr(74 + d * 6, 12, 4, 44, { fill: P.slot, stroke: P.slotEdge, 'stroke-width': .6 });
+      rr(24, 62, 64, 4, { fill: P.slot, stroke: P.slotEdge, 'stroke-width': .6 }); rr(80, 70, 18, 12, { rx: 2, fill: P.heat }); rr(16, 12, 10, 34, { fill: P.heat });
+      break;
+    case 'cpu':
+      rr(30, 15, 60, 60, { rx: 4, fill: '#2e6b3a' }); rr(34, 19, 52, 52, { rx: 5, fill: '#c5cad1', stroke: '#8d949d', 'stroke-width': 1.5 });
+      T(svg, 60, 50, 'CPU', { 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: '#5a6270' }); S_('path', { d: 'M36,69 l9,0 l-9,-9 Z', fill: '#c9a943' }, svg);
+      break;
+    case 'ram': case 'ram4': case 'sodimm':
+      var w = kind === 'sodimm' ? 70 : 104, x0 = (120 - w) / 2;
+      rr(x0, 28, w, 30, { rx: 2, fill: '#2e6b3a' });
+      if (kind === 'ram' && B) rr(x0, 22, w, 32, { rx: 3, fill: P.ram, stroke: '#aeb6c1' }), rr(x0, 20, w, 4, { fill: 'url(#' + id + 'rgb)' });
+      else if (kind === 'ram') rr(x0, 22, w, 32, { rx: 3, fill: P.acc, stroke: '#111' });
+      else for (var c = 0; c < (kind === 'sodimm' ? 4 : 8); c++) rr(x0 + 5 + c * 12, 33, 9, 14, { fill: '#15171b' });
+      for (var k = 0; k < w - 6; k += 3) rr(x0 + 3 + k, 58, 1.6, 6, { fill: '#c9a943' });
+      var notch = kind === 'ram4' ? x0 + w * 0.42 : kind === 'sodimm' ? x0 + w * 0.42 : x0 + w * 0.5;
+      S_('rect', { x: notch - 2, y: 58, width: 4, height: 7, style: 'fill:var(--card2)' }, svg);
+      T(svg, 60, 80, kind === 'ram4' ? 'DDR4' : kind === 'sodimm' ? 'SO-DIMM' : 'DDR5', { 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 800, style: 'fill:var(--muted)' });
+      break;
+    case 'cooler':
+      rr(26, 14, 56, 64, { rx: 3, fill: P.cooler, stroke: '#6f7882' }); for (var y = 18; y < 76; y += 4) S_('line', { x1: 28, y1: y, x2: 80, y2: y, stroke: P.fin }, svg);
+      rr(82, 18, 14, 56, { rx: 3, fill: P.fan, stroke: '#000' }); for (var h2 = 0; h2 < 3; h2++) S_('path', { d: 'M' + (38 + h2 * 14) + ',76 V10', stroke: '#c48a4a', 'stroke-width': 3, 'stroke-linecap': 'round' }, svg);
+      break;
+    case 'aio':
+      S_('path', { d: 'M48,52 C48,30 60,20 70,16 M64,52 C66,34 80,24 90,16', stroke: '#16181c', 'stroke-width': 6, fill: 'none', 'stroke-linecap': 'round' }, svg);
+      rr(20, 6, 92, 14, { rx: 3, fill: P.cooler || '#1e2026' }); for (var x = 24; x < 108; x += 4) S_('line', { x1: x, y1: 10, x2: x, y2: 18, stroke: '#3a3d45' }, svg);
+      rr(36, 48, 40, 36, { rx: 10, fill: '#1e2026' }); S_('circle', { cx: 56, cy: 66, r: 12, fill: 'none', stroke: 'url(#' + id + 'rgb)', 'stroke-width': 3.5 }, svg);
+      break;
+    case 'ssd': case 'm2sata':
+      rr(6, 34, 108, 22, { rx: 2, fill: P.ssd }); rr(8, 36, 6, 18, { fill: '#c9a943' }); rr(24, 38, 22, 14, { fill: '#2b2f36' }); rr(52, 38, 22, 14, { fill: '#2b2f36' }); rr(80, 37, 28, 16, { rx: 2, fill: B ? '#14958a' : '#e8862a' });
+      S_('circle', { cx: 110, cy: 45, r: 3, fill: '#cfd4da' }, svg);
+      T(svg, 60, 76, 'M.2 2280', { 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 800, style: 'fill:var(--muted)' });
+      break;
+    case 'ssd25':
+      rr(26, 12, 68, 66, { rx: 5, fill: B ? '#dfe4ea' : '#3a3f48', stroke: '#6c737c', 'stroke-width': 1.5 }); rr(36, 26, 48, 22, { rx: 3, fill: B ? '#14958a' : '#e8862a' });
+      T(svg, 60, 66, '2,5″ SATA', { 'text-anchor': 'middle', 'font-size': 9, 'font-weight': 800, fill: B ? '#3a3f48' : '#e6ebf2' }); rr(30, 76, 26, 6, { fill: '#c9a943' });
+      break;
+    case 'hdd':
+      rr(18, 10, 84, 72, { rx: 5, fill: '#8f98a3', stroke: '#5d646d', 'stroke-width': 1.5 }); S_('circle', { cx: 56, cy: 42, r: 24, fill: '#b9c0c8', stroke: '#6c737c' }, svg); S_('circle', { cx: 56, cy: 42, r: 5, fill: '#6c737c' }, svg);
+      S_('path', { d: 'M92,70 L64,46', stroke: '#2a2d33', 'stroke-width': 4, 'stroke-linecap': 'round' }, svg); T(svg, 60, 88, '3,5″ HDD', { 'text-anchor': 'middle', 'font-size': 9, 'font-weight': 800, style: 'fill:var(--muted)' });
+      break;
+    case 'gpu': case 'gpuLong': case 'gpuHungry':
+      rr(8, 26, 8, 48, { fill: '#c3c9d0' }); rr(16, 70, 60, 6, { fill: '#c9a943' });
+      if (B){ rr(16, 22, 98, 48, { rx: 6, fill: P.gpu, stroke: P.gpuEdge, 'stroke-width': 1.5 }); for (var s2 = 0; s2 < 4; s2++) S_('line', { x1: 24 + s2 * 14, y1: 62, x2: 34 + s2 * 14, y2: 30, stroke: '#d5dbe2', 'stroke-width': 4 }, svg); S_('circle', { cx: 92, cy: 46, r: 17, fill: '#c7ced6' }, svg); fanBlades(svg, 92, 46, 15, '#8f98a4', '#e9edf1'); }
+      else { rr(16, 22, 98, 48, { rx: 7, fill: P.gpu, stroke: P.gpuEdge, 'stroke-width': 1.5 }); for (var f = 0; f < 3; f++){ S_('circle', { cx: 34 + f * 31, cy: 46, r: 14, fill: '#1a1d22' }, svg); fanBlades(svg, 34 + f * 31, 46, 12, '#4c5460', '#2b3039'); } }
+      break;
+    case 'fan':
+      rr(22, 8, 76, 76, { rx: 8, fill: P.fan, stroke: B ? '#9aa4b0' : '#000', 'stroke-width': 2 }); S_('circle', { cx: 60, cy: 46, r: 34, fill: B ? '#dfe4ea' : '#111' }, svg); fanBlades(svg, 60, 46, 31, P.fanBlade, P.fanHub);
+      break;
+    case 'plug24': case 'plug8': case 'plug16': case 'plugfp':
+      var cfg = { plug24: [12, 2, 58], plug8: [4, 2, 26], plug16: [8, 2, 40], plugfp: [5, 2, 30] }[kind];
+      var pw = cfg[2], px = (120 - pw) / 2;
+      for (var wv = 0; wv < 4; wv++) S_('path', { d: 'M' + (px + 6 + wv * (pw - 12) / 3) + ',90 C' + (px + 6 + wv * (pw - 12) / 3) + ',70 ' + (60) + ',70 ' + (px + 6 + wv * (pw - 12) / 3) + ',52', stroke: kind === 'plugfp' ? ['#d64545', '#111', '#2f7fd6', '#e8e8e8'][wv] : (B ? '#d7dce2' : '#15171b'), 'stroke-width': kind === 'plugfp' ? 2 : 5, fill: 'none' }, svg);
+      rr(px, 20, pw, 32, { rx: 3, fill: B ? '#f4f6f8' : '#0e1013', stroke: B ? '#9aa4b0' : '#555', 'stroke-width': 1.5 });
+      var cw = (pw - 6) / cfg[0];
+      for (var a = 0; a < cfg[0]; a++) for (var b = 0; b < cfg[1]; b++) rr(px + 3 + a * cw + 1, 24 + b * 13, cw - 2, 10, { rx: 1, fill: B ? '#c3cad3' : '#2a2d33' });
+      if (kind === 'plug16') for (var q = 0; q < 4; q++) rr(px + 6 + q * 8, 12, 5, 6, { fill: B ? '#c3cad3' : '#2a2d33' });
+      rr(px + pw / 2 - 6, 14, 12, 6, { rx: 1, fill: B ? '#c3cad3' : '#2a2d33' });
+      break;
+  }
+  return svg;
+}
+
+/* ================== ① Entdecken: PC zerlegen ================== */
+var EXP = { S: null, removed: [], sel: null, view: 'case', hotSel: null, busy: false };
+function fullState(){
+  return { power: 1, panel: 1, psu: 1, psuW: 750, board: 1, cpu: 1, paste: 0, ram: [0, 1, 0, 1], cooler: 1, ssd: 1, gpu: 1,
+    fans: { fan_rear: 'out', fan_f1: 'in', fan_f2: 'in' }, plugs: { atx: 1, eps: 1, gpu: 1, fp: 1 } };
+}
+function expRemove(S, id){
+  if (id === 'fans') S.fans = { fan_rear: null, fan_f1: null, fan_f2: null };
+  else if (id === 'cables') S.plugs = { atx: 0, eps: 0, gpu: 0, fp: 0 };
+  else if (id === 'ram') S.ram = [0, 0, 0, 0];
+  else S[id] = 0;
+}
+function expBlockers(id){ return EXP_DEPS[id].filter(function(d){ return EXP.removed.indexOf(d) < 0; }); }
+
+function expInit(){
+  EXP.S = fullState(); EXP.removed = []; EXP.sel = null; EXP.view = 'case'; EXP.hotSel = null;
+  $('#expSvg').addEventListener('click', expClick);
+  $('#expViewCase').onclick = function(){ EXP.view = 'case'; expRender(); };
+  $('#expViewBoard').onclick = function(){ if (EXP.S.board) return; EXP.view = 'board'; expRender(); };
+  $('#expReset').onclick = function(){ EXP.S = fullState(); EXP.removed = []; EXP.sel = null; EXP.hotSel = null; EXP.view = 'case'; expRender(); expInfo(); };
+  expRender(); expInfo();
+}
+function expClick(ev){
+  if (EXP.busy) return;
+  var t = ev.target;
+  if (EXP.view === 'board'){
+    var h = t.closest ? t.closest('[data-hot]') : null;
+    if (!h) return;
+    EXP.hotSel = h.getAttribute('data-hot');
+    if ((STORE.hs || (STORE.hs = [])).indexOf(EXP.hotSel) < 0){ STORE.hs.push(EXP.hotSel); save(); }
+    expRender(); expInfo(); return;
+  }
+  var c = t.closest ? t.closest('[data-comp]') : null;
+  EXP.sel = c ? c.getAttribute('data-comp') : null;
+  if (EXP.sel && STORE.seen.indexOf(EXP.sel) < 0){ STORE.seen.push(EXP.sel); save(); }
+  expRender(); expInfo();
+}
+function expTake(id){
+  var bl = expBlockers(id);
+  if (bl.length){ expInfo(); return; }
+  var node = $('#expSvg [data-comp="' + id + '"]');
+  EXP.busy = true;
+  function done(){
+    expRemove(EXP.S, id); EXP.removed.push(id); EXP.sel = null; EXP.busy = false;
+    if (id === 'board'){ EXP.view = 'board'; }
+    if (EXP.removed.length === EXP_ORDER.length && !STORE.expDone){ STORE.expDone = true; save(); }
+    expRender(); expInfo(id);
+  }
+  if (node){
+    node.classList.add('fade');
+    var dx = (id === 'power') ? -60 : (id === 'fans' ? 0 : 0);
+    requestAnimationFrame(function(){ node.style.transform = 'translate(' + dx + 'px,-46px)'; node.style.opacity = '0'; });
+    setTimeout(done, 400);
+  } else done();
+}
+function expRender(){
+  var svg = $('#expSvg');
+  if (EXP.view === 'case') renderPC(svg, 'A', EXP.S, { comp: true, sel: EXP.sel });
+  else benchRender(svg);
+  var n = EXP.removed.length, hs = (STORE.hs || []).length;
+  $('#expBar').style.width = Math.round(100 * (n / EXP_ORDER.length * 0.7 + hs / HOT_ORDER.length * 0.3)) + '%';
+  $('#expStat').textContent = 'Ausgebaut: ' + n + ' / ' + EXP_ORDER.length + ' · Mainboard-Details entdeckt: ' + hs + ' / ' + HOT_ORDER.length;
+  var vb = $('#expViewBoard');
+  vb.disabled = !!EXP.S.board; vb.textContent = EXP.S.board ? '🔒 Mainboard erkunden' : '🔍 Mainboard erkunden';
+  vb.classList.toggle('active', EXP.view === 'board'); $('#expViewCase').classList.toggle('active', EXP.view === 'case');
+  expLeft(); expTable();
+}
+function benchRender(svg){ withKZ(BENCH_KZ, function(){ benchRender0(svg); }); }
+function benchRender0(svg){
+  clear(svg);
+  var K = { key: 'A', g: GEO.A, p: PAL.A }, b = pb(K.g.board, 0, 36);
+  var s = Math.min(620 / b.w, 570 / b.h), tx = 332 - (b.x + b.w / 2) * s, ty = 282 - (b.y + b.h / 2) * s;
+  var g = G(svg, { transform: 'translate(' + tx + ',' + ty + ') scale(' + s + ')' });
+  drawBoard(g, K);
+  hotRects(K).forEach(function(h){
+    var seen = (STORE.hs || []).indexOf(h.id) >= 0;
+    R(g, pad(h.r, 3), { rx: 3, 'class': 'hot' + (seen ? ' seen' : '') + (EXP.hotSel === h.id ? ' cur' : ''), 'data-hot': h.id });
+  });
+  (STORE.hs || []).forEach(function(id){
+    var r = hotRects(K).filter(function(h){ return h.id === id; })[0]; if (!r) return;
+    var below = id === 'io', lx = r.r.x + r.r.w / 2, ly = below ? r.r.y + r.r.h + 10 : r.r.y - 4;
+    T(g, lx, ly, HOT[id].n.split(' (')[0], { 'class': 'lbl', 'text-anchor': 'middle', style: 'font-size:7.5px;stroke-width:2.5px' });
+  });
+}
+function infoCard(box, I, extra, mid){
+  var h = '<h3><span class="dot" style="background:' + CAT[I.cat] + '"></span>' + esc(I.name) + '</h3>';
+  h += '<p class="lead">' + esc(I.lead) + '</p>' + (mid ? extra : '') + '<ul>' + I.facts.map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>';
+  h += '<div>' + I.chips.map(function(c){ return '<span class="chip">' + esc(c) + '</span>'; }).join('') + '</div>';
+  h += '<div class="good"><b>💡 Gut zu wissen</b>' + esc(I.good) + '</div>';
+  box.innerHTML = (mid ? '' : (extra || '')) + h;
+}
+function expInfo(justRemoved){
+  var box = $('#expInfo');
+  if (EXP.view === 'board'){
+    if (!EXP.hotSel){ box.innerHTML = '<h3>🔍 Mainboard auf der Werkbank</h3><p class="lead">Das Mainboard ist ausgebaut. Tippe seine Bauteile und Anschlüsse an – erkannte Stellen werden beschriftet.</p><div class="msg">Tipp: Hier steckten vorher CPU, RAM, SSD, Grafikkarte und die Stromkabel. Findest du alle Plätze wieder?</div>' + (justRemoved ? '<div class="msg ok">✅ Mainboard ausgebaut – das Gehäuse ist jetzt leer.</div>' : ''); return; }
+    var hh = HOT[EXP.hotSel];
+    box.innerHTML = '<h3><span class="dot" style="background:' + CAT.board + '"></span>' + esc(hh.n) + '</h3><p class="lead">' + esc(hh.d) + '</p>' +
+      ((STORE.hs || []).length === HOT_ORDER.length ? '<div class="msg ok">🎉 Du hast alle ' + HOT_ORDER.length + ' Details des Mainboards entdeckt!</div>' : '<div class="msg">Noch ' + (HOT_ORDER.length - (STORE.hs || []).length) + ' Details zu entdecken.</div>');
+    return;
+  }
+  if (!EXP.sel){
+    var h = '<h3>🔧 So geht’s</h3><p class="lead">Klicke ein Bauteil im Gehäuse an. Rechts erscheint sein Steckbrief – danach kannst du es ausbauen.</p>';
+    h += '<div class="msg">💡 Wie im echten Leben gilt: Manche Teile kommen erst heraus, wenn andere schon draußen sind. Fang mit der Sicherheit an!</div>';
+    if (justRemoved) h = '<div class="msg ok">✅ ' + esc(INFO[justRemoved].name) + ' ausgebaut.</div>' + h;
+    if (EXP.removed.length === EXP_ORDER.length) h = '<div class="msg ok">🎉 Geschafft – der PC ist komplett zerlegt! Erkunde jetzt das Mainboard auf der Werkbank und wechsle danach zu ② Üben.</div>' + h;
+    box.innerHTML = h; return;
+  }
+  var id = EXP.sel, I = INFO[id], bl = expBlockers(id);
+  var top = '';
+  if (bl.length) top = '<div class="msg warn">⛔ Noch nicht ausbaubar: ' + esc(EXP_WHY[id] || '') + '<br><span class="small">Zuerst: ' + bl.map(function(b){ return esc(INFO[b].name); }).join(', ') + '</span></div>';
+  var verb = id === 'power' ? '🔌 Netzkabel ziehen' : id === 'panel' ? '🪟 Seitenteil abnehmen' : id === 'cables' ? '🔧 Stecker abziehen' : '🔧 Ausbauen';
+  top += '<div class="btnrow" style="margin:0 0 10px"><button class="primary" id="expTake"' + (bl.length ? ' disabled' : '') + '>' + verb + '</button></div>';
+  infoCard(box, I, top, true);
+  var b = $('#expTake'); if (b) b.onclick = function(){ expTake(id); };
+}
+function expLeft(){
+  var box = $('#expLeft');
+  var h = '<div class="subh">Auftrag</div><p class="small" style="margin:0 0 8px">Zerlege den PC Stück für Stück und lerne dabei jedes Bauteil kennen. Achte auf die Reihenfolge!</p>';
+  h += '<div class="subh">Werkbank (' + EXP.removed.length + '/' + EXP_ORDER.length + ')</div>';
+  if (!EXP.removed.length) h += '<p class="small muted">Noch nichts ausgebaut.</p>';
+  h += EXP.removed.map(function(id){ return '<button class="small" style="display:flex;gap:8px;align-items:center;width:100%;margin-bottom:5px;text-align:left" data-show="' + id + '"><span class="dot" style="background:' + CAT[INFO[id].cat] + '"></span>' + esc(INFO[id].name) + '</button>'; }).join('');
+  box.innerHTML = h;
+  $$('[data-show]', box).forEach(function(b){ b.onclick = function(){ var id = b.getAttribute('data-show'); EXP.view = 'case'; EXP.sel = null; expRender(); infoCard($('#expInfo'), INFO[id], '<div class="msg">📦 Liegt auf der Werkbank.</div>'); }; });
+}
+function expTable(){
+  var h = '<table class="cmp"><thead><tr><th>Komponente</th><th>Aufgabe</th><th>Anschluss / Steckplatz</th><th>Typische Kennzahlen</th></tr></thead><tbody>';
+  EXP_ORDER.forEach(function(id){
+    var I = INFO[id], seen = STORE.seen.indexOf(id) >= 0;
+    h += '<tr><td><span class="dot" style="background:' + CAT[I.cat] + ';margin-right:6px"></span><b>' + esc(I.name) + '</b></td>';
+    if (seen) h += '<td>' + esc(I.row[0]) + '</td><td>' + esc(I.row[1]) + '</td><td>' + esc(I.row[2]) + '</td>';
+    else h += '<td class="unk" colspan="3">❓ noch nicht untersucht – klick das Bauteil im PC an</td>';
+    h += '</tr>';
+  });
+  $('#expTable').innerHTML = h + '</tbody></table>';
+}
+
+/* ================== Bau-Engine (Üben & Kompetenznachweis) ================== */
+var CPUS = {
+  AM5: { name: 'AMD Ryzen 7 9700X', specs: ['Sockel AM5', '8 Kerne / 16 Threads, bis 5,5 GHz', '65 W TDP'] },
+  AM4: { name: 'AMD Ryzen 7 5700X', specs: ['Sockel AM4', '8 Kerne / 16 Threads, bis 4,6 GHz', '65 W TDP'] },
+  LGA1851: { name: 'Intel Core Ultra 7 265K', specs: ['Sockel LGA1851', '20 Kerne (8P + 12E), bis 5,5 GHz', '125 W Basisleistung'] },
+  LGA1700: { name: 'Intel Core i5-14600K', specs: ['Sockel LGA1700', '14 Kerne (6P + 8E), bis 5,3 GHz', '125 W Basisleistung'] }
+};
+var REC2POW = { 550: 200, 650: 250, 750: 300, 850: 360, 1000: 450, 1200: 575 };
+function genKit(key){
+  var sock = pick(['AM5', 'LGA1851']), chip = sock === 'AM5' ? 'B850' : 'B860';
+  var maxLen = key === 'A' ? pick([320, 340, 360]) : pick([300, 320, 330]);
+  var W = pick([650, 750, 850]);
+  var K = { key: key, sock: sock, chip: chip, maxLen: maxLen, W: W, items: [] };
+  function add(o){ K.items.push(o); return o; }
+  add({ id: 'psu_ok', cat: 'psu', ok: true, icon: 'psu', name: 'ATX-Netzteil ' + W + ' W', specs: ['80 PLUS Gold, ATX 3.1', '24-Pin, 8-Pin EPS, 1 × 12V-2x6'] });
+  add({ id: 'psu_bad', cat: 'psu', ok: false, icon: 'psuWeak', name: 'ATX-Netzteil 400 W', specs: ['80 PLUS Bronze, ältere Bauart', 'kein 12V-2x6- oder PCIe-Stecker'],
+    reason: 'Mit 400 W und ohne Grafikkarten-Stromstecker kann dieses Netzteil die Grafikkarte aus dem Auftrag nicht versorgen.' });
+  add({ id: 'board', cat: 'board', ok: true, icon: 'board', name: (key === 'A' ? 'ATX' : 'Micro-ATX') + '-Mainboard ' + chip, specs: ['Sockel ' + sock, '4 × DDR5-DIMM, M.2, PCIe 5.0 x16'] });
+  var wrong = sock === 'AM5' ? ['AM4', 'LGA1851'] : ['LGA1700', 'AM5'];
+  add({ id: 'cpu_ok', cat: 'cpu', ok: true, icon: 'cpu', name: CPUS[sock].name, specs: CPUS[sock].specs });
+  wrong.forEach(function(w, i){
+    var why = (w === 'AM4') ? 'Sockel AM4 passt nicht in AM5 – AM4-CPUs haben sogar die Pins an der CPU, AM5 nutzt LGA.'
+      : (w === 'LGA1700') ? 'LGA1700 ist der Vorgänger-Sockel: ähnlich groß, aber anders belegt und codiert – passt nicht in LGA1851.'
+      : 'Sockel ' + w + ' gehört zu einem anderen Hersteller – passt nicht in ' + sock + '.';
+    add({ id: 'cpu_b' + i, cat: 'cpu', ok: false, icon: 'cpu', name: CPUS[w].name, specs: CPUS[w].specs, reason: why });
+  });
+  add({ id: 'ram_ok', cat: 'ram', ok: true, icon: 'ram', n: 2, name: '2 × 16 GB DDR5-6000', specs: ['DIMM, 288-polig', 'Kit für Dual-Channel'] });
+  add({ id: 'ram_b1', cat: 'ram', ok: false, icon: 'ram4', name: '2 × 16 GB DDR4-3200', specs: ['DIMM, 288-polig'], reason: 'DDR4 passt nicht in DDR5-Slots – die Kerbe sitzt an anderer Stelle (mechanische Codierung).' });
+  add({ id: 'ram_b2', cat: 'ram', ok: false, icon: 'sodimm', name: '2 × 16 GB DDR5-5600 SO-DIMM', specs: ['262-polig, Notebook-Format'], reason: 'SO-DIMM ist das kürzere Notebook-Format – ein Desktop-Mainboard braucht DIMM-Module.' });
+  add({ id: 'cooler', cat: 'cooler', ok: true, icon: key === 'A' ? 'cooler' : 'aio', name: key === 'A' ? 'Tower-Luftkühler' : 'AIO-Wasserkühlung 280 mm', specs: key === 'A' ? ['120-mm-Lüfter, 4 Heatpipes', 'für AM5 und LGA1851'] : ['Pumpe + Radiator (oben im Gehäuse)', 'für AM5 und LGA1851'] });
+  add({ id: 'ssd_ok', cat: 'ssd', ok: true, icon: 'ssd', name: 'NVMe-SSD 1 TB', specs: ['M.2 2280, PCIe 4.0 x4', 'bis 7.000 MB/s'] });
+  add({ id: 'ssd_b1', cat: 'ssd', ok: false, icon: 'ssd25', name: '2,5″-SATA-SSD 1 TB', specs: ['SATA-Daten + SATA-Strom', 'bis 550 MB/s'], reason: 'Eine 2,5″-SATA-SSD passt nicht in den M.2-Steckplatz – sie bräuchte SATA-Kabel und einen Laufwerksplatz. Der Auftrag verlangt NVMe im M.2-Slot.' });
+  add({ id: 'ssd_b2', cat: 'ssd', ok: false, icon: 'hdd', name: '3,5″-Festplatte 4 TB', specs: ['SATA, 7.200 U/min', '≈ 250 MB/s'], reason: 'Eine Festplatte (HDD) arbeitet mechanisch, ist langsam und passt nicht in den M.2-Steckplatz.' });
+  var okRec = pick([W - 100, W].filter(function(x){ return x >= 550; })), okLen = maxLen - pick([22, 38, 55]);
+  var longLen = maxLen + pick([12, 18, 26]), hRec = W === 850 ? pick([1000, 1200]) : pick([850, 1000]), hLen = maxLen - pick([30, 60]);
+  var gl = shuffle(['A', 'B', 'C']);
+  function gspec(len, rec){ return ['Länge ' + len + ' mm', 'Leistung ' + REC2POW[rec] + ' W', 'empf. Netzteil ' + rec + ' W', '1 × 12V-2x6']; }
+  add({ id: 'gpu_ok', cat: 'gpu', ok: true, icon: 'gpu', name: 'Grafikkarte ' + gl[0] + ' (' + pick([12, 16]) + ' GB GDDR7)', specs: gspec(okLen, okRec), len: okLen, rec: okRec });
+  add({ id: 'gpu_long', cat: 'gpu', ok: false, icon: 'gpuLong', name: 'Grafikkarte ' + gl[1] + ' (16 GB GDDR7)', specs: gspec(longLen, okRec),
+    reason: 'Mit ' + longLen + ' mm ist die Karte länger als die erlaubten ' + maxLen + ' mm – sie passt nicht ins Gehäuse.' });
+  add({ id: 'gpu_hungry', cat: 'gpu', ok: false, icon: 'gpuHungry', name: 'Grafikkarte ' + gl[2] + ' (32 GB GDDR7)', specs: gspec(hLen, hRec),
+    reason: 'Empfohlen sind ' + hRec + ' W, das Netzteil laut Auftrag hat nur ' + W + ' W – unter Last drohen Abstürze oder Abschalten.' });
+  add({ id: 'fans', cat: 'fan', ok: true, icon: 'fan', n: 3, name: 'Gehäuselüfter 120 mm (3 ×)', specs: ['4-Pin PWM'] });
+  add({ id: 'plug_atx', cat: 'plug_atx', ok: true, icon: 'plug24', name: 'ATX-Stromstecker (24-Pin)', specs: ['vom Netzteil'], tname: 'Stecker, 24-polig' });
+  add({ id: 'plug_eps', cat: 'plug_eps', ok: true, icon: 'plug8', name: 'EPS12V-Stecker (8-Pin, 4+4)', specs: ['vom Netzteil'], tname: 'Stecker, 8-polig (4+4)' });
+  add({ id: 'plug_gpu', cat: 'plug_gpu', ok: true, icon: 'plug16', name: '12V-2x6-Stecker (16-Pin)', specs: ['vom Netzteil'], tname: 'Stecker, 16-polig (12+4)' });
+  add({ id: 'plug_fp', cat: 'plug_fp', ok: true, icon: 'plugfp', name: 'Front-Panel-Kabel', specs: ['Power-SW, Reset, LEDs'], tname: 'Kabelsatz, Einzelstecker 2-polig' });
+  return K;
+}
+function auftragHTML(kit){
+  return '<div class="auftrag"><b>📋 Kundenauftrag</b><ul>' +
+    '<li>Mainboard: ' + (kit.key === 'A' ? 'ATX' : 'Micro-ATX') + ', Chipsatz ' + kit.chip + ', <b style="display:inline">Sockel ' + kit.sock + '</b>, 4 × DDR5-DIMM</li>' +
+    '<li>Gehäuse: ' + (kit.key === 'A' ? 'Midi-Tower' : 'kompakt') + ', Grafikkarten bis <b style="display:inline">' + kit.maxLen + ' mm</b></li>' +
+    '<li>Netzteil: ' + kit.W + ' W, muss die Grafikkarte versorgen</li>' +
+    '<li>RAM: 32 GB DDR5, Dual-Channel</li><li>Systemlaufwerk: NVMe-SSD im M.2-Slot</li></ul></div>';
+}
+function emptyState(W){
+  return { power: 0, panel: 0, psu: 0, psuW: W, board: 0, cpu: 0, paste: 0, ram: [0, 0, 0, 0], cooler: 0, ssd: 0, gpu: 0,
+    fans: { fan_rear: null, fan_f1: null, fan_f2: null }, plugs: { atx: 0, eps: 0, gpu: 0, fp: 0 } };
+}
+var PLK = { psu: 'pl_psu', board: 'pl_board', cpu: 'pl_cpu', ram: 'pl_ram', cooler: 'pl_cooler', ssd: 'pl_ssd', gpu: 'pl_gpu', fan: 'pl_fans', plug_atx: 'pl_atx', plug_eps: 'pl_eps', plug_gpu: 'pl_pgpu', plug_fp: 'pl_fp' };
+var WZ = { psu: 'Das Netzteil gehört in den Netzteilschacht unten links unter der Abdeckung.', board: 'Das Mainboard kommt auf die Abstandshalter (goldene Punkte).',
+  cpu: 'Die CPU gehört in den quadratischen Sockel.', ram: 'RAM-Module gehören in die langen, schmalen DIMM-Slots rechts neben dem Sockel.', cooler: 'Der Kühler sitzt direkt auf der CPU im Sockel.',
+  ssd: 'Die NVMe-SSD gehört in den M.2-Steckplatz.', gpu: 'Die Grafikkarte gehört in den langen, obersten PCIe-x16-Slot – nicht in den kurzen PCIe-Slot darunter.',
+  fan: 'Gehäuselüfter kommen an die Lüfterplätze vorne und hinten.', plug_atx: 'Der 24-polige Stecker gehört an den langen Anschluss am rechten Mainboard-Rand.',
+  plug_eps: 'Der 8-Pin-EPS-Stecker versorgt die CPU – Anschluss oben links am Mainboard.', plug_gpu: 'Der 16-polige 12V-2x6-Stecker gehört an die Grafikkarte.',
+  plug_fp: 'Die Front-Panel-Kabel gehören an den Header F_PANEL unten rechts.' };
+var TARGETS = { psu: ['psu'], board: ['board'], cpu: ['socket'], cooler: ['socket'], ssd: ['m2'], gpu: ['pcie16'], ram: ['dimm0', 'dimm1', 'dimm2', 'dimm3'],
+  fan: ['fan_rear', 'fan_f1', 'fan_f2'], plug_atx: ['p_atx'], plug_eps: ['p_eps'], plug_gpu: ['p_gpu'], plug_fp: ['p_fp'] };
+var CANDS = { ssd: ['m2', 'pcieX', 'sata'], gpu: ['pcie16', 'pcieX'], plug: ['p_atx', 'p_eps', 'p_gpu', 'p_fp', 'p_cpufan', 'sata'] };
+var PASTE = [
+  { id: 'ok', t: 'Einen erbsengroßen Klecks in die Mitte der CPU', fb: 'Genau: Der Anpressdruck des Kühlers verteilt den Klecks zu einem dünnen Film.' },
+  { id: 'much', t: 'Die ganze Spritze – viel hilft viel', fb: 'Zu viel Paste quillt über den Rand und verschmutzt Sockel und Board. Ein dünner Film reicht – ein erbsengroßer Klecks genügt.' },
+  { id: 'none', t: 'Gar keine – der Kühler liegt ja direkt auf', fb: 'Ohne Paste bleiben winzige Luftspalte, und Luft leitet Wärme sehr schlecht. Die CPU würde überhitzen.' },
+  { id: 'pins', t: 'Etwas Paste auf die Kontakte an der Unterseite der CPU', fb: 'Niemals! Die Kontakte sind die elektrische Verbindung zum Sockel. Paste gehört nur oben auf den Heatspreader.' }
+];
+
+function newCtx(mode, key, svg){
+  var kit = genKit(key);
+  var ctx = { mode: mode, key: key, kit: kit, S: emptyState(kit.W), svg: svg, sel: null, used: {}, rej: {}, CK: {}, ram: 0, fans: 0, locked: false, msg: null, onChange: null, near: null };
+  if (mode === 'kn'){
+    var n = 0, c = 0, letters = 'ABCD';
+    kit.items = shuffle(kit.items);
+    kit.items.forEach(function(it){ if (/^plug_/.test(it.cat)) it.disp = 'Kabel ' + letters[c++] + ': ' + it.tname; else it.disp = 'Bauteil ' + (++n); });
+  } else kit.items.forEach(function(it){ it.disp = it.name; });
+  svg.onclick = function(ev){ buildClick(ctx, ev); };
+  return ctx;
+}
+function item(ctx, id){ return ctx.kit.items.filter(function(i){ return i.id === id; })[0]; }
+function ck(ctx, id, v){ if (v === false) ctx.CK[id] = false; else if (ctx.CK[id] === undefined) ctx.CK[id] = true; }
+function availZones(ctx){
+  var S = ctx.S, z = [];
+  if (!S.psu) z.push('psu');
+  if (!S.board) z.push('board');
+  if (S.board){
+    if (!S.cpu || !S.cooler) z.push('socket');
+    for (var i = 0; i < 4; i++) if (!S.ram[i]) z.push('dimm' + i);
+    if (!S.ssd) z.push('m2');
+    if (!S.gpu) z.push('pcie16');
+    z.push('pcieX', 'sata', 'p_cpufan');
+    if (!S.plugs.atx) z.push('p_atx');
+    if (!S.plugs.eps) z.push('p_eps');
+    if (!S.plugs.fp) z.push('p_fp');
+  }
+  if (S.gpu && !S.plugs.gpu) z.push('p_gpu');
+  ['fan_rear', 'fan_f1', 'fan_f2'].forEach(function(f){ if (!S.fans[f]) z.push(f); });
+  return z;
+}
+function shownZones(ctx){
+  if (!ctx.sel) return [];
+  var it = item(ctx, ctx.sel), av = availZones(ctx);
+  if (ctx.mode === 'kn') return av;
+  var c = /^plug_/.test(it.cat) ? CANDS.plug : (CANDS[it.cat] || TARGETS[it.cat]);
+  return av.filter(function(z){ return c.indexOf(z) >= 0; });
+}
+function zoneAt(ctx, cx, cy){
+  var svg = ctx.svg, bb = svg.getBoundingClientRect();
+  if (cx < bb.left || cx > bb.right || cy < bb.top || cy > bb.bottom) return null;
+  var p = svgPoint(svg, cx, cy), K = { key: ctx.key, g: GEO[ctx.key], p: PAL[ctx.key] }, best = null, bs = null;
+  availZones(ctx).forEach(function(z){
+    var r = zoneRect(K, z); if (!r || !inR(r, p.x, p.y, 7)) return;
+    var dx = p.x - (r.x + r.w / 2), dy = p.y - (r.y + r.h / 2);
+    var sc = [inR(r, p.x, p.y, 0) ? 0 : 1, r.w * r.h, dx * dx + dy * dy];
+    if (!bs || sc[0] < bs[0] || (sc[0] === bs[0] && (sc[1] < bs[1] || (sc[1] === bs[1] && sc[2] < bs[2])))){ bs = sc; best = z; }
+  });
+  return best;
+}
+function cardState(ctx, it){
+  if (ctx.used[it.id]) return 'used';
+  if (ctx.rej[it.id]) return 'rej';
+  if (ctx.locked) return 'lock';
+  if (ctx.mode === 'ueb' && ctx.allowed && ctx.allowed.indexOf(it.cat) < 0) return 'lock';
+  return 'free';
+}
+function renderBuild(ctx){
+  renderPC(ctx.svg, ctx.key, ctx.S, { zones: shownZones(ctx), near: ctx.near });
+  renderParts(ctx);
+}
+function renderParts(ctx){
+  var box = ctx.partsBox; clear(box);
+  ctx.kit.items.forEach(function(it){
+    if (ctx.stepCats && ctx.stepCats.indexOf(it.cat) < 0) return;
+    var st = cardState(ctx, it);
+    var el = H('div', 'part' + (st === 'used' ? ' used' : st === 'rej' ? ' rej' : st === 'lock' ? ' lock' : '') + (ctx.sel === it.id ? ' sel' : ''));
+    el.setAttribute('data-id', it.id);
+    el.appendChild(icon(it.icon, ctx.key));
+    var left = it.n ? (it.n - (it.cat === 'ram' ? ctx.ram : ctx.fans)) : 0;
+    var tx = H('div', '', '<div class="pn">' + esc(it.disp) + '</div><div class="ps">' + it.specs.map(esc).join('<br>') + '</div>' + (it.n && st !== 'used' && left < it.n ? '<div class="ps"><b>noch ' + left + ' übrig</b></div>' : ''));
+    el.appendChild(tx);
+    if (st === 'used') el.appendChild(H('span', 'badge', '✅'));
+    if (st === 'rej') el.appendChild(H('span', 'badge', '✖'));
+    if (st === 'free') bindCard(ctx, el, it);
+    box.appendChild(el);
+  });
+}
+var GHOST = null;
+function bindCard(ctx, el, it){
+  el.addEventListener('pointerdown', function(e){
+    if (e.button && e.button !== 0) return;
+    var st = { x: e.clientX, y: e.clientY, drag: false, id: e.pointerId };
+    function mv(ev){
+      if (ev.pointerId !== st.id) return;
+      if (!st.drag && Math.abs(ev.clientX - st.x) + Math.abs(ev.clientY - st.y) > 8){
+        st.drag = true; ctx.sel = it.id; ctx.near = null; renderPC(ctx.svg, ctx.key, ctx.S, { zones: shownZones(ctx) });
+        var g = $('#ghost'); clear(g); g.appendChild(icon(it.icon, ctx.key)); g.hidden = false; GHOST = g;
+      }
+      if (st.drag){
+        ev.preventDefault();
+        GHOST.style.transform = 'translate(' + (ev.clientX - 40) + 'px,' + (ev.clientY - 30) + 'px)';
+        var z = zoneAt(ctx, ev.clientX, ev.clientY);
+        if (z !== ctx.near){ ctx.near = z; $$('.zone', ctx.svg).forEach(function(r){ r.classList.toggle('near', r.getAttribute('data-zone') === z); }); }
+      }
+    }
+    function up(ev){
+      if (ev.pointerId !== st.id) return;
+      window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+      if (GHOST){ GHOST.hidden = true; GHOST = null; }
+      ctx.near = null;
+      if (st.drag){
+        if (ev.type === 'pointercancel'){ renderBuild(ctx); return; }
+        var z = zoneAt(ctx, ev.clientX, ev.clientY);
+        if (z) tryPlace(ctx, it, z);
+        else { say(ctx, '', '💡 Lass das Teil direkt über einem Platz im Gehäuse los – oder tippe danach auf den Platz.'); renderBuild(ctx); }
+      } else { ctx.sel = (ctx.sel === it.id) ? null : it.id; renderBuild(ctx); if (ctx.sel) say(ctx, '', '👉 Jetzt auf den passenden Platz im Gehäuse tippen.'); }
+    }
+    window.addEventListener('pointermove', mv, { passive: false }); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+  });
+}
+function buildClick(ctx, ev){
+  if (ctx.locked) return;
+  if (ctx.sel){
+    var z = zoneAt(ctx, ev.clientX, ev.clientY);
+    if (z){ tryPlace(ctx, item(ctx, ctx.sel), z); return; }
+  }
+  var f = ev.target.closest ? ev.target.closest('[data-fan]') : null;
+  if (f && !ctx.S.panel){
+    var k = f.getAttribute('data-fan');
+    ctx.S.fans[k] = ctx.S.fans[k] === 'in' ? 'out' : 'in';
+    say(ctx, '', '🔄 ' + (k === 'fan_rear' ? 'Hinterer' : 'Vorderer') + ' Lüfter: ' + (ctx.S.fans[k] === 'in' ? 'bläst Luft <b>hinein</b> (Einlass, blau)' : 'bläst Luft <b>hinaus</b> (Auslass, rot)') + '.');
+    renderBuild(ctx);
+  }
+}
+function say(ctx, cls, html, btn){ ctx.msg = { cls: cls, html: html, btn: btn }; if (ctx.onMsg) ctx.onMsg(); }
+function prereq(ctx, it){
+  var S = ctx.S, A = ctx.key === 'A', c = it.cat;
+  if (c === 'ram' && A && S.cooler) return 'Der Tower-Kühler verdeckt die RAM-Slots. RAM kommt vor dem Kühler.';
+  if (c === 'cooler'){
+    if (!S.cpu) return 'Ohne CPU kein Kühler – setz zuerst den Prozessor ein.';
+    if (A && S.ram.filter(Boolean).length < 2) return 'Erst den RAM einsetzen: Der große Tower-Kühler verdeckt sonst den ersten RAM-Slot und die Clips.';
+  }
+  if (c === 'ssd' && A && S.gpu) return 'Der M.2-Slot liegt unter der Grafikkarte. Die SSD muss vor der Grafikkarte hinein.';
+  if ((c === 'plug_atx' || c === 'plug_eps' || c === 'plug_gpu') && !S.psu) return 'Das Kabel kommt vom Netzteil – das ist noch nicht eingebaut.';
+  return null;
+}
+function tryPlace(ctx, it, z){
+  if (ctx.locked || !it) return;
+  var test = ctx.mode === 'kn', c = it.cat;
+  if (!it.ok){
+    ctx.rej[it.id] = 1; ck(ctx, 'sel_' + c, false); ctx.sel = null;
+    say(ctx, 'bad', test ? '⛔ Dieses Teil passt nicht zum Auftrag. Wähle ein anderes.' : '⛔ <b>Passt nicht:</b> ' + esc(it.reason));
+    renderBuild(ctx); return;
+  }
+  if (TARGETS[c].indexOf(z) < 0){
+    ck(ctx, PLK[c], false);
+    var m = WZ[c];
+    if (c === 'ssd' && z === 'sata') m = 'Die SATA-Buchsen sind für 2,5″/3,5″-Laufwerke mit Kabel – eine M.2-SSD steckt direkt im M.2-Slot.';
+    if (z === 'p_cpufan') m = 'CPU_FAN ist ein 4-Pin-Lüfteranschluss, kein Stromanschluss vom Netzteil. ' + (WZ[c] || '');
+    say(ctx, 'bad', test ? '⛔ Das gehört nicht dorthin.' : '⛔ ' + esc(m));
+    renderBuild(ctx); return;
+  }
+  var pre = prereq(ctx, it);
+  if (pre){
+    ck(ctx, 'order', false);
+    var btn = null;
+    if (!test && c === 'ssd') btn = { t: '↩ Grafikkarte wieder ausbauen', fn: function(){ ctx.S.gpu = 0; ctx.S.plugs.gpu = 0; delete ctx.used.gpu_ok; delete ctx.used.plug_gpu; say(ctx, '', 'Grafikkarte wieder draußen – jetzt zuerst die SSD.'); renderBuild(ctx); if (ctx.onChange) ctx.onChange(); } };
+    say(ctx, 'warn', test ? '⛔ Das geht so (noch) nicht – denk an die Reihenfolge.' : '⚡ ' + esc(pre), btn);
+    renderBuild(ctx); return;
+  }
+  if (c === 'cooler' && !ctx.S.paste){ askPaste(ctx, function(){ place(ctx, it, z); }); return; }
+  place(ctx, it, z);
+}
+function place(ctx, it, z){
+  var S = ctx.S, c = it.cat, test = ctx.mode === 'kn', note = '';
+  if (['psu', 'cpu', 'ram', 'ssd', 'gpu'].indexOf(c) >= 0) ck(ctx, 'sel_' + c, true);
+  if (c === 'psu') S.psu = 1;
+  else if (c === 'board') S.board = 1;
+  else if (c === 'cpu') S.cpu = 1;
+  else if (c === 'cooler') S.cooler = 1;
+  else if (c === 'ssd') S.ssd = 1;
+  else if (c === 'gpu') S.gpu = 1;
+  else if (c === 'ram'){ S.ram[+z.slice(4)] = 1; ctx.ram++; }
+  else if (c === 'fan'){ S.fans[z] = test ? pick(['in', 'out']) : 'in'; ctx.fans++; }
+  else if (/^plug_/.test(c)) S.plugs[c.slice(5)] = 1;
+  var finished = !(it.n) || (c === 'ram' ? ctx.ram >= 2 : ctx.fans >= 3);
+  if (finished){ ctx.used[it.id] = 1; ctx.sel = null; }
+  if (c === 'ram' && ctx.ram >= 2){
+    var dual = S.ram[1] && S.ram[3], sameCh = (S.ram[0] && S.ram[1]) || (S.ram[2] && S.ram[3]);
+    ctx.ramMode = dual ? 'dual' : sameCh ? 'single' : 'dualOther';
+    if (!test && !dual){
+      S.ram = [0, 0, 0, 0]; ctx.ram = 0; delete ctx.used[it.id]; ctx.sel = it.id;
+      ck(ctx, 'pl_ram', false);
+      say(ctx, 'warn', sameCh ? '⚡ Beide Module stecken im <b>selben Kanal</b> (A1+A2 bzw. B1+B2) – dann läuft der RAM nur im Single-Channel-Modus. Setze sie neu ein: 2. und 4. Slot vom Sockel aus (A2 und B2).'
+        : '⚡ Dual-Channel würde zwar laufen, aber das Handbuch empfiehlt für zwei Module A2 und B2 (2. und 4. Slot vom Sockel) – dort ist der Betrieb am stabilsten. Setze die Module neu ein.');
+      renderBuild(ctx); if (ctx.onChange) ctx.onChange(); return;
+    }
+    ck(ctx, 'pl_ram', dual ? true : false);
+  } else if (c !== 'ram') ck(ctx, PLK[c], true);
+  if (c === 'fan' && finished && !test) note = ' Klicke die Lüfter an, um ihre Luftrichtung zu ändern.';
+  var cnt = c === 'ram' ? ctx.ram : ctx.fans;
+  say(ctx, 'ok', '✅ ' + (finished ? esc(test ? 'Eingebaut.' : it.name + ' eingebaut.') : (c === 'ram' ? 'Modul ' : 'Lüfter ') + cnt + ' von ' + it.n + ' eingebaut – weiter mit dem nächsten.') + note);
+  renderBuild(ctx);
+  if (ctx.onChange) ctx.onChange();
+}
+function askPaste(ctx, then){
+  var pop = ctx.pop; pop.hidden = false;
+  var opts = shuffle(PASTE);
+  pop.innerHTML = '<h3>🧴 Wärmeleitpaste</h3><p style="margin:0 0 6px">Bevor der Kühler auf die CPU kommt: Wie trägst du die Wärmeleitpaste auf?</p><div class="opts">' +
+    opts.map(function(o){ return '<button data-p="' + o.id + '">' + esc(o.t) + '</button>'; }).join('') + '</div><div id="pasteFb"></div>';
+  $$('[data-p]', pop).forEach(function(b){
+    b.onclick = function(){
+      var id = b.getAttribute('data-p'), o = PASTE.filter(function(x){ return x.id === id; })[0];
+      if (ctx.mode === 'kn'){ ck(ctx, 'paste', id === 'ok'); ctx.S.paste = id; pop.hidden = true; then(); return; }
+      if (id === 'ok'){ b.classList.add('right'); ctx.S.paste = 'ok'; ck(ctx, 'paste', true);
+        $('#pasteFb', pop).innerHTML = '<div class="msg ok">✅ ' + esc(o.fb) + '</div>';
+        setTimeout(function(){ pop.hidden = true; then(); }, 1300);
+      } else { b.classList.add('wrong'); ck(ctx, 'paste', false); $('#pasteFb', pop).innerHTML = '<div class="msg bad">⛔ ' + esc(o.fb) + '</div>'; }
+    };
+  });
+}
+function missing(ctx){
+  var S = ctx.S, m = [];
+  if (!S.psu) m.push('Netzteil'); if (!S.board) m.push('Mainboard'); if (!S.cpu) m.push('CPU');
+  if (S.ram.filter(Boolean).length < 2) m.push('RAM'); if (!S.cooler) m.push('Kühler'); if (!S.ssd) m.push('SSD'); if (!S.gpu) m.push('Grafikkarte');
+  if (ctx.fans < 3) m.push('Gehäuselüfter');
+  ['atx', 'eps', 'gpu', 'fp'].forEach(function(k){ if (!S.plugs[k]) m.push({ atx: '24-Pin-Stecker', eps: 'EPS-Stecker', gpu: '12V-2x6-Stecker', fp: 'Front-Panel-Kabel' }[k]); });
+  return m;
+}
+function airOK(S){ return S.fans.fan_rear === 'out' && S.fans.fan_f1 === 'in' && S.fans.fan_f2 === 'in'; }
+function closePanel(ctx){
+  var m = missing(ctx), test = ctx.mode === 'kn';
+  if (m.length){ if (test){ ck(ctx, 'order', false); say(ctx, 'bad', '⛔ Da fehlt noch etwas. Das Seitenteil kommt erst ganz zum Schluss drauf.'); } else say(ctx, 'warn', '⚡ Es fehlt noch: ' + m.map(esc).join(', ') + '.'); return; }
+  if (!test && !airOK(ctx.S)){ say(ctx, 'warn', '⚡ Prüfe die Luftrichtung: Vorne soll kühle Luft <b>hinein</b> (blau), hinten warme Luft <b>hinaus</b> (rot). Klicke einen Lüfter an, um ihn umzudrehen.'); return; }
+  ctx.S.panel = 1; say(ctx, 'ok', '✅ Seitenteil geschlossen. Jetzt Netzkabel einstecken und einschalten!');
+  renderBuild(ctx); if (ctx.onChange) ctx.onChange();
+}
+function powerOn(ctx, done){
+  if (!ctx.S.panel) return;
+  ctx.S.power = 1; ctx.locked = true; ctx.sel = null; renderBuild(ctx);
+  var S = ctx.S, cpu = item(ctx, 'cpu_ok'), gpu = item(ctx, 'gpu_ok');
+  var lines = [
+    ['UEFI-Firmware – Power-On Self-Test (POST)', '#9cc2ff'],
+    ['CPU:  ' + cpu.name + '  ……  OK', '#d5e6ff'],
+    ['RAM:  32 GB DDR5-6000  –  ' + (ctx.ramMode === 'dual' ? 'Dual-Channel ✓' : ctx.ramMode === 'single' ? 'Single-Channel ⚠' : 'Dual-Channel (Slots A1/B1 …) ⚠'), ctx.ramMode === 'dual' ? '#7fe0a6' : '#ffd166'],
+    ['M.2_1: NVMe-SSD 1 TB  ……  erkannt ✓', '#7fe0a6'],
+    ['PCIe x16: ' + gpu.name.replace('Grafikkarte', 'Grafik') + '  ✓', '#7fe0a6'],
+    ['CPU-Temperatur: ' + (S.paste === 'ok' ? '38 °C ✓' : S.paste === 'none' ? '97 °C ⚠ Überhitzung – keine Wärmeleitpaste!' : S.paste === 'much' ? '44 °C – aber Paste quillt über ⚠' : '?? °C – Kontaktproblem am Sockel ⚠'), S.paste === 'ok' ? '#7fe0a6' : '#ffd166'],
+    ['CPU_FAN ✓   SYS_FAN 1–3 ✓', '#7fe0a6'],
+    ['Luftstrom: ' + (airOK(S) ? 'vorne hinein, hinten hinaus ✓' : 'ungünstig – Wärmestau im Gehäuse ⚠'), airOK(S) ? '#7fe0a6' : '#ffd166'],
+    ['▶ Starte Betriebssystem von NVMe …', '#9cc2ff']
+  ];
+  var g = G(ctx.svg, {});
+  R(g, { x: 70, y: 130, w: 500, h: 290 }, { rx: 12, fill: '#0b0f14', stroke: '#2f6fde', 'stroke-width': 3, opacity: 0.96 });
+  var i = 0;
+  (function next(){
+    if (i >= lines.length){ if (done) setTimeout(done, 500); return; }
+    T(g, 92, 166 + i * 28, lines[i][0], { 'class': 'mono', 'font-size': 14, fill: lines[i][1] }); i++;
+    setTimeout(next, 330);
+  })();
+}
+
+/* ================== ② Üben ================== */
+var USTEPS = [
+  { id: 'u1', t: 'Vorbereitung & Netzteil', cats: ['psu'], goal: 'Bereite den Arbeitsplatz vor und baue ein passendes Netzteil in den Schacht unten im Gehäuse ein.',
+    pre: { q: 'Bevor du Bauteile anfasst: Was tust du?', o: ['Mich am blanken Gehäusemetall entladen bzw. ein ESD-Armband anlegen', 'Die Bauteile schon mal auf den Teppich legen', 'Den PC kurz einschalten, um zu testen', 'Nichts – moderne Bauteile sind unempfindlich'], a: 0,
+      ex: 'Elektrostatische Ladung (ESD) kann Chips zerstören, ohne dass du etwas spürst. Deshalb erden bzw. entladen – und Teile auf einer antistatischen Unterlage ablegen, nicht auf Teppich.' },
+    tips: ['Lies im Kundenauftrag nach: Das Netzteil muss später die Grafikkarte versorgen.', 'Ein Netzteil ohne Grafikkarten-Stromstecker und mit nur 400 W scheidet aus.', 'Zieh das passende Netzteil in den markierten Schacht unten links.'],
+    done: function(c){ return c.S.psu; },
+    ref: { q: 'Warum zeigt der Netzteillüfter in diesem Gehäuse nach unten?', o: ['Er saugt kühle Außenluft durch den Staubfilter im Boden an.', 'Damit das Netzteil leiser ist, weil der Schall in den Tisch geht.', 'Weil Netzteile nur in diese Richtung hineinpassen.'], a: 0,
+      ex: 'Unten sitzt ein Staubfilter. So bekommt das Netzteil frische, kühle Luft von außen und muss nicht die warme Luft aus dem Gehäuse nutzen.' } },
+  { id: 'u2', t: 'Mainboard einsetzen', cats: ['board'], goal: 'Setze das Mainboard auf die Abstandshalter. (Profis setzen CPU, RAM und SSD oft schon außerhalb des Gehäuses ein – hier gehen wir Schritt für Schritt im Gehäuse vor.)',
+    tips: ['Das Mainboard ist die große Platine.', 'Die Anschlussblende (Rear-I/O) zeigt nach hinten – zur linken Gehäuseseite.', 'Zieh das Mainboard auf die markierte Fläche mit den goldenen Abstandshaltern.'],
+    done: function(c){ return c.S.board; },
+    ref: { q: 'Wozu dienen die Abstandshalter (Standoffs) unter dem Mainboard?', o: ['Sie verhindern, dass Lötstellen auf der Rückseite das Gehäuseblech berühren (Kurzschluss).', 'Sie kühlen das Mainboard von unten.', 'Sie verbinden das Mainboard elektrisch mit dem Netzteil.'], a: 0,
+      ex: 'Auf der Rückseite des Mainboards liegen Lötpunkte. Berühren sie das Blech, gibt es einen Kurzschluss. Die Abstandshalter halten das Board auf Abstand.' } },
+  { id: 'u3', t: 'CPU einsetzen', cats: ['cpu'], goal: 'Wähle den Prozessor, der zum Sockel des Mainboards passt, und setze ihn ein.',
+    tips: ['Schau in den Kundenauftrag: Welchen Sockel hat das Mainboard?', 'AMD und Intel nutzen unterschiedliche Sockel – und auch ältere CPUs desselben Herstellers passen oft nicht mehr.', 'Zieh die CPU mit dem passenden Sockel auf den quadratischen Sockel links oben.'],
+    done: function(c){ return c.S.cpu; },
+    ref: { q: 'Was ist beim Einlegen der CPU besonders wichtig?', o: ['Dreieck-Markierung ausrichten, CPU ohne Druck einlegen, dann den Hebel schließen.', 'Kräftig drücken, damit alle Kontakte sicher sitzen.', 'Wärmeleitpaste auf die Kontakte an der Unterseite geben.'], a: 0,
+      ex: 'Die Pins im LGA-Sockel verbiegen sehr leicht. Die CPU passt nur in einer Lage – das Dreieck zeigt sie. Erst der Hebel mit dem Andruckrahmen drückt sie fest.' } },
+  { id: 'u4', t: 'Arbeitsspeicher', cats: ['ram'], goal: 'Wähle das passende RAM-Kit und setze beide Module so ein, dass sie im empfohlenen Dual-Channel-Betrieb laufen.',
+    tips: ['Das Mainboard unterstützt DDR5 – und es ist ein Desktop-PC.', 'SO-DIMM ist für Notebooks, DDR4 hat die Kerbe an anderer Stelle.', 'Für Dual-Channel: 2. und 4. Slot vom Sockel aus gezählt – beschriftet A2 und B2.'],
+    done: function(c){ return c.ram >= 2 && c.ramMode === 'dual'; },
+    ref: { q: 'Warum lohnt sich Dual-Channel?', o: ['Die CPU greift über zwei Speicherkanäle gleichzeitig zu – die Speicherbandbreite verdoppelt sich ungefähr.', 'Der RAM verbraucht dann nur halb so viel Strom.', 'Ohne Dual-Channel startet der PC nicht.'], a: 0,
+      ex: 'Jeder Kanal hat eine eigene Datenleitung zur CPU. Mit zwei Kanälen können doppelt so viele Daten pro Takt fließen.' } },
+  { id: 'u5', t: 'CPU-Kühler', cats: ['cooler'], goal: 'Trage Wärmeleitpaste auf und montiere den CPU-Kühler.',
+    tips: ['Der Kühler sitzt direkt auf der CPU.', 'Die Wärmeleitpaste soll nur winzige Luftspalte füllen – nicht mehr.', 'Ein erbsengroßer Klecks in der Mitte reicht – der Anpressdruck verteilt ihn.'],
+    done: function(c){ return c.S.cooler; },
+    ref: { q: 'Warum haben wir den RAM vor dem Kühler eingebaut?', o: ['Der große Tower-Kühler verdeckt den ersten RAM-Slot und die Clips – danach kommt man schlecht heran.', 'RAM muss vor dem Kühler warm werden.', 'Die Reihenfolge spielt beim PC-Bau nie eine Rolle.'], a: 0,
+      ex: 'Große Luftkühler ragen über die RAM-Slots. Deshalb: erst RAM (und am besten auch das EPS-Kabel), dann der Kühler.' } },
+  { id: 'u6', t: 'SSD & Grafikkarte', cats: ['ssd', 'gpu'], goal: 'Baue eine NVMe-SSD in den M.2-Steckplatz und eine zum Auftrag passende Grafikkarte in den richtigen PCIe-Slot ein.',
+    tips: ['Der M.2-Slot liegt unter dem obersten PCIe-Slot – also zuerst die SSD, dann die Grafikkarte.', 'Prüfe bei jeder Grafikkarte Länge und empfohlene Netzteilleistung gegen den Kundenauftrag.', 'Die Grafikkarte gehört in den langen, obersten PCIe-x16-Slot.'],
+    done: function(c){ return c.S.ssd && c.S.gpu; },
+    ref: { q: 'Warum gehört die Grafikkarte in den obersten PCIe-x16-Slot?', o: ['Er ist direkt mit der CPU verbunden und bietet alle 16 Lanes.', 'Weil sie dort am kühlsten bleibt.', 'Die unteren Slots liefern gar keinen Strom.'], a: 0,
+      ex: 'Der oberste x16-Slot hängt direkt an der CPU. Untere Slots sind oft nur mit 4 oder 1 Lane über den Chipsatz angebunden – zu wenig Bandbreite für eine Grafikkarte.' } },
+  { id: 'u7', t: 'Verkabeln, Lüfter & Start', cats: ['plug_atx', 'plug_eps', 'plug_gpu', 'plug_fp', 'fan'], goal: 'Schließe alle Stromkabel und das Front-Panel an, setze die drei Gehäuselüfter mit sinnvoller Luftrichtung ein, schließe das Gehäuse und starte den PC.',
+    tips: ['Jeder Stecker passt nur an eine Stelle – zähl die Pins!', 'Vorne soll Luft hinein (blau), hinten hinaus (rot). Klicke einen eingebauten Lüfter an, um seine Richtung zu ändern.', '24-Pin → rechter Mainboard-Rand · 8-Pin EPS → oben links · 16-Pin 12V-2x6 → Grafikkarte · F_PANEL → unten rechts.'],
+    done: function(c){ return c.posted; },
+    ref: { q: 'Der PC startet, der Monitor bleibt aber schwarz. Was prüfst du zuerst?', o: ['Ob das Monitorkabel an der Grafikkarte steckt – und nicht am Mainboard.', 'Ob die CMOS-Batterie richtig herum sitzt.', 'Ob die SSD schon formatiert ist.'], a: 0,
+      ex: 'Mit eingebauter Grafikkarte liefern die Bildausgänge am Mainboard meist kein Bild. Das Monitorkabel gehört an die Grafikkarte. Die SSD spielt für das Startbild keine Rolle.' } }
+];
+var UEB = { ctx: null, cur: 0, tips: 0, preOk: false, finished: false, refDone: false };
+function uebInit(){
+  $('#uebReset').onclick = uebStart;
+  uebStart();
+}
+function uebStart(){
+  var svg = $('#uebSvg');
+  var c = newCtx('ueb', 'A', svg);
+  c.partsBox = H('div', 'parts');
+  c.pop = H('div', 'pop'); c.pop.hidden = true;
+  var stage = svg.parentNode; $$('.pop', stage).forEach(function(n){ n.remove(); }); stage.appendChild(c.pop);
+  c.onMsg = uebMsg; c.onChange = uebCheck;
+  UEB.ctx = c; UEB.cur = 0; UEB.tips = 0; UEB.preOk = false; UEB.finished = false; UEB.refDone = false;
+  uebStep();
+}
+function uebStep(){
+  var c = UEB.ctx, s = USTEPS[UEB.cur];
+  c.allowed = s.cats; c.stepCats = s.cats; c.sel = null; c.msg = null; UEB.tips = 0; UEB.finished = false; UEB.refDone = false; UEB.refHtml = null;
+  c.locked = !!(s.pre && !UEB.preOk);
+  var left = $('#uebLeft'); clear(left);
+  left.appendChild(H('div', 'subh', 'Auftrag')); left.insertAdjacentHTML('beforeend', auftragHTML(c.kit));
+  left.appendChild(H('div', 'subh', 'Teilekiste')); left.appendChild(c.partsBox);
+  uebSteps(); uebRight(); renderBuild(c);
+}
+function uebSteps(){
+  var box = $('#uebSteps');
+  box.innerHTML = USTEPS.map(function(s, i){
+    var done = STORE.ueb.indexOf(s.id) >= 0;
+    return '<button class="' + (i === UEB.cur ? 'cur' : done ? 'done' : '') + '" tabindex="-1" style="cursor:default">' + (done ? '✓ ' : '') + (i + 1) + ' · ' + esc(s.t) + '</button>';
+  }).join('');
+}
+function uebRight(){
+  var c = UEB.ctx, s = USTEPS[UEB.cur], box = $('#uebRight');
+  var h = '<div class="subh">Aufgabe ' + (UEB.cur + 1) + ' von ' + USTEPS.length + '</div><h3>' + esc(s.t) + '</h3><p class="lead">' + esc(s.goal) + '</p>';
+  if (s.pre && !UEB.preOk){
+    h += '<div class="msg warn"><b>Zuerst:</b> ' + esc(s.pre.q) + '</div><div class="opts" id="preOpts">' +
+      shuffle(s.pre.o.map(function(o, i){ return { o: o, i: i }; })).map(function(x){ return '<button data-i="' + x.i + '">' + esc(x.o) + '</button>'; }).join('') + '</div><div id="preFb"></div>';
+  }
+  h += '<div class="tips"><div class="subh">Tipps</div>';
+  for (var i = 0; i < UEB.tips; i++) h += '<div class="tip">💡 ' + esc(s.tips[i]) + '</div>';
+  if (UEB.tips < s.tips.length) h += '<button id="uebTip">💡 Tipp ' + (UEB.tips + 1) + ' aufdecken</button>';
+  h += '</div><div id="uebMsg"></div>';
+  if (s.id === 'u7' && !UEB.finished) h += '<div class="btnrow"><button id="uebPanel"' + (c.S.panel ? ' disabled' : '') + '>🪟 Seitenteil schließen</button><button class="primary" id="uebPower"' + (c.S.panel && !c.S.power ? '' : ' disabled') + '>🔌 Einstecken & ⏻ Einschalten</button></div>';
+  h += '<div id="uebRef"></div>';
+  box.innerHTML = h;
+  var tb = $('#uebTip'); if (tb) tb.onclick = function(){ UEB.tips++; uebRight(); };
+  $$('#preOpts button').forEach(function(b){
+    b.onclick = function(){
+      var ok = +b.getAttribute('data-i') === s.pre.a;
+      b.classList.add(ok ? 'right' : 'wrong');
+      $('#preFb').innerHTML = '<div class="msg ' + (ok ? 'ok' : 'bad') + '">' + (ok ? '✅ ' : '⛔ ') + esc(s.pre.ex) + '</div>';
+      if (ok){ setTimeout(function(){ UEB.preOk = true; c.locked = false; uebRight(); renderBuild(c); }, 1400); }
+    };
+  });
+  var pb = $('#uebPanel'); if (pb) pb.onclick = function(){ closePanel(c); };
+  var pw = $('#uebPower'); if (pw) pw.onclick = function(){ pw.disabled = true; powerOn(c, function(){ c.posted = true; uebCheck(); }); };
+  uebMsg(); if (UEB.finished) uebRef();
+}
+function uebMsg(){
+  var c = UEB.ctx, box = $('#uebMsg'); if (!box) return;
+  if (!c.msg){ box.innerHTML = ''; return; }
+  box.innerHTML = '<div class="msg ' + c.msg.cls + '">' + c.msg.html + '</div>' + (c.msg.btn ? '<button id="msgBtn">' + esc(c.msg.btn.t) + '</button>' : '');
+  if (c.msg.btn) $('#msgBtn').onclick = c.msg.btn.fn;
+}
+function uebCheck(){
+  var c = UEB.ctx, s = USTEPS[UEB.cur];
+  if (s.id === 'u7'){ var pb = $('#uebPanel'), pw = $('#uebPower'); if (pb) pb.disabled = !!c.S.panel; if (pw) pw.disabled = !(c.S.panel && !c.S.power); }
+  if (!UEB.finished && s.done(c)){ UEB.finished = true; c.allowed = []; c.sel = null; renderBuild(c); uebRight(); }
+}
+function uebNextBtns(){
+  var last = UEB.cur === USTEPS.length - 1;
+  $('#uebNext').onclick = function(){ if (last) uebStart(); else { UEB.cur++; UEB.preOk = true; uebStep(); } };
+  var tk = $('#uebToKn'); if (tk) tk.onclick = function(){ showTab('kn'); };
+}
+function uebRef(){
+  var s = USTEPS[UEB.cur], box = $('#uebRef'); if (!box) return;
+  if (UEB.refDone && UEB.refHtml){ box.innerHTML = UEB.refHtml; uebNextBtns(); return; }
+  var h = '<div class="msg ok">🎉 <b>Aufgabe erledigt!</b></div><div class="subh">Reflexionsfrage</div><p style="margin:0 0 4px"><b>' + esc(s.ref.q) + '</b></p><div class="opts" id="refOpts">' +
+    shuffle(s.ref.o.map(function(o, i){ return { o: o, i: i }; })).map(function(x){ return '<button data-i="' + x.i + '">' + esc(x.o) + '</button>'; }).join('') + '</div><div id="refFb"></div>';
+  box.innerHTML = h;
+  $$('#refOpts button').forEach(function(b){
+    b.onclick = function(){
+      if (UEB.refDone) return;
+      var ok = +b.getAttribute('data-i') === s.ref.a;
+      b.classList.add(ok ? 'right' : 'wrong');
+      if (!ok){ $('#refFb').innerHTML = '<div class="msg bad">Nicht ganz – versuch es noch einmal.</div>'; return; }
+      UEB.refDone = true;
+      if (STORE.ueb.indexOf(s.id) < 0){ STORE.ueb.push(s.id); save(); }
+      uebSteps();
+      var last = UEB.cur === USTEPS.length - 1;
+      $('#refFb').innerHTML = '<div class="msg ok">✅ ' + esc(s.ref.ex) + '</div><div class="btnrow"><button class="primary" id="uebNext">' + (last ? '🏁 Übung abgeschlossen – nochmal mit neuen Teilen' : 'Weiter zu Aufgabe ' + (UEB.cur + 2) + ' →') + '</button>' + (last ? '<button id="uebToKn">③ Zum Kompetenznachweis</button>' : '') + '</div>';
+      $$('#refOpts button').forEach(function(x){ x.disabled = x !== b; });
+      UEB.refHtml = box.innerHTML; uebNextBtns();
+    };
+  });
+}
+
+/* ================== ③ Kompetenznachweis ================== */
+var QS = [
+  // LZ1 – erkennen
+  { lz: 'LZ1', t: 'img', icon: 'ram', q: 'Welche Komponente ist abgebildet?', o: ['Arbeitsspeicher (DIMM-Modul)', 'M.2-SSD', 'Grafikkarte', 'Netzteilstecker'], a: 0, ex: 'Ein langes, schmales Modul mit Kontaktleiste und Heatspreader: ein RAM-Modul (DIMM).' },
+  { lz: 'LZ1', t: 'img', icon: 'gpu', q: 'Welche Komponente ist abgebildet?', o: ['Grafikkarte', 'Netzteil', 'Mainboard', 'CPU-Kühler'], a: 0, ex: 'Slotblech, PCIe-Kontaktleiste und Lüfter: eine Grafikkarte (hier im Radial-/„Blower“-Design).' },
+  { lz: 'LZ1', t: 'img', icon: 'psu', q: 'Welche Komponente ist abgebildet?', o: ['Netzteil', 'Gehäuselüfter', 'Festplatte', 'Grafikkarte'], a: 0, ex: 'Ein Kasten mit Lüftergitter und Anschlussbuchsen für die Kabel: das Netzteil.' },
+  { lz: 'LZ1', t: 'img', icon: 'ssd', q: 'Welche Komponente ist abgebildet?', o: ['M.2-NVMe-SSD', 'Arbeitsspeicher', 'CMOS-Batterie', 'Chipsatz'], a: 0, ex: 'Eine kleine Steckkarte mit Speicherchips und einer Kerbe für die Schraube: eine M.2-SSD.' },
+  { lz: 'LZ1', t: 'img', icon: 'aio', q: 'Welche Komponente ist abgebildet?', o: ['CPU-Kühler (AIO-Wasserkühlung)', 'Netzteil', 'Grafikkarte', 'Gehäuselüfter'], a: 0, ex: 'Pumpe mit Schläuchen und Radiator: eine All-in-One-Wasserkühlung für die CPU.' },
+  { lz: 'LZ1', t: 'img', icon: 'cpu', q: 'Welche Komponente ist abgebildet?', o: ['Prozessor (CPU)', 'Chipsatz', 'UEFI-Chip', 'CMOS-Batterie'], a: 0, ex: 'Quadratischer Heatspreader mit Dreieck-Markierung: der Prozessor.' },
+  { lz: 'LZ1', t: 'hot', target: 'cmos', q: 'Klicke auf die CMOS-Batterie.', ex: 'Die runde Knopfzelle (CR2032) ist die CMOS-Batterie.' },
+  { lz: 'LZ1', t: 'hot', target: 'socket', q: 'Klicke auf den CPU-Sockel.', ex: 'Der quadratische Sockel mit Hebel – umgeben von den Spannungswandlern.' },
+  { lz: 'LZ1', t: 'hot', target: 'atx', q: 'Klicke auf den 24-Pin-Stromanschluss des Mainboards.', ex: 'Der lange, zweireihige Anschluss am rechten Rand ist der 24-Pin-ATX-Anschluss.' },
+  { lz: 'LZ1', t: 'hot', target: 'chipset', q: 'Klicke auf den Chipsatz (unter seinem Kühlkörper).', ex: 'Der flache Kühlkörper unten rechts sitzt auf dem Chipsatz.' },
+  { lz: 'LZ1', t: 'hot', target: 'm2', q: 'Klicke auf den M.2-Steckplatz.', ex: 'Der M.2-Slot liegt bei diesem Board zwischen CPU-Bereich und PCIe-x16-Slot.' },
+  // LZ2 – Funktionen
+  { lz: 'LZ2', t: 'mc', q: 'Welche Aufgabe hat der Arbeitsspeicher (RAM)?', o: ['Er hält Programme und Daten bereit, mit denen die CPU gerade arbeitet.', 'Er speichert das Betriebssystem dauerhaft.', 'Er wandelt 230 V in 12 V um.', 'Er berechnet die Bilder für den Monitor.'], a: 0, ex: 'RAM ist der schnelle Kurzzeitspeicher für alles, was gerade läuft.' },
+  { lz: 'LZ2', t: 'mc', q: 'Was passiert mit dem Inhalt des RAM, wenn der PC ausgeschaltet wird?', o: ['Er geht verloren – RAM ist flüchtig.', 'Er wird automatisch auf die Grafikkarte kopiert.', 'Er bleibt erhalten, solange die CMOS-Batterie hält.', 'Er bleibt komprimiert im RAM erhalten.'], a: 0, ex: 'RAM braucht ständig Strom, um Daten zu halten. Dauerhaft speichert die SSD.' },
+  { lz: 'LZ2', t: 'mc', q: 'Wozu dient Wärmeleitpaste?', o: ['Sie füllt winzige Unebenheiten zwischen CPU und Kühler und verbessert den Wärmeübergang.', 'Sie klebt den Kühler fest, damit keine Schrauben nötig sind.', 'Sie isoliert die CPU elektrisch vom Kühler.', 'Sie kühlt selbst durch Verdunstung.'], a: 0, ex: 'Ohne Paste blieben Luftspalte – und Luft leitet Wärme sehr schlecht.' },
+  { lz: 'LZ2', t: 'mc', q: 'Was macht das Netzteil?', o: ['Es wandelt 230 V Wechselspannung in Gleichspannungen wie 12 V, 5 V und 3,3 V um.', 'Es speichert Energie für Stromausfälle.', 'Es erhöht die Spannung für die Grafikkarte auf 400 V.', 'Es regelt den Takt der CPU.'], a: 0, ex: 'Die Komponenten im PC brauchen Gleichspannung – die liefert das Netzteil.' },
+  { lz: 'LZ2', t: 'mc', q: 'Welche Aufgabe hat der Chipsatz auf dem Mainboard?', o: ['Er stellt zusätzliche Anschlüsse bereit (z. B. USB, SATA, weitere PCIe-Lanes) und ist mit der CPU verbunden.', 'Er ist ein zweiter Prozessor, der Spiele berechnet.', 'Er speichert die Uhrzeit, wenn der PC aus ist.', 'Er versorgt die Lüfter mit 230 V.'], a: 0, ex: 'Der Chipsatz ist eine Art Verteiler für zusätzliche Schnittstellen.' },
+  { lz: 'LZ2', t: 'mc', q: 'Wofür ist die CMOS-Batterie zuständig?', o: ['Sie versorgt die Echtzeituhr (und Einstellungen), wenn der PC stromlos ist.', 'Sie überbrückt Stromausfälle, bis der PC heruntergefahren ist.', 'Sie liefert beim Start Strom für die Grafikkarte.', 'Sie speichert die Daten der SSD.'], a: 0, ex: 'Die kleine Knopfzelle hält Uhr und Einstellungen am Leben – nicht den ganzen PC.' },
+  { lz: 'LZ2', t: 'match', q: 'Ordne jeder Komponente ihre Hauptaufgabe zu.', p: [['CPU', 'Führt die Befehle der Programme aus'], ['GPU', 'Berechnet Bilder, viele Rechnungen parallel'], ['SSD', 'Speichert Daten dauerhaft'], ['RAM', 'Hält laufende Programme kurzfristig bereit']], ex: 'CPU = rechnen/steuern, GPU = parallel rechnen/Bilder, SSD = dauerhaft speichern, RAM = Kurzzeitspeicher.' },
+  { lz: 'LZ2', t: 'mc', q: 'Was leisten die Spannungswandler (VRM) rund um den CPU-Sockel?', o: ['Sie erzeugen aus 12 V die niedrige, stabile Kernspannung der CPU.', 'Sie wandeln Gleichspannung in 230 V für den Monitor um.', 'Sie kühlen den Arbeitsspeicher.', 'Sie speichern die UEFI-Firmware.'], a: 0, ex: 'Die CPU braucht nur rund 1–1,4 V, aber sehr hohe Ströme – das liefern die VRM.' },
+  { lz: 'LZ2', t: 'mc', q: 'Was passiert beim POST (Power-On Self-Test)?', o: ['Die UEFI-Firmware prüft beim Einschalten die wichtigsten Komponenten, bevor das Betriebssystem startet.', 'Windows prüft die Festplatte auf Viren.', 'Das Netzteil testet die Steckdose.', 'Die Grafikkarte installiert ihre Treiber.'], a: 0, ex: 'Der POST läuft vor dem Betriebssystem und meldet z. B. fehlenden RAM.' },
+  // LZ3 – Steckplätze & Anschlüsse
+  { lz: 'LZ3', t: 'match', q: 'Ordne jedem Stecker vom Netzteil sein Ziel zu.', p: [['24-Pin ATX', 'Mainboard (Hauptversorgung)'], ['8-Pin EPS12V', 'Mainboard oben links (CPU-Versorgung)'], ['16-Pin 12V-2x6', 'Grafikkarte'], ['15-Pin SATA-Strom', '2,5″-SSD oder Festplatte']], ex: 'Jeder Stecker hat seine eigene Form und Pinzahl – Vertauschen ist mechanisch kaum möglich.' },
+  { lz: 'LZ3', t: 'mc', q: 'In welchen Steckplatz gehört die Grafikkarte?', o: ['In den obersten PCIe-x16-Slot', 'In den M.2-Slot', 'In einen DIMM-Slot', 'In den kurzen PCIe-x1-Slot'], a: 0, ex: 'Der oberste x16-Slot ist direkt mit der CPU verbunden und hat alle 16 Lanes.' },
+  { lz: 'LZ3', t: 'num', q: 'Wie viele Pins hat der Hauptstromstecker (ATX) des Mainboards?', a: 24, unit: 'Pins', ex: 'Der ATX-Hauptstecker hat 24 Pins.' },
+  { lz: 'LZ3', t: 'mc', q: 'Was bedeutet die Angabe „2280“ bei einer M.2-SSD?', o: ['22 mm breit und 80 mm lang', '2280 MB/s Lesegeschwindigkeit', '22 Speicherchips mit je 80 GB', 'Baujahr 2022, Modell 80'], a: 0, ex: 'Die Zahl beschreibt die Maße: 22 mm breit, 80 mm lang.' },
+  { lz: 'LZ3', t: 'mc', q: 'Warum lässt sich ein DDR4-Modul nicht in einen DDR5-Slot stecken?', o: ['Die Kerbe sitzt an anderer Stelle – eine mechanische Codierung verhindert das Vertauschen.', 'DDR4-Module sind deutlich länger.', 'DDR5-Slots haben keine Halteclips.', 'Es geht doch – es ist nur langsamer.'], a: 0, ex: 'Die unterschiedliche Kerbe schützt vor falscher Spannung und falschen Signalen.' },
+  { lz: 'LZ3', t: 'mc', q: 'Wo wird die Power-Taste des Gehäuses angeschlossen?', o: ['Am Front-Panel-Header (F_PANEL) des Mainboards', 'Direkt am Netzteil', 'Am CPU_FAN-Header', 'Am 24-Pin-ATX-Stecker'], a: 0, ex: 'Taster und LEDs des Gehäuses kommen an den Front-Panel-Header.' },
+  { lz: 'LZ3', t: 'num', q: 'Wie viel Watt darf ein PCIe-x16-Steckplatz selbst höchstens an eine Grafikkarte liefern?', a: 75, unit: 'W', ex: 'Der Slot liefert bis zu 75 W. Alles darüber kommt über Stromkabel vom Netzteil.' },
+  { lz: 'LZ3', t: 'mc', q: 'Der PC hat eine eigene Grafikkarte. Wo schließt du den Monitor an?', o: ['An einem Ausgang der Grafikkarte', 'Am HDMI-Ausgang der Mainboard-Blende', 'An einem USB-A-Port', 'Egal – beide Ausgänge zeigen immer dasselbe Bild'], a: 0, ex: 'Mit eingebauter Grafikkarte liefern die Mainboard-Ausgänge meist kein Bild.' },
+  { lz: 'LZ3', t: 'mc', q: 'Zwei RAM-Module, vier Slots (A1, A2, B1, B2). Welche Slots empfiehlt das Handbuch meist?', o: ['A2 und B2', 'A1 und A2', 'B1 und B2', 'Nebeneinander, egal welche'], a: 0, ex: 'A2 und B2 – zwei Kanäle, elektrisch am günstigsten. A1+A2 wäre derselbe Kanal (Single-Channel).' },
+  // LZ4 – Sicherheit & Reihenfolge
+  { lz: 'LZ4', t: 'mc', q: 'Was tust du, bevor du einen PC öffnest?', o: ['Netzteil ausschalten, Netzkabel ziehen und kurz den Power-Knopf drücken', 'Nur Windows herunterfahren – das reicht', 'Den PC im Energiesparmodus lassen', 'Die Lüfter mit dem Finger anhalten'], a: 0, ex: 'Erst wenn das Netzkabel gezogen ist, liegt keine Standby-Spannung mehr an. Der Power-Knopf baut Restladung ab.' },
+  { lz: 'LZ4', t: 'mc', q: 'Wozu trägst du beim Schrauben ein ESD-Armband?', o: ['Es leitet elektrostatische Ladung ab, damit keine Entladung empfindliche Chips beschädigt.', 'Es schützt dich vor der 230-V-Netzspannung.', 'Es misst, ob Bauteile defekt sind.', 'Es verhindert Kratzer am Gehäuse.'], a: 0, ex: 'ESD = elektrostatische Entladung. Das Armband sorgt für Potenzialausgleich.' },
+  { lz: 'LZ4', t: 'mc', q: 'Warum baust du RAM vor einem großen Tower-Kühler ein?', o: ['Der Kühler kann den ersten RAM-Slot und die Clips verdecken.', 'RAM muss vor der CPU gekühlt werden.', 'Sonst erkennt das UEFI den RAM nicht.', 'Wegen der Reihenfolge auf dem Kaufbeleg.'], a: 0, ex: 'Reihenfolge nach Zugänglichkeit: Was später verdeckt wird, kommt zuerst.' },
+  { lz: 'LZ4', t: 'mc', q: 'Wie viel Wärmeleitpaste trägst du auf eine Desktop-CPU auf?', o: ['Einen erbsengroßen Klecks in die Mitte', 'Die ganze Spritze – viel hilft viel', 'Gar keine, der Kühler hat Metallkontakt', 'Paste auch auf die Kontakte der Unterseite'], a: 0, ex: 'Ein kleiner Klecks reicht – der Anpressdruck verteilt ihn zu einem dünnen Film.' },
+  { lz: 'LZ4', t: 'match', q: 'Ausbau einer M.2-SSD, die unter der Grafikkarte liegt: Bring die Schritte in die richtige Reihenfolge.', p: [['Netzkabel ziehen', '1.'], ['Seitenteil abnehmen', '2.'], ['Grafikkarte ausbauen', '3.'], ['M.2-SSD ausbauen', '4.']], ex: 'Erst Strom weg, dann öffnen, dann das verdeckende Teil (GPU), dann die SSD.' },
+  { lz: 'LZ4', t: 'mc', q: 'Wie richtest du die Gehäuselüfter sinnvoll aus?', o: ['Vorne Luft hinein, hinten (und oben) hinaus', 'Alle Lüfter blasen nach außen', 'Vorne hinaus, hinten hinein', 'Alle Lüfter blasen nach innen'], a: 0, ex: 'Kühle Luft vorne rein, warme Luft hinten/oben raus – warme Luft steigt ohnehin nach oben.' },
+  { lz: 'LZ4', t: 'mc', q: 'Du baust die CPU ein. Was ist richtig?', o: ['Dreieck-Markierung ausrichten, CPU ohne Druck einlegen, Hebel schließen', 'Fest andrücken, bis sie einrastet', 'Mit einer Pinzette die Pins im Sockel geraderichten', 'Erst den Kühler montieren, dann die CPU darunterschieben'], a: 0, ex: 'Die CPU fällt ohne Kraft in den Sockel. Der Hebel mit Andruckrahmen fixiert sie.' },
+  // LZ5 – Kompatibilität
+  { lz: 'LZ5', t: 'mc', q: 'Ein Mainboard hat den Sockel AM5. Welche CPU passt?', o: ['AMD Ryzen 7 9700X (AM5)', 'AMD Ryzen 7 5700X (AM4)', 'Intel Core Ultra 7 265K (LGA1851)', 'Intel Core i5-14600K (LGA1700)'], a: 0, ex: 'Nur eine CPU mit Sockel AM5 passt in ein AM5-Mainboard.' },
+  { lz: 'LZ5', t: 'mc', q: 'Das Gehäuse erlaubt Grafikkarten bis 320 mm. Die Wunschkarte ist 336 mm lang. Was gilt?', o: ['Sie passt nicht – sie ist 16 mm zu lang.', 'Sie passt, Grafikkarten dürfen etwas überstehen.', 'Sie passt, wenn man das Seitenteil weglässt.', 'Die Länge spielt nur bei ITX-Gehäusen eine Rolle.'], a: 0, ex: 'Die maximale GPU-Länge ist eine harte Grenze – sonst stößt die Karte an Lüfter oder Front.' },
+  { lz: 'LZ5', t: 'num', q: 'CPU 120 W, Grafikkarte 300 W, Rest (Board, RAM, SSD, Lüfter) 80 W. Wie viel Watt brauchen die Komponenten zusammen höchstens?', a: 500, unit: 'W', ex: '120 + 300 + 80 = 500 W. Dazu kommt Reserve – ein 650- bis 750-W-Netzteil wäre sinnvoll.' },
+  { lz: 'LZ5', t: 'mc', q: 'Passt ein Notebook-RAM-Modul (SO-DIMM) in ein Desktop-Mainboard?', o: ['Nein – Desktop-Boards brauchen DIMM-Module, SO-DIMM ist kürzer.', 'Ja, mit DDR5 passt alles überall.', 'Ja, aber nur in Slot A1.', 'Nur, wenn es DDR4 ist.'], a: 0, ex: 'SO-DIMM (Notebook) und DIMM (Desktop) sind unterschiedlich lang und haben andere Pinzahlen.' },
+  { lz: 'LZ5', t: 'mc', q: 'Das Mainboard unterstützt DDR5. Welches Kit wählst du?', o: ['2 × 16 GB DDR5-6000, DIMM', '2 × 16 GB DDR4-3200, DIMM', '2 × 16 GB DDR5-5600, SO-DIMM', '1 × 32 GB DDR3-1600, DIMM'], a: 0, ex: 'Passend sind DDR5 und das Desktop-Format DIMM.' },
+  { lz: 'LZ5', t: 'mc', q: 'Passt ein Micro-ATX-Mainboard in ein ATX-Midi-Tower-Gehäuse?', o: ['Ja – ATX-Gehäuse haben auch die Bohrungen für Micro-ATX und Mini-ITX.', 'Nein, in ATX-Gehäuse passen nur ATX-Boards.', 'Nur mit einem speziellen Adapterblech.', 'Nur, wenn man das Netzteil ausbaut.'], a: 0, ex: 'Die Formfaktoren bauen aufeinander auf: Ein größeres Gehäuse nimmt kleinere Boards auf.' },
+  { lz: 'LZ5', t: 'mc', q: 'Die Grafikkarte empfiehlt ein 750-W-Netzteil. Verbaut ist eines mit 550 W. Was ist richtig?', o: ['Das Netzteil ist zu schwach – unter Last kann der PC abstürzen oder abschalten.', 'Kein Problem, die Karte drosselt sich automatisch auf 550 W.', 'Passt, weil 550 W mehr als die Hälfte von 750 W sind.', 'Die Empfehlung gilt nur für Übertakter.'], a: 0, ex: 'Lastspitzen der Grafikkarte können ein zu schwaches Netzteil überfordern – es schaltet ab.' }
+];
+var QPLAN = { LZ1: 2, LZ2: 4, LZ3: 2, LZ4: 2, LZ5: 2 };
+var CKDEF = [
+  ['prep', 'LZ4', 'Arbeitsplatz vorbereitet (ESD-Schutz)'], ['sel_psu', 'LZ5', 'Netzteil passend gewählt'], ['sel_cpu', 'LZ5', 'CPU passend zum Sockel gewählt'],
+  ['sel_ram', 'LZ5', 'RAM-Kit passend gewählt (DDR5-DIMM)'], ['sel_ssd', 'LZ5', 'SSD passend gewählt (NVMe, M.2)'], ['sel_gpu', 'LZ5', 'Grafikkarte passend gewählt (Länge, Netzteil)'],
+  ['pl_psu', 'LZ1', 'Netzteil erkannt und richtig platziert'], ['pl_board', 'LZ1', 'Mainboard erkannt und richtig platziert'], ['pl_cooler', 'LZ1', 'Kühler (AIO) erkannt und richtig platziert'],
+  ['pl_fans', 'LZ1', 'Gehäuselüfter erkannt und richtig platziert'], ['pl_cpu', 'LZ3', 'CPU in den Sockel gesetzt'], ['pl_ram', 'LZ3', 'RAM in A2/B2 (Dual-Channel) gesetzt'],
+  ['pl_ssd', 'LZ3', 'SSD in den M.2-Slot gesetzt'], ['pl_gpu', 'LZ3', 'Grafikkarte in den PCIe-x16-Slot gesetzt'], ['pl_atx', 'LZ3', '24-Pin-Stecker an den ATX-Anschluss'],
+  ['pl_eps', 'LZ3', '8-Pin-Stecker an den EPS-Anschluss'], ['pl_pgpu', 'LZ3', '16-Pin-Stecker an die Grafikkarte'], ['pl_fp', 'LZ3', 'Front-Panel-Kabel an F_PANEL'],
+  ['paste', 'LZ4', 'Wärmeleitpaste richtig dosiert'], ['airflow', 'LZ4', 'Luftstrom: vorne hinein, hinten hinaus'], ['order', 'LZ4', 'Sinnvolle Reihenfolge eingehalten']
+];
+var KN = { phase: 'intro', ctx: null, qs: [], qi: 0, res: [], result: null };
+
+function knInit(){ knIntro(); }
+function knIntro(){
+  KN.phase = 'intro';
+  var root = $('#knRoot');
+  root.innerHTML = '<div class="card kn-intro"><h3 style="margin-top:0">③ Kompetenznachweis</h3>' +
+    '<p>Jetzt zeigst du, was du kannst – <b>ohne Tipps</b> und an einem <b>anderen PC</b>: kompaktes Gehäuse, Micro-ATX-Mainboard mit anderem Layout, AIO-Wasserkühlung statt Tower-Kühler. Die Bauteile tragen keine Namen – du musst sie erkennen.</p>' +
+    '<div class="subh">Ablauf</div><ul><li><b>Teil A – Zusammenbau nach Kundenauftrag:</b> Wähle die passenden Teile, baue sie in sinnvoller Reihenfolge ein, verkable alles und starte den PC. Bewertet werden 21 Prüfpunkte.</li>' +
+    '<li><b>Teil B – 12 Wissensfragen</b> (Bild erkennen, Stelle anklicken, Zuordnen, Zahl, Multiple Choice).</li>' +
+    '<li>Beide Teile zählen je 50 %. <b>Bestanden ab ' + PASS + ' %.</b> Gemeldet wird dein bestes Ergebnis.</li></ul>' +
+    '<div class="subh">Dein Name (für das Ergebnisblatt)</div><input type="text" id="knName" value="' + esc(STORE.name || '') + '" placeholder="Vorname Nachname">' +
+    (STORE.best != null ? '<div class="msg">Bisher bestes Ergebnis: <b>' + STORE.best + ' %</b> (' + (STORE.best >= PASS ? 'bestanden ✅' : 'noch nicht bestanden') + ')</div>' : '') +
+    '<div class="btnrow"><button class="primary" id="knStart">▶ Kompetenznachweis starten</button></div></div>';
+  $('#knName').onchange = function(){ STORE.name = this.value.trim(); save(); };
+  $('#knStart').onclick = function(){ STORE.name = $('#knName').value.trim(); save(); knBuild(); };
+}
+function knBuild(){
+  KN.phase = 'build';
+  var root = $('#knRoot');
+  root.innerHTML = '<div class="work"><aside class="left card"><div class="subh">Teilekiste</div><div id="knParts"></div></aside>' +
+    '<div class="stage card" id="knStage"><div class="stagebar"><span class="small muted"><b>Teil A:</b> Ziehe die Teile an ihren Platz oder tippe erst das Teil, dann den Platz an. Eingebaute Lüfter antippen = Richtung ändern.</span></div>' +
+    '<svg id="knSvg" class="pcsvg" viewBox="0 -22 664 606" role="img" aria-label="PC für den Kompetenznachweis"></svg></div>' +
+    '<aside class="right card info" id="knRight"></aside></div>';
+  var c = newCtx('kn', 'B', $('#knSvg'));
+  c.partsBox = H('div', 'parts'); $('#knParts').appendChild(c.partsBox);
+  c.pop = H('div', 'pop'); $('#knStage').appendChild(c.pop);
+  c.onMsg = knMsg; c.onChange = knRight;
+  c.locked = true; KN.ctx = c;
+  var o = shuffle([0, 1, 2, 3]), P = ['Ich entlade mich am Gehäusemetall bzw. lege ein ESD-Armband an und lege die Teile auf eine antistatische Unterlage.', 'Ich schalte den PC erst einmal ein, um zu prüfen, ob das Netzteil funktioniert.', 'Ich nehme alle Teile aus den Schutzhüllen und sortiere sie auf dem Teppich.', 'Ich fange direkt mit der Grafikkarte an – das ist das wichtigste Teil.'];
+  c.pop.innerHTML = '<h3>🧰 Bevor es losgeht</h3><p style="margin:0 0 6px">Du hast alle Teile bekommen. Womit beginnst du?</p><div class="opts">' + o.map(function(i){ return '<button data-i="' + i + '">' + esc(P[i]) + '</button>'; }).join('') + '</div>';
+  $$('[data-i]', c.pop).forEach(function(b){ b.onclick = function(){ ck(c, 'prep', b.getAttribute('data-i') === '0'); c.pop.hidden = true; c.locked = false; say(c, '', 'Los geht’s! Wähle die Teile passend zum Kundenauftrag.'); renderBuild(c); }; });
+  renderBuild(c); knRight();
+}
+function knRight(){
+  var c = KN.ctx, S = c.S, box = $('#knRight'); if (!box) return;
+  var n = (S.psu ? 1 : 0) + (S.board ? 1 : 0) + (S.cpu ? 1 : 0) + c.ram + (S.cooler ? 1 : 0) + (S.ssd ? 1 : 0) + (S.gpu ? 1 : 0) + c.fans + ['atx', 'eps', 'gpu', 'fp'].filter(function(k){ return S.plugs[k]; }).length + (S.panel ? 1 : 0) + (S.power ? 1 : 0);
+  var h = auftragHTML(c.kit) + '<div class="subh">Fortschritt</div><div class="bar"><i style="width:' + Math.round(n / 17 * 100) + '%"></i></div><div class="small muted" style="margin-top:4px">' + n + ' von 17 Arbeitsschritten</div>';
+  h += '<div id="knMsg"></div>';
+  if (!c.posted) h += '<div class="btnrow"><button id="knPanel"' + (S.panel || c.locked ? ' disabled' : '') + '>🪟 Seitenteil schließen</button><button class="primary" id="knPower"' + (S.panel && !S.power ? '' : ' disabled') + '>🔌 Einstecken & ⏻ Einschalten</button></div>';
+  else h += '<div class="msg ok">✅ Teil A abgeschlossen.</div><div class="btnrow"><button class="primary" id="knToB">Weiter zu Teil B: Wissensfragen →</button></div>';
+  box.innerHTML = h; knMsg();
+  var pb = $('#knPanel'); if (pb) pb.onclick = function(){ closePanel(c); };
+  var pw = $('#knPower'); if (pw) pw.onclick = function(){ pw.disabled = true; pb.disabled = true; powerOn(c, function(){ ck(c, 'airflow', airOK(S)); ck(c, 'order', true); c.posted = true; knRight(); }); };
+  var tb = $('#knToB'); if (tb) tb.onclick = knQuizStart;
+}
+function knMsg(){ var c = KN.ctx, box = $('#knMsg'); if (!box) return; box.innerHTML = c.msg ? '<div class="msg ' + c.msg.cls + '">' + c.msg.html + '</div>' : ''; }
+
+/* ---------- Teil B ---------- */
+function knQuizStart(){
+  var qs = [];
+  Object.keys(QPLAN).forEach(function(lz){ qs = qs.concat(shuffle(QS.filter(function(q){ return q.lz === lz; })).slice(0, QPLAN[lz])); });
+  KN.qs = shuffle(qs); KN.qi = 0; KN.res = []; KN.phase = 'quiz';
+  knQ();
+}
+function knQ(){
+  var q = KN.qs[KN.qi], root = $('#knRoot'), checked = false, sel = null, hotPt = null;
+  var h = '<div class="card q"><div class="subh">Teil B · Frage ' + (KN.qi + 1) + ' von ' + KN.qs.length + '</div><div class="bar"><i style="width:' + Math.round(KN.qi / KN.qs.length * 100) + '%"></i></div>';
+  h += '<h3>' + esc(q.q) + '</h3><div id="qBody"></div><div id="qFb"></div><div class="btnrow"><button class="primary" id="qCheck">Antwort prüfen</button></div></div>';
+  root.innerHTML = h;
+  var body = $('#qBody'), order = null;
+  if (q.t === 'mc' || q.t === 'img'){
+    if (q.t === 'img'){ var ic = icon(q.icon, 'B'); ic.setAttribute('class', 'qsvg'); ic.style.maxWidth = '260px'; ic.style.background = 'var(--canvas)'; ic.style.borderRadius = '12px'; body.appendChild(ic); }
+    order = shuffle(q.o.map(function(o, i){ return i; }));
+    var od = H('div', 'opts'); order.forEach(function(i){ var b = H('button', '', esc(q.o[i])); b.setAttribute('data-i', i); b.onclick = function(){ if (checked) return; sel = i; $$('button', od).forEach(function(x){ x.classList.toggle('active', x === b); }); }; od.appendChild(b); });
+    body.appendChild(od);
+  } else if (q.t === 'match'){
+    var rights = shuffle(q.p.map(function(p){ return p[1]; }));
+    var md = H('div', 'match');
+    q.p.forEach(function(p, i){ md.appendChild(H('div', 'l', esc(p[0]))); var s = H('select', ''); s.setAttribute('data-i', i); s.innerHTML = '<option value="">– bitte wählen –</option>' + rights.map(function(r){ return '<option>' + esc(r) + '</option>'; }).join(''); md.appendChild(s); });
+    body.appendChild(md);
+  } else if (q.t === 'num'){
+    body.innerHTML = '<div style="display:flex;gap:8px;align-items:center;max-width:280px"><input type="text" inputmode="decimal" id="qNum" placeholder="Zahl"><b>' + esc(q.unit) + '</b></div>';
+  } else if (q.t === 'hot'){
+    var K = { key: 'B', g: GEO.B, p: PAL.B }, b = withKZ(BENCH_KZ, function(){ return pb(K.g.board, 0, 36); });
+    var svg = S_('svg', { viewBox: (b.x - 10) + ' ' + (b.y - 10) + ' ' + (b.w + 20) + ' ' + (b.h + 20), 'class': 'qsvg pcsvg' });
+    body.appendChild(svg); withKZ(BENCH_KZ, function(){ drawBoard(svg, K, null, true); });
+    var mk = S_('circle', { r: 6, fill: 'none', stroke: '#ffd166', 'stroke-width': 3, cx: -50, cy: -50 }, svg);
+    svg.addEventListener('click', function(ev){ if (checked) return; var p = svgPoint(svg, ev.clientX, ev.clientY); hotPt = p; mk.setAttribute('cx', p.x); mk.setAttribute('cy', p.y); });
+    body.appendChild(H('p', 'small muted', 'Tippe/klicke auf die gesuchte Stelle – der gelbe Kreis zeigt deine Auswahl.'));
+  }
+  $('#qCheck').onclick = function(){
+    if (checked){ KN.qi++; if (KN.qi >= KN.qs.length) knResult(); else knQ(); return; }
+    var ok = false, answered = true;
+    if (q.t === 'mc' || q.t === 'img'){ if (sel == null) answered = false; else { ok = sel === q.a; $$('#qBody .opts button').forEach(function(x){ var i = +x.getAttribute('data-i'); if (i === q.a) x.classList.add('right'); else if (i === sel) x.classList.add('wrong'); }); } }
+    else if (q.t === 'match'){ var ss = $$('#qBody select'); if (ss.some(function(s){ return !s.value; })) answered = false; else { ok = ss.every(function(s){ return s.value === q.p[+s.getAttribute('data-i')][1]; }); ss.forEach(function(s){ var r = s.value === q.p[+s.getAttribute('data-i')][1]; s.style.borderColor = r ? 'var(--ok)' : 'var(--bad)'; s.disabled = true; }); } }
+    else if (q.t === 'num'){ var v = parseFloat(String($('#qNum').value).replace(',', '.')); if (isNaN(v)) answered = false; else { ok = Math.abs(v - q.a) < 0.001; $('#qNum').disabled = true; } }
+    else if (q.t === 'hot'){
+      if (!hotPt) answered = false;
+      else {
+        var K2 = { key: 'B', g: GEO.B, p: PAL.B }, rs = withKZ(BENCH_KZ, function(){ return hotRects(K2); }).filter(function(h){ return h.id === q.target; });
+        ok = rs.some(function(h){ return inR(h.r, hotPt.x, hotPt.y, 6); });
+        var sv = $('#qBody svg'); rs.forEach(function(h){ R(sv, pad(h.r, 4), { rx: 3, fill: 'rgba(31,157,85,.25)', stroke: '#1f9d55', 'stroke-width': 2.5 }); });
+      }
+    }
+    if (!answered){ $('#qFb').innerHTML = '<div class="msg warn">Bitte zuerst antworten.</div>'; return; }
+    checked = true;
+    KN.res.push({ q: q, ok: ok });
+    var extra = (!ok && q.t === 'match') ? '<br><span class="small">Richtig: ' + q.p.map(function(p){ return esc(p[0]) + ' → ' + esc(p[1]); }).join(' · ') + '</span>' : (!ok && q.t === 'num') ? '<br><span class="small">Richtig: ' + q.a + ' ' + esc(q.unit) + '</span>' : '';
+    $('#qFb').innerHTML = '<div class="msg ' + (ok ? 'ok' : 'bad') + '">' + (ok ? '✅ Richtig! ' : '⛔ Leider falsch. ') + esc(q.ex) + extra + '</div>';
+    $('#qCheck').textContent = KN.qi === KN.qs.length - 1 ? 'Zur Auswertung →' : 'Nächste Frage →';
+  };
+}
+
+/* ---------- Auswertung ---------- */
+function knResult(){
+  KN.phase = 'result';
+  var c = KN.ctx, CK = c.CK;
+  var aOk = CKDEF.filter(function(d){ return CK[d[0]] === true; }).length;
+  var bOk = KN.res.filter(function(r){ return r.ok; }).length;
+  var score = Math.round(50 * aOk / CKDEF.length + 50 * bOk / KN.res.length);
+  STORE.tries = (STORE.tries || 0) + 1; scReport(score);
+  var lzr = LZ.map(function(l){
+    var a = CKDEF.filter(function(d){ return d[1] === l.id; }), b = KN.res.filter(function(r){ return r.q.lz === l.id; });
+    var got = a.filter(function(d){ return CK[d[0]] === true; }).length + b.filter(function(r){ return r.ok; }).length, tot = a.length + b.length;
+    return { l: l, p: tot ? Math.round(got / tot * 100) : 0, got: got, tot: tot };
+  });
+  var passed = score >= PASS, date = new Date().toLocaleDateString('de-DE');
+  var h = '<div class="card" id="knRes" style="max-width:980px;margin:0 auto">';
+  h += '<div class="subh">Ergebnis Kompetenznachweis „Aufbau eines modernen PCs“</div>';
+  h += '<div class="resgrid"><div class="big" style="color:' + (passed ? 'var(--ok)' : 'var(--bad)') + '">' + score + ' %</div><div><span class="chip ' + (passed ? 'ok' : 'bad') + '">' + (passed ? '✅ bestanden' : '✖ noch nicht bestanden') + ' (ab ' + PASS + ' %)</span><br>' +
+    '<span class="small">Teil A Zusammenbau: ' + aOk + ' / ' + CKDEF.length + ' Prüfpunkte · Teil B Wissen: ' + bOk + ' / ' + KN.res.length + ' Fragen</span><br>' +
+    '<span class="small muted">' + esc(STORE.name || 'ohne Namen') + ' · ' + date + ' · Übungen erledigt: ' + STORE.ueb.length + ' / ' + USTEPS.length + ' · bestes Ergebnis: ' + STORE.best + ' %</span></div></div>';
+  h += '<div class="subh">Auswertung nach Lernzielen</div>';
+  lzr.forEach(function(r){
+    var cls = r.p >= 80 ? 'ok' : r.p >= 50 ? 'warn' : 'bad', st = r.p >= 80 ? '✔ erreicht' : r.p >= 50 ? '½ teilweise' : '✖ noch nicht';
+    h += '<div class="lzrow"><div><b>' + r.l.id + ' · ' + esc(r.l.t) + '</b><br><span class="small muted">' + esc(r.l.d) + '</span></div><div><div class="bar ' + cls + '"><i style="width:' + r.p + '%"></i></div><span class="small">' + r.got + ' / ' + r.tot + ' (' + r.p + ' %)</span></div><div><span class="chip ' + cls + '">' + st + '</span></div></div>';
+    if (r.p < 80) h += '<div class="small" style="padding:4px 0 8px">📌 <b>Empfehlung:</b> ' + esc(LZ_TIP[r.l.id]) + '</div>';
+  });
+  h += '<div class="subh">Protokoll Teil A – Zusammenbau</div><div class="tblwrap"><table class="cmp proto"><tbody>' +
+    CKDEF.map(function(d){ var v = CK[d[0]] === true; return '<tr><td>' + (v ? '✅' : '❌') + '</td><td>' + esc(d[2]) + '</td><td class="muted">' + d[1] + '</td></tr>'; }).join('') + '</tbody></table></div>';
+  h += '<div class="subh">Protokoll Teil B – Wissensfragen</div><div class="tblwrap"><table class="cmp proto"><tbody>' +
+    KN.res.map(function(r){ return '<tr><td>' + (r.ok ? '✅' : '❌') + '</td><td>' + esc(r.q.q) + '</td><td class="muted">' + r.q.lz + '</td></tr>'; }).join('') + '</tbody></table></div>';
+  h += '<div class="noprint"><div class="subh">Name für den Ausdruck</div><input type="text" id="resName" value="' + esc(STORE.name || '') + '" placeholder="Vorname Nachname">' +
+    '<div class="btnrow"><button class="primary" id="resPrint">🖨 Ergebnis drucken / als PDF</button><button id="resAgain">↺ Neuer Versuch</button><button id="resUeb">② Zurück zum Üben</button></div>' +
+    (SC.ok ? '<div class="msg ok small">Dein bestes Ergebnis (' + STORE.best + ' %) wurde an die Lernplattform übertragen.</div>' : '<div class="msg small">Vorschau-Modus: Ohne Lernplattform wird nichts übertragen.</div>') + '</div>';
+  h += '</div>';
+  $('#knRoot').innerHTML = h;
+  $('#resName').oninput = function(){ STORE.name = this.value.trim(); save(); };
+  $('#resPrint').onclick = function(){ var n = STORE.name ? esc(STORE.name) : 'ohne Namen'; var sp = $('#knRes .resgrid .muted'); if (sp) sp.innerHTML = n + ' · ' + date + ' · Übungen erledigt: ' + STORE.ueb.length + ' / ' + USTEPS.length + ' · bestes Ergebnis: ' + STORE.best + ' %'; printResult('#knRes'); };
+  $('#resAgain').onclick = knIntro;
+  $('#resUeb').onclick = function(){ showTab('ueb'); };
+}
+function printResult(boxSel){
+  var css = ROOT.querySelector('style').textContent.split(':host').join('body').split(':root').join('body');
+  var box = $(boxSel).cloneNode(true); $$('.noprint', box).forEach(function(n){ n.remove(); });
+  var w = null; try { w = window.open('', '_blank'); } catch (_){}
+  if (!w){ window.print(); return; }
+  w.document.write('<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Ergebnis – Aufbau eines modernen PCs</title><style>' + css + ' body{margin:20px;background:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}</style></head><body>' + box.outerHTML + '</body></html>');
+  w.document.close(); setTimeout(function(){ try { w.focus(); w.print(); } catch (_){} }, 300);
+}
+
+/* ================== Start ================== */
+function showTab(t){
+  $$('#tabs button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab') === t); });
+  $$('.tab').forEach(function(s){ s.hidden = s.id !== 'tab-' + t; });
+  try { window.scrollTo(0, 0); } catch (_){}
+}
+function init(){
+  scInit();
+  $('#lzGrid').innerHTML = LZ.map(function(l){ return '<div class="lzt"><b>' + l.id + ' · ' + esc(l.t) + '</b><span>' + esc(l.d) + '</span></div>'; }).join('');
+  $$('#tabs button').forEach(function(b){ b.onclick = function(){ showTab(b.getAttribute('data-tab')); }; });
+  expInit(); uebInit(); knInit();
+}
+init();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1478 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strukturierte Verkabelung – Planspiel (SCORM)</title>
+<style>
+:root{
+  --ink:#172033; --muted:#5b6476; --paper:#f4f2ec; --card:#ffffff; --line:#dcd6c8;
+  --accent:#0e7c86; --accent-d:#0a5f67; --ok:#15803d; --warn:#b45309; --err:#b91c1c;
+  --sv:#9f1239; --gv:#6d28d9; --ev:#047857;
+  --os2:#e2b007; --om4:#14a3b8; --cat7:#2563eb; --cat5:#8b95a7;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+#app{min-height:100vh;display:flex;flex-direction:column;background:var(--paper);overflow:auto}
+button{font:inherit}
+header.top{display:flex;align-items:center;gap:16px;padding:12px 18px;background:var(--ink);color:#fff;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto}
+.brand h1{font-size:18px;margin:0;letter-spacing:.2px}
+.brand p{margin:0;font-size:12px;opacity:.72}
+.tabs{display:flex;gap:3px;background:rgba(255,255,255,.08);padding:4px;border-radius:10px;flex-wrap:wrap}
+.tabs button{background:none;border:0;color:#cfd6e4;padding:7px 13px;border-radius:7px;font-weight:600;cursor:pointer}
+.tabs button:hover{color:#fff}
+.tabs button.active{background:#fff;color:var(--ink)}
+.hbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:8px;padding:7px 10px;cursor:pointer;font-weight:600}
+.hbtn:hover{background:rgba(255,255,255,.18)}
+main{flex:1;padding:14px 16px 28px}
+.tab{display:none}.tab.active{display:block}
+
+.tabs button.cheat{margin-left:8px;color:#ffe08a;box-shadow:inset 0 0 0 1px rgba(255,224,138,.45)}
+.tabs button.cheat.active{background:#ffe08a;color:var(--ink);box-shadow:none}
+.steps{margin:6px 0 12px;padding-left:22px;font-size:13.5px}
+.steps li{margin:4px 0}
+.more{background:none;border:0;color:var(--accent);font-weight:700;cursor:pointer;padding:2px 0 0 31px;font-size:12px}
+.goal:not(.all) .issues li.x{display:none}
+.goal:not(.open) .more{display:none}
+a.goto{color:var(--accent);font-weight:700;text-decoration:none}
+a.goto:hover{text-decoration:underline}
+/* Wissenscheck */
+.qcard{max-width:760px;margin:0 auto 12px}
+.qprog{display:flex;gap:5px;margin:0 0 12px}
+.qprog i{flex:1;height:6px;border-radius:9px;background:#e6e1d4}
+.qprog i.ans{background:#9cc8cc}.qprog i.cur{background:var(--accent)}
+.qnav{display:flex;gap:8px;justify-content:space-between;margin-top:14px}
+.subh{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:18px auto 8px;max-width:760px}
+.rev{display:flex;gap:10px;align-items:flex-start}
+.rev .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px;flex:none;margin-top:1px}
+.rev p{margin:3px 0;font-size:13px}
+.okline{max-width:760px;margin:0 auto;font-size:13px;color:var(--muted)}
+/* Cheat Sheet */
+.cs-head{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.cs-head h2{margin-right:auto}
+.cs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px;margin-top:14px}
+.cs-grid .wide{grid-column:1/-1}
+.cs h3{font-size:12px}
+.cs table{width:100%;border-collapse:collapse;font-size:13px}
+.cs th,.cs td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.cs th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:#f6f3eb}
+.cs tr:last-child td{border-bottom:0}
+.cs dl{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;margin:0;font-size:13px}
+.cs dt{font-weight:700}.cs dd{margin:0;color:#333b4c}
+.cs ul{margin:4px 0;padding-left:18px;font-size:13px}.cs li{margin:3px 0}
+.chip{display:inline-flex;align-items:center;gap:6px;font-weight:700}
+/* Nachschlage-Leiste */
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(430px,94vw);background:#fff;border-left:1px solid var(--line);box-shadow:-14px 0 34px rgba(23,32,51,.18);transform:translateX(105%);visibility:hidden;transition:transform .22s ease,visibility .22s;z-index:40;display:flex;flex-direction:column}
+.drawer.open{transform:none;visibility:visible}
+.drawer-h{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);background:#fff8dc}
+.drawer-h b{margin-right:auto;font-size:15px}
+.drawer-b{overflow:auto;padding:4px 16px 24px;flex:1}
+.drawer details{border-bottom:1px solid var(--line)}
+.drawer summary{cursor:pointer;font-weight:700;font-size:14px;padding:11px 0;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.drawer summary::-webkit-details-marker{display:none}
+.drawer summary::after{content:'+';font-size:18px;color:var(--muted);font-weight:400}
+.drawer details[open] summary::after{content:'−'}
+.drawer details[open] summary{color:var(--accent)}
+.drawer .sec{padding:0 0 12px}
+.drawer table{font-size:12.5px}
+.drawer dl{grid-template-columns:1fr;gap:1px 0}
+.drawer dd{margin-bottom:6px}
+.drawer .foot{font-size:12px;color:var(--muted);margin-top:12px}
+.tool.cs-btn{background:#fff8dc;border-color:#e6c75c}
+.tool.cs-btn.active{background:#ffe08a;color:var(--ink);border-color:#d9b440}
+@media print{.drawer{display:none}}
+@media (min-width:1100px){
+  #app.drawer-open main,#app.drawer-open header.top{padding-right:calc(min(430px,94vw) + 16px)}
+  #app.drawer-open .workspace{grid-template-columns:minmax(0,1fr)}
+  #app.drawer-open .side{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+}
+.lmsbadge{font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);white-space:nowrap}
+.lmsbadge.pass{background:#15803d;border-color:#15803d}
+.lmsinfo{margin-top:10px;padding:9px 11px;border-radius:8px;background:#e6f4f5;font-size:12.5px;color:#0a5f67}
+/* Toolbar */
+.toolbar{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+.tgroup{display:flex;flex-direction:column;gap:4px}
+.tgroup.end{margin-left:auto}
+.row{display:flex;gap:5px;flex-wrap:wrap}
+.tlabel{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.tool{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fbfaf7;border-radius:8px;padding:6px 10px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;white-space:nowrap}
+.tool:hover{border-color:#a9a18c}
+.tool.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tool:disabled{opacity:.45;cursor:default}
+.tool.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tool.primary:hover{background:var(--accent-d)}
+.tool.teacher{background:#fff7e6;border-color:#e0b860}
+.rk{width:12px;height:16px;border-radius:2px;background:var(--c);box-shadow:inset 0 0 0 2px rgba(255,255,255,.28)}
+.ln{width:20px;height:5px;border-radius:3px;background:var(--c)}
+.ln.lwl{box-shadow:inset 0 0 0 1.5px var(--c), inset 0 0 0 2.5px rgba(255,255,255,.7)}
+.hint{margin:9px 2px;font-size:13px;color:var(--muted);min-height:20px}
+.hint b{color:var(--ink)}
+kbd{font:11px ui-monospace,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:#fff}
+
+/* Workspace */
+.workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+@media (min-width:1380px){.workspace{grid-template-columns:minmax(0,1fr) 340px}}
+.stage{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;align-self:start}
+#plan{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
+#plan[data-mode=place],#plan[data-mode=cable]{cursor:crosshair}
+#plan[data-mode=delete]{cursor:not-allowed}
+.side{display:grid;gap:12px;align-content:start}
+@media (max-width:1379px){.side{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.card h3{margin:0 0 8px;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.card p{margin:6px 0}
+.card ol,.card ul{margin:6px 0;padding-left:20px}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+#tip{position:absolute;left:0;top:0;pointer-events:none;background:var(--ink);color:#fff;font-size:12px;padding:5px 8px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .08s;z-index:5;max-width:360px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:13.5px;opacity:0;pointer-events:none;transition:all .2s;z-index:50;max-width:min(560px,92vw);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.bad{background:#7f1d1d}
+
+/* Details */
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:13px}
+.kv dt{color:var(--muted)}.kv dd{margin:0;font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:99px;background:#eef0f3;color:var(--ink)}
+.badge.prim{background:#fdf2d0;color:#7a5b00}.badge.sek{background:#d9f3f6;color:#0b5f6b}.badge.ter{background:#dfe8fd;color:#1e40af}.badge.inv{background:#fde2e2;color:#991b1b}
+.conlist{list-style:none;padding:0;margin:8px 0 0;font-size:12.5px}
+.conlist li{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-top:1px dashed var(--line)}
+.btnlink{background:none;border:0;color:var(--err);cursor:pointer;font-weight:600;padding:0;margin-top:8px}
+
+/* Material */
+.mat{display:grid;grid-template-columns:auto 1fr auto;gap:5px 9px;align-items:center;font-size:13px}
+.mat .num{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+.meter{height:7px;background:#eef0f3;border-radius:9px;overflow:hidden;margin-top:10px}
+.meter>i{display:block;height:100%;background:var(--accent);border-radius:9px;transition:width .3s}
+
+/* Check */
+.score{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.score svg{flex:none}
+.score .big{font-size:26px;font-weight:800;line-height:1}
+.goal{border-top:1px solid var(--line);padding:9px 0 7px}
+.goal-h{display:flex;align-items:center;gap:9px;cursor:pointer}
+.goal-h .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px;flex:none}
+.ic.ok{background:var(--ok)}.ic.warn{background:#d97706}.ic.fail{background:var(--err)}
+.goal-h .t{font-weight:700;font-size:13.5px}
+.goal-h .d{font-size:11.5px;color:var(--muted)}
+.goal-h .pct{margin-left:auto;white-space:nowrap;font-weight:700;font-variant-numeric:tabular-nums;font-size:13px}
+.issues{list-style:none;margin:6px 0 0 31px;padding:0;display:none}
+.goal.open .issues{display:block}
+.issues li{font-size:12.5px;padding:5px 8px;margin:4px 0;border-radius:7px;cursor:pointer;border-left:3px solid}
+.issues li.err{background:#fdf0f0;border-color:var(--err)}
+.issues li.warn{background:#fff7ea;border-color:#d97706}
+.issues li:hover{filter:brightness(.97)}
+.stale{font-size:12px;color:var(--warn);margin:4px 0 8px;display:none}
+.stale.on{display:block}
+
+/* Content pages */
+.page{max-width:1080px;margin:0 auto}
+.page h2{margin:6px 0 10px;font-size:22px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+table.norm{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+table.norm th,table.norm td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+table.norm th{background:#f1eee6;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.norm tr:last-child td{border-bottom:0}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:-1px}
+
+/* Quiz */
+.q{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:12px}
+.q h4{margin:0 0 8px;font-size:14.5px}
+.q label{display:flex;gap:9px;align-items:flex-start;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:13.5px}
+.q label:hover{background:#f6f4ee}
+.q input{margin-top:3px}
+.q.done label.right{background:#e8f6ec;font-weight:600}
+.q.done label.wrong{background:#fdeaea}
+.q .ex{display:none;margin-top:8px;font-size:13px;padding:8px 10px;border-radius:8px;background:#f1eee6}
+.q.done .ex{display:block}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted);font-weight:600}
+.field input,textarea{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+textarea{width:100%;min-height:90px;font:12px ui-monospace,monospace}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* SVG */
+.rlabel{font-size:11px;font-weight:600;fill:#4a5568}
+.rlabel.tech{fill:#0f6b5a}.rlabel.server{fill:#1d4f91}
+.halo{paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.ntext{font-size:10.5px;font-weight:800;fill:var(--ink)}
+.cab .hl{opacity:0;transition:opacity .1s}
+.cab:hover .hl{opacity:.28}
+.cab.sel .hl{opacity:.4}
+.pulse{animation:pulse 1.2s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pulse{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(1.7)}}
+.node{cursor:pointer}
+#plan[data-mode=place] .node{cursor:crosshair}
+@media print{header.top,.toolbar,.hint,.noprint{display:none!important}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand">
+      <svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true"><rect x="1" y="1" width="36" height="36" rx="9" fill="#0e7c86"/><rect x="15" y="6" width="8" height="7" rx="1.5" fill="#fff"/><rect x="6" y="18" width="7" height="6" rx="1.5" fill="#fff"/><rect x="25" y="18" width="7" height="6" rx="1.5" fill="#fff"/><path d="M19 13v3M9.5 18v-2h19v2M9.5 24v4M28.5 24v4" stroke="#fff" stroke-width="2" fill="none"/><circle cx="9.5" cy="30" r="2" fill="#e2b007"/><circle cx="28.5" cy="30" r="2" fill="#e2b007"/></svg>
+      <div><h1>Strukturierte Verkabelung</h1><p>Planspiel nach DIN EN 50173-1</p></div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-tab="plan" class="active">① Planen</button>
+      <button data-tab="quiz">② Wissenscheck</button>
+      <button data-tab="ergebnis">③ Ergebnis</button>
+      <button data-tab="cheat" class="cheat">📋 Cheat Sheet</button>
+    </nav>
+    <span class="lmsbadge" id="lmsBadge" hidden></span>
+    <button class="hbtn" id="btnFull" title="Vollbild">⛶ Vollbild</button>
+  </header>
+
+  <main>
+  <!-- ============ PLANUNG ============ -->
+  <section class="tab active" id="tab-plan">
+    <div class="toolbar">
+      <div class="tgroup"><span class="tlabel">Werkzeug</span>
+        <div class="row">
+          <button class="tool" data-mode="select" title="Auswählen und Verteiler verschieben (Taste V)"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 1l9 5-4 1-2 4z" fill="currentColor"/></svg>Auswahl</button>
+          <button class="tool" data-mode="delete" title="Verteiler oder Kabel entfernen (Taste X)"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="2"/></svg>Entfernen</button>
+        </div>
+      </div>
+      <div class="tgroup"><span class="tlabel">Verteiler platzieren</span>
+        <div class="row">
+          <button class="tool" data-mode="place" data-type="sv" title="Standortverteiler (Campus Distributor) – zentraler Verteiler des gesamten Standorts"><i class="rk" style="--c:var(--sv)"></i>SV</button>
+          <button class="tool" data-mode="place" data-type="gv" title="Gebäudeverteiler (Building Distributor) – zentraler Verteiler eines Gebäudes"><i class="rk" style="--c:var(--gv)"></i>GV</button>
+          <button class="tool" data-mode="place" data-type="ev" title="Etagenverteiler (Floor Distributor) – versorgt die Anschlussdosen einer Etage"><i class="rk" style="--c:var(--ev)"></i>EV</button>
+        </div>
+      </div>
+      <div class="tgroup"><span class="tlabel">Kabel verlegen</span>
+        <div class="row">
+          <button class="tool" data-mode="cable" data-medium="os2" title="Lichtwellenleiter Singlemode OS2 (9/125 µm) – große Reichweite"><i class="ln lwl" style="--c:var(--os2)"></i>LWL OS2</button>
+          <button class="tool" data-mode="cable" data-medium="om4" title="Lichtwellenleiter Multimode OM4 (50/125 µm)"><i class="ln lwl" style="--c:var(--om4)"></i>LWL OM4</button>
+          <button class="tool" data-mode="cable" data-medium="cat7" title="Twisted Pair Cat.7 S/FTP Verlegekabel (Klasse F / EA)"><i class="ln" style="--c:var(--cat7)"></i>Cat.7</button>
+          <button class="tool" data-mode="cable" data-medium="cat5" title="Twisted Pair Cat.5e U/UTP (Klasse D)"><i class="ln" style="--c:var(--cat5)"></i>Cat.5e</button>
+        </div>
+      </div>
+      <div class="tgroup end"><span class="tlabel">&nbsp;</span>
+        <div class="row">
+          <button class="tool cs-btn" id="btnDrawer" title="Nachschlagen, ohne die Planung zu verlassen">📋 Nachschlagen</button>
+          <button class="tool" id="btnUndo" title="Rückgängig (Strg+Z)">↶</button>
+          <button class="tool" id="btnReset" title="Planung leeren und neu beginnen">Neu</button>
+          <button class="tool teacher" id="btnSolution" hidden title="Nur Lehrkraft">Musterlösung</button>
+          <button class="tool primary" id="btnCheck">✓ Lernziele prüfen</button>
+        </div>
+      </div>
+    </div>
+    <div class="hint" id="hint"></div>
+    <div class="workspace">
+      <div class="stage" id="stage">
+        <svg id="plan" viewBox="0 0 1360 790" data-mode="select" role="application" aria-label="Grundriss Haus A und Haus B">
+          <g id="gStatic"></g><g id="gCables"></g><g id="gPreview"></g><g id="gNodes"></g><g id="gFx"></g>
+        </svg>
+        <div id="tip"></div>
+      </div>
+      <aside class="side">
+        <div class="card" id="cardTask">
+          <h3>Dein Auftrag</h3>
+          <p class="small" style="margin-top:0">Schließe alle PCs in <b>Haus A</b> und <b>Haus B</b> normgerecht an.</p>
+          <ol class="steps">
+            <li><b>Verteiler</b> in geeignete Räume setzen</li>
+            <li><b>Kabel</b> mit passendem Medium verlegen</li>
+            <li><b>Prüfen</b> und verbessern</li>
+          </ol>
+          <div id="progress"></div>
+          <p class="small muted" style="margin-bottom:0">Normwerte, Regeln und Bedienung kannst du jederzeit <a href="#" class="goto" data-cs="bereiche">📋 nachschlagen</a> – der Plan bleibt dabei sichtbar.</p>
+        </div>
+        <div class="card" id="cardDetails" hidden></div>
+        <div class="card" id="cardCheck"></div>
+      </aside>
+    </div>
+  </section>
+
+    <!-- ============ CHEAT SHEET ============ -->
+  <section class="tab" id="tab-cheat">
+    <div class="page cs" style="max-width:1200px">
+      <div class="cs-head"><h2>📋 Cheat Sheet</h2>
+        <button class="tool noprint" data-goto="plan">← zurück zur Planung</button>
+        <button class="tool noprint" id="btnCsPrint">🖨 Drucken</button></div>
+      <p class="muted" style="margin:4px 0 0">Alles zum Nachschlagen – du musst das nicht auswendig wissen, um mit der Planung zu beginnen.</p>
+      <div class="cs-grid">
+        <div class="card wide"><h3>Die drei Bereiche auf einen Blick</h3>
+          <svg viewBox="0 0 780 330" width="100%" style="display:block;max-width:760px;margin:0 auto 10px" role="img" aria-label="Hierarchie SV, GV, EV, Anschlussdose">
+          <defs><filter id="ds" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-opacity=".18"/></filter></defs>
+          <rect x="0" y="22" width="780" height="92" fill="#fdf6dd" rx="8"/><rect x="0" y="114" width="780" height="92" fill="#e3f5f7" rx="0"/><rect x="0" y="206" width="780" height="104" fill="#e7eefd" rx="8"/>
+          <text x="14" y="44" font-size="13" font-weight="800" fill="#7a5b00">PRIMÄRBEREICH</text><text x="14" y="61" font-size="11.5" fill="#7a5b00">Campus / Gelände</text>
+          <text x="14" y="136" font-size="13" font-weight="800" fill="#0b5f6b">SEKUNDÄRBEREICH</text><text x="14" y="153" font-size="11.5" fill="#0b5f6b">Gebäude / Steigbereich</text>
+          <text x="14" y="228" font-size="13" font-weight="800" fill="#1e40af">TERTIÄRBEREICH</text><text x="14" y="245" font-size="11.5" fill="#1e40af">Etage / horizontal</text>
+          <g stroke-linecap="round" fill="none">
+            <path d="M400 52 V80 H280 V118 M400 80 H520 V118" stroke="#e2b007" stroke-width="5"/>
+            <path d="M280 140 V172 H210 V210 M280 172 H350 V210 M520 140 V172 H450 V210 M520 172 H590 V210" stroke="#14a3b8" stroke-width="5"/>
+            <path d="M210 232 V258 H185 V282 M210 258 H235 V282 M350 232 V258 H325 V282 M350 258 H375 V282 M450 232 V258 H425 V282 M450 258 H475 V282 M590 232 V258 H565 V282 M590 258 H615 V282" stroke="#2563eb" stroke-width="3"/>
+          </g>
+          <g font-size="12" font-weight="800" fill="#fff" text-anchor="middle" filter="url(#ds)">
+            <rect x="372" y="30" width="56" height="24" rx="5" fill="#9f1239"/><text x="400" y="47">SV</text>
+            <rect x="252" y="118" width="56" height="24" rx="5" fill="#6d28d9"/><text x="280" y="135">GV</text>
+            <rect x="492" y="118" width="56" height="24" rx="5" fill="#6d28d9"/><text x="520" y="135">GV</text>
+            <rect x="185" y="210" width="50" height="24" rx="5" fill="#047857"/><text x="210" y="227">EV</text>
+            <rect x="325" y="210" width="50" height="24" rx="5" fill="#047857"/><text x="350" y="227">EV</text>
+            <rect x="425" y="210" width="50" height="24" rx="5" fill="#047857"/><text x="450" y="227">EV</text>
+            <rect x="565" y="210" width="50" height="24" rx="5" fill="#047857"/><text x="590" y="227">EV</text>
+          </g>
+          <g fill="#fff" stroke="#334155" stroke-width="1.5"><rect x="178" y="282" width="14" height="12" rx="2"/><rect x="228" y="282" width="14" height="12" rx="2"/><rect x="318" y="282" width="14" height="12" rx="2"/><rect x="368" y="282" width="14" height="12" rx="2"/><rect x="418" y="282" width="14" height="12" rx="2"/><rect x="468" y="282" width="14" height="12" rx="2"/><rect x="558" y="282" width="14" height="12" rx="2"/><rect x="608" y="282" width="14" height="12" rx="2"/></g>
+          <text x="400" y="312" font-size="11" fill="#334155" text-anchor="middle">Anschlussdosen (TA / TO) – dort endet der Permanent Link, PC per Patchkabel</text>
+          <g font-size="12" font-weight="700" text-anchor="end"><text x="766" y="70" fill="#7a5b00">LWL Singlemode · ≤ 1500 m</text><text x="766" y="162" fill="#0b5f6b">LWL Multimode · ≤ 500 m</text><text x="766" y="254" fill="#1e40af">Cu Twisted Pair · ≤ 90 m</text></g>
+        </svg>
+          <table>
+            <thead><tr><th>Bereich</th><th>verbindet</th><th>Medium</th><th>max. Länge</th></tr></thead>
+            <tbody>
+              <tr><td><b>Primärbereich</b><br><span class="muted">Campus / Gelände</span></td><td>SV ↔ GV</td><td><span class="dot" style="--c:var(--os2)"></span>LWL Singlemode OS2</td><td><b>1500 m</b></td></tr>
+              <tr><td><b>Sekundärbereich</b><br><span class="muted">Gebäude / Steigbereich</span></td><td>GV ↔ EV <span class="muted">(im selben Gebäude)</span></td><td><span class="dot" style="--c:var(--om4)"></span>LWL Multimode OM3/OM4</td><td><b>500 m</b></td></tr>
+              <tr><td><b>Tertiärbereich</b><br><span class="muted">Etage / horizontal</span></td><td>EV ↔ Anschlussdose <span class="muted">(auf derselben Etage)</span></td><td><span class="dot" style="--c:var(--cat7)"></span>Kupfer Cat.7 S/FTP</td><td><b>90 m</b> <span class="muted">+ 10 m Patchkabel</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card"><h3>Verteiler</h3>
+          <table>
+            <tr><td><span class="chip"><i class="rk" style="--c:var(--sv)"></i>SV</span></td><td><b>Standortverteiler</b> · genau <b>1</b> pro Standort · im Server- oder Technikraum</td></tr>
+            <tr><td><span class="chip"><i class="rk" style="--c:var(--gv)"></i>GV</span></td><td><b>Gebäudeverteiler</b> · genau <b>1</b> pro Gebäude · im Server- oder Technikraum (darf beim SV stehen)</td></tr>
+            <tr><td><span class="chip"><i class="rk" style="--c:var(--ev)"></i>EV</span></td><td><b>Etagenverteiler</b> · <b>mind. 1</b> pro Etage · im Technik- oder abschließbaren Nebenraum · so platzieren, dass jede Dose ≤ 90 m entfernt ist</td></tr>
+          </table>
+        </div>
+
+        <div class="card"><h3>Kabelmedien</h3>
+          <table>
+            <tr><td><span class="chip"><i class="ln lwl" style="--c:var(--os2)"></i>OS2</span></td><td>LWL Singlemode 9/125 µm · sehr große Reichweite (km) · <b>Primärbereich</b></td></tr>
+            <tr><td><span class="chip"><i class="ln lwl" style="--c:var(--om4)"></i>OM4</span></td><td>LWL Multimode 50/125 µm · 10 Gbit/s bis ca. 400 m · <b>Sekundärbereich</b></td></tr>
+            <tr><td><span class="chip"><i class="ln" style="--c:var(--cat7)"></i>Cat.7</span></td><td>Twisted Pair S/FTP, geschirmt · 10 Gbit/s · <b>Tertiärbereich</b></td></tr>
+            <tr><td><span class="chip"><i class="ln" style="--c:var(--cat5)"></i>Cat.5e</span></td><td>Twisted Pair U/UTP · 1 Gbit/s · für Neuinstallationen <b>veraltet</b></td></tr>
+          </table>
+        </div>
+
+        <div class="card"><h3>Planungsregeln</h3>
+          <ul>
+            <li><b>Hierarchischer Stern:</b> Jeder Verteiler hängt an genau einem Verteiler der nächsthöheren Ebene.</li>
+            <li><b>Keine Abkürzungen:</b> PC → EV → GV → SV. Keine Ebene überspringen.</li>
+            <li><b>Keine Querverbindungen</b> zwischen Verteilern derselben Ebene.</li>
+            <li><b>Jeder PC</b> hat genau ein Kabel zum EV seiner Etage.</li>
+            <li><b>Zu lang?</b> EV zentraler setzen oder einen zweiten EV auf der Etage einplanen.</li>
+            <li><b>Nie im Flur:</b> Flure sind Fluchtwege.</li>
+          </ul>
+        </div>
+
+        <div class="card"><h3>Warum LWL zwischen Gebäuden?</h3>
+          <ul>
+            <li><b>Galvanische Trennung:</b> Jedes Gebäude hat eine eigene Erdung. Kupfer würde Ausgleichsströme und Überspannungen (Blitz) übertragen.</li>
+            <li><b>Reichweite:</b> Kupfer schafft nur 100 m, Singlemode-LWL mehrere Kilometer.</li>
+            <li><b>EMV:</b> LWL ist unempfindlich gegen elektromagnetische Störungen, z. B. von Werkstattmaschinen.</li>
+          </ul>
+        </div>
+
+        <div class="card"><h3>Begriffe</h3>
+          <dl>
+            <dt>Permanent Link</dt><dd>fest verlegtes Kabel vom Patchfeld im EV bis zur Dose · max. 90 m</dd>
+            <dt>Channel</dt><dd>gesamte Strecke inkl. Patchkabel · max. 100 m</dd>
+            <dt>TA / TO</dt><dd>Anschlussdose (Telecommunications Outlet)</dd>
+            <dt>HE</dt><dd>Hauseinführung – hier kommt die Erdtrasse ins Gebäude</dd>
+            <dt>Steigschacht</dt><dd>senkrechter Kabelweg zwischen den Etagen</dd>
+            <dt>CD / BD / FD</dt><dd>englische Normbegriffe für SV / GV / EV</dd>
+          </dl>
+        </div>
+
+        <div class="card"><h3>Bedienung</h3>
+          <dl>
+            <dt>Verteiler setzen</dt><dd>SV, GV oder EV wählen → in einen Raum klicken</dd>
+            <dt>Kabel verlegen</dt><dd>Medium wählen → Start anklicken → Ziel anklicken. Bei Verteilern bleibt der Start aktiv.</dd>
+            <dt>Ganzer Raum</dt><dd>Start ist ein Verteiler → in einen Raum klicken → alle freien PCs werden angeschlossen</dd>
+            <dt>Verschieben</dt><dd>Werkzeug „Auswahl“ → Verteiler ziehen</dd>
+            <dt>Tasten</dt><dd><kbd>Esc</kbd> abbrechen · <kbd>Entf</kbd> löschen · <kbd>Strg</kbd>+<kbd>Z</kbd> rückgängig · <kbd>V</kbd> Auswahl · <kbd>X</kbd> Entfernen</dd>
+            <dt>Kabellänge</dt><dd>automatisch über Flur, Steigschacht (4 m je Etage) und Erdtrasse (160 m), plus 2 m Reserve</dd>
+            <dt>PC-Symbol</dt><dd>hellblauer Bildschirm = angeschlossen</dd>
+          </dl>
+        </div>
+
+        <div class="card"><h3>🎯 Lernziele</h3>
+          <ul>
+            <li>Primär-, Sekundär- und Tertiärbereich den Verteilerebenen zuordnen</li>
+            <li>das passende Übertragungsmedium je Bereich begründet auswählen</li>
+            <li>die Längengrenzen 90 m / 500 m / 1500 m einhalten</li>
+            <li>eine hierarchische Sterntopologie umsetzen</li>
+            <li>geeignete Standorte für Verteiler wählen</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="tab" id="tab-quiz">
+    <div class="page">
+      <div id="quiz"></div>
+    </div>
+  </section>
+
+  <!-- ============ ERGEBNIS ============ -->
+  <section class="tab" id="tab-ergebnis">
+    <div class="page">
+      <h2>Ergebnis</h2>
+      <div class="grid2">
+        <div class="card">
+          <h3>Deine Angaben</h3>
+          <div class="grid2" style="gap:10px;grid-template-columns:1fr 1fr">
+            <label class="field">Name<input id="inName" autocomplete="off"></label>
+            <label class="field">Klasse<input id="inClass" autocomplete="off"></label>
+          </div>
+          <div id="resSummary" style="margin-top:12px"></div>
+          <div class="btnrow noprint">
+            <button class="tool primary" id="btnCopy">Ergebnisprotokoll kopieren</button>
+            <button class="tool" id="btnPrint">🖨 Drucken / PDF</button>
+          </div>
+        </div>
+        <div class="card" id="resGoals"></div>
+      </div>
+      <div class="grid2" style="margin-top:14px">
+        <div class="card" id="cardMaterial"></div>
+        <details class="card noprint">
+          <summary style="cursor:pointer;font-weight:700">Für Lehrkräfte: Plan-Code exportieren / importieren</summary>
+          <textarea id="codeBox" placeholder="Plan-Code hier einfügen …" style="margin-top:10px"></textarea>
+          <div class="btnrow">
+            <button class="tool" id="btnExport">Plan-Code erzeugen</button>
+            <button class="tool" id="btnImport">Plan-Code laden</button>
+          </div>
+          <p class="small muted">Der Plan-Code steht auch im Ergebnisprotokoll. Einfügen und laden öffnet die Planung zur Durchsicht.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+  </main>
+  <aside class="drawer noprint" id="drawer" aria-label="Nachschlagen" aria-hidden="true">
+    <div class="drawer-h"><b>📋 Nachschlagen</b><button class="tool" data-goto="cheat" title="Als ganze Seite öffnen">⤢ Ganze Seite</button><button class="tool" id="btnDrawerClose" title="Schließen (Esc)">✕</button></div>
+    <div class="drawer-b cs" id="drawerBody"></div>
+  </aside>
+</div>
+<div id="toast"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ================= Konstanten & Gebäudedaten ================= */
+const M = 0.16;          // Meter pro Zeichnungseinheit
+const FLOOR_H = 4;       // Geschosshöhe (m)
+const GROUND_M = 160;    // Erdtrasse zwischen den Gebäuden (m)
+const RESERVE = 2;       // Reserve je Strecke (m)
+const PH = 260, TB = 105, CB = 145; // Panelhöhe, Ende obere Raumzeile, Beginn untere Raumzeile
+const LIMIT = { prim: 1500, sek: 500, ter: 90 };
+const STORE = 'bslif-strukturierte-verkabelung-v1';
+
+const MEDIA = {
+  os2:  { name: 'LWL Singlemode OS2', short: 'LWL OS2', kind: 'lwl', color: '#e2b007' },
+  om4:  { name: 'LWL Multimode OM4',  short: 'LWL OM4', kind: 'lwl', color: '#14a3b8' },
+  cat7: { name: 'Kupfer Cat.7 S/FTP', short: 'Cat.7',   kind: 'cu',  color: '#2563eb' },
+  cat5: { name: 'Kupfer Cat.5e U/UTP',short: 'Cat.5e',  kind: 'cu',  color: '#8b95a7' }
+};
+const TYPES = {
+  sv: { name: 'Standortverteiler', lvl: 0, color: '#9f1239' },
+  gv: { name: 'Gebäudeverteiler',  lvl: 1, color: '#6d28d9' },
+  ev: { name: 'Etagenverteiler',   lvl: 2, color: '#047857' },
+  pc: { name: 'Arbeitsplatz-PC',   lvl: 3, color: '#1f2937' }
+};
+const AREA = { prim: 'Primärbereich', sek: 'Sekundärbereich', ter: 'Tertiärbereich', inv: 'keine gültige Ebene' };
+const ROOMTYPE = { class: 'Unterrichtsraum', office: 'Büro', tech: 'Technikraum', server: 'Serverraum', storage: 'Abstellraum/Lager', wc: 'Sanitärraum', stairs: 'Treppenhaus', hall: 'Halle/Foyer', misc: 'Nebenraum' };
+const ROOMFILL = { class: '#ffffff', office: '#fcf8ee', tech: '#e3f2ee', server: '#e2ebf8', storage: '#f1ede3', wc: '#eef1f4', stairs: '#eef1f4', hall: '#faf7f0', misc: '#f4f3ef' };
+
+const R = (n, t, x0, x1, band, pcs = 0) => ({ n, t, x0, x1, band, pcs });
+const BUILDINGS = [
+  { id: 'A', name: 'Haus A', sub: 'Hauptgebäude', x: 40, w: 600, shaft: 300, entry: 'r', floors: [
+    { id: 'OG', name: '1. Obergeschoss', short: 'OG', lvl: 1, y: 80, rooms: [
+      R('EDV-Raum 201', 'class', 0, 150, 't', 3), R('EDV-Raum 202', 'class', 150, 250, 't', 2), R('Technik A1', 'tech', 250, 340, 't'),
+      R('Lehrerzimmer', 'office', 340, 470, 't', 2), R('Klassenzimmer 205', 'class', 470, 600, 't', 1),
+      R('Klassenzi. 210', 'class', 0, 120, 'b', 1), R('WC', 'wc', 120, 180, 'b'), R('Treppenhaus', 'stairs', 180, 292, 'b'),
+      R('EDV-Raum 212', 'class', 308, 500, 'b', 3), R('Bibliothek', 'class', 500, 600, 'b', 1)] },
+    { id: 'EG', name: 'Erdgeschoss', short: 'EG', lvl: 0, y: 480, rooms: [
+      R('Verwaltung', 'office', 0, 140, 't', 2), R('Schulleitung', 'office', 140, 230, 't', 1), R('Serverraum', 'server', 230, 350, 't'),
+      R('Mensa', 'hall', 350, 510, 't', 1), R('Haustechnik', 'tech', 510, 600, 't'),
+      R('Foyer', 'hall', 0, 140, 'b', 1), R('Treppenhaus', 'stairs', 140, 292, 'b'), R('Klassenzi. 110', 'class', 308, 420, 'b', 1),
+      R('EDV-Raum 112', 'class', 420, 600, 'b', 3)] }
+  ]},
+  { id: 'B', name: 'Haus B', sub: 'Werkstattgebäude', x: 780, w: 540, shaft: 60, entry: 'l', floors: [
+    { id: 'OG', name: '1. Obergeschoss', short: 'OG', lvl: 1, y: 80, rooms: [
+      R('Technik B1', 'tech', 0, 100, 't'), R('EDV-Raum 301', 'class', 100, 290, 't', 3), R('Lager', 'storage', 290, 350, 't'),
+      R('EDV-Raum 302', 'class', 350, 540, 't', 3),
+      R('Treppe', 'stairs', 0, 52, 'b'), R('Besprechung', 'office', 68, 180, 'b', 1), R('Netzwerklabor 310', 'class', 180, 400, 'b', 3),
+      R('Teeküche', 'misc', 400, 460, 'b'), R('Fachbetreuung', 'office', 460, 540, 'b', 1)] },
+    { id: 'EG', name: 'Erdgeschoss', short: 'EG', lvl: 0, y: 480, rooms: [
+      R('Technik B', 'tech', 0, 100, 't'), R('Werkstatt Elektro', 'class', 100, 300, 't', 3), R('Lager', 'storage', 300, 360, 't'),
+      R('CNC-Labor', 'class', 360, 540, 't', 3),
+      R('Treppe', 'stairs', 0, 52, 'b'), R('Meisterbüro', 'office', 68, 170, 'b', 1), R('Werkstatt Metall', 'class', 170, 420, 'b', 2),
+      R('Prüffeld', 'class', 420, 540, 'b', 2)] }
+  ]}
+];
+
+const ROOMS = [], PCS = [];
+let pcSeq = 1;
+BUILDINGS.forEach(B => B.floors.forEach(F => {
+  F.b = B.id; F.yc = F.y + (TB + CB) / 2;
+  F.rooms.forEach((r, i) => {
+    r.id = B.id + F.id + i; r.b = B.id; r.f = F.id;
+    r.ax = B.x + r.x0; r.aw = r.x1 - r.x0; r.ay = F.y + (r.band === 't' ? 0 : CB); r.ah = r.band === 't' ? TB : PH - CB;
+    ROOMS.push(r);
+    for (let k = 0; k < r.pcs; k++) {
+      PCS.push({ id: 'pc' + (pcSeq++), type: 'pc', b: B.id, f: F.id,
+        x: Math.round(r.ax + r.aw * (k + 1) / (r.pcs + 1)), y: r.band === 't' ? r.ay + 30 : r.ay + r.ah - 30,
+        name: 'PC ' + (k + 1) + ' · ' + r.n, room: r.id, dir: r.band === 't' ? 1 : -1 });
+    }
+  });
+}));
+const bld = id => BUILDINGS.find(B => B.id === id);
+const flr = (b, f) => bld(b).floors.find(F => F.id === f);
+const entryX = B => B.entry === 'r' ? B.x + B.w : B.x;
+const shaftX = B => B.x + B.shaft;
+
+/* ================= Zustand ================= */
+let state = { nodes: [], cables: [], seq: 1 };
+let ui = { mode: 'select', type: 'ev', medium: 'cat7', src: null, sel: null, hover: null, hoverRoom: null, drag: null, focus: [], flags: new Set() };
+let undo = [];
+let report = null, stale = false;
+let meta = { name: '', klasse: '', quiz: {}, quizDone: false };
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = v => v.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+const allNodes = () => PCS.concat(state.nodes);
+const getNode = id => state.nodes.find(n => n.id === id) || PCS.find(n => n.id === id);
+const roomAt = (b, f, x, y) => ROOMS.find(r => r.b === b && r.f === f && x >= r.ax && x <= r.ax + r.aw && y >= r.ay && y <= r.ay + r.ah);
+const roomOf = n => n.room ? ROOMS.find(r => r.id === n.room) : roomAt(n.b, n.f, n.x, n.y);
+
+function locate(x, y) {
+  for (const B of BUILDINGS) for (const F of B.floors) {
+    if (x >= B.x && x <= B.x + B.w && y >= F.y && y <= F.y + PH) {
+      const inCorr = y > F.y + TB && y < F.y + CB;
+      if (inCorr) return { B, F, zone: 'corridor' };
+      if (Math.abs(x - shaftX(B)) <= 9) return { B, F, zone: 'shaft' };
+      const r = roomAt(B.id, F.id, x, y);
+      return r ? { B, F, zone: 'room', room: r } : { B, F, zone: 'none' };
+    }
+  }
+  return { zone: 'outside' };
+}
+
+function labels() {
+  const L = {}, by = {};
+  state.nodes.forEach(n => { const k = n.type === 'sv' ? 'sv' : n.type === 'gv' ? 'gv' + n.b : 'ev' + n.b + n.f; (by[k] = by[k] || []).push(n); });
+  Object.values(by).forEach(arr => {
+    arr.sort((a, b) => a.x - b.x || a.y - b.y);
+    arr.forEach((n, i) => {
+      const base = n.type === 'sv' ? 'SV' : n.type === 'gv' ? 'GV ' + n.b : 'EV ' + n.b + '-' + flr(n.b, n.f).short;
+      L[n.id] = arr.length > 1 ? base + '/' + (i + 1) : base;
+    });
+  });
+  return L;
+}
+let LBL = {};
+const nm = n => n.type === 'pc' ? n.name : (LBL[n.id] || TYPES[n.type].name);
+const where = n => { const r = roomOf(n); return (r ? r.n : '–') + ', ' + bld(n.b).name + ' ' + flr(n.b, n.f).short; };
+
+function classify(c) {
+  const a = getNode(c.a), b = getNode(c.b);
+  const k = [a.type, b.type].sort().join('-');
+  return { 'gv-sv': 'prim', 'ev-gv': 'sek', 'ev-pc': 'ter' }[k] || 'inv';
+}
+
+/* ================= Kabelführung ================= */
+function route(p, q, o = 0) {
+  const Bp = bld(p.b), Bq = bld(q.b), Fp = flr(p.b, p.f), Fq = flr(q.b, q.f);
+  const pts = [[p.x, p.y]], skip = new Set();
+  let floors = 0, ground = false;
+  const add = (x, y) => pts.push([x, y]);
+  const sk = () => skip.add(pts.length - 2);
+  if (p.b === q.b && p.f === q.f) {
+    const rp = roomOf(p), rq = roomOf(q);
+    if (rp && rp === rq) { add(q.x, p.y); add(q.x, q.y); }
+    else { const c = Fp.yc + o; add(p.x, c); add(q.x, c); add(q.x, q.y); }
+  } else if (p.b === q.b) {
+    const s = shaftX(Bp) + o * 0.5;
+    add(p.x, Fp.yc + o); add(s, Fp.yc + o); add(s, Fq.yc + o); sk(); floors = Math.abs(Fp.lvl - Fq.lvl);
+    add(q.x, Fq.yc + o); add(q.x, q.y);
+  } else {
+    const Ep = flr(p.b, 'EG'), Eq = flr(q.b, 'EG');
+    add(p.x, Fp.yc + o);
+    if (p.f !== 'EG') { const s = shaftX(Bp) + o * 0.5; add(s, Fp.yc + o); add(s, Ep.yc + o); sk(); floors += Fp.lvl; }
+    add(entryX(Bp), Ep.yc + o); add(entryX(Bq), Eq.yc + o); sk(); ground = true;
+    if (q.f !== 'EG') { const s = shaftX(Bq) + o * 0.5; add(s, Eq.yc + o); add(s, Fq.yc + o); sk(); floors += Fq.lvl; }
+    add(q.x, Fq.yc + o); add(q.x, q.y);
+  }
+  let u = 0;
+  for (let i = 0; i < pts.length - 1; i++) if (!skip.has(i)) u += Math.abs(pts[i + 1][0] - pts[i][0]) + Math.abs(pts[i + 1][1] - pts[i][1]);
+  return { pts, len: u * M + floors * FLOOR_H + (ground ? GROUND_M : 0) + RESERVE };
+}
+const cableLen = c => route(getNode(c.a), getNode(c.b), 0).len;
+const pathD = pts => 'M' + pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' L');
+
+/* ================= Statische Zeichnung ================= */
+function renderStatic() {
+  let s = `<defs>
+    <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#c9cfbd"/></pattern>
+    <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#e7e2d4"/><line x1="0" y1="0" x2="0" y2="6" stroke="#9a927d" stroke-width="1.6"/></pattern>
+    <pattern id="paving" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#e7e3d6"/><path d="M0 0H16M0 8H16M8 0V8M0 8V16" stroke="#d6d0bf" stroke-width="1"/></pattern>
+    <filter id="sh" x="-5%" y="-5%" width="110%" height="115%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#2b3a2a" flood-opacity=".16"/></filter>
+    <radialGradient id="tree"><stop offset="0" stop-color="#9dbb7d"/><stop offset="1" stop-color="#6f9758"/></radialGradient>
+  </defs>
+  <rect width="1360" height="790" fill="#e9eddf"/><rect width="1360" height="790" fill="url(#dots)"/>
+  <rect x="652" y="60" width="116" height="700" rx="10" fill="url(#paving)"/>
+  <text x="710" y="300" text-anchor="middle" font-size="12" font-weight="700" fill="#8a826d" letter-spacing="2">SCHULHOF</text>`;
+  [[22, 770, 13], [668, 40, 0], [745, 395, 15], [690, 440, 11], [742, 760, 14], [1340, 770, 13], [660, 760, 10]].forEach(([x, y, r]) => {
+    if (r) s += `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#tree)" stroke="#5f844b" stroke-width="1"/>`;
+  });
+  // Erdtrasse
+  const yT = flr('A', 'EG').yc;
+  s += `<path d="M640 ${yT} H780" stroke="#8b6b45" stroke-width="12" stroke-opacity=".22" stroke-linecap="round"/>
+    <path d="M640 ${yT} H780" stroke="#8b6b45" stroke-width="2" stroke-dasharray="7 5"/>
+    <path d="M704 ${yT - 12} l-6 24 M716 ${yT - 12} l-6 24" stroke="#5b4630" stroke-width="2"/>
+    <text x="710" y="${yT - 22}" text-anchor="middle" font-size="11" font-weight="800" fill="#5b4630" class="halo">Erdtrasse ${GROUND_M} m</text>
+    <text x="710" y="${yT + 30}" text-anchor="middle" font-size="9.5" fill="#5b4630" class="halo">nicht maßstäblich</text>`;
+  // Nordpfeil & Maßstab
+  s += `<g transform="translate(1330,34)"><circle r="15" fill="#fff" stroke="#9aa08d"/><path d="M0 -11 L5 6 L0 2 L-5 6Z" fill="#172033"/><text y="-17" text-anchor="middle" font-size="10" font-weight="800" fill="#172033">N</text></g>
+    <g transform="translate(40,772)"><rect width="31.25" height="6" fill="#172033"/><rect x="31.25" width="31.25" height="6" fill="#fff" stroke="#172033"/><text x="0" y="-4" font-size="10" fill="#334155">0</text><text x="62.5" y="-4" font-size="10" fill="#334155" text-anchor="middle">10 m</text></g>`;
+
+  BUILDINGS.forEach(B => {
+    s += `<text x="${B.x}" y="58" font-size="17" font-weight="800" fill="#172033">${B.name}<tspan font-weight="500" fill="#5b6476" font-size="14"> · ${B.sub}</tspan></text>`;
+    // Steigschacht zwischen den Geschossen
+    const sx = shaftX(B), og = flr(B.id, 'OG'), eg = flr(B.id, 'EG');
+    s += `<rect x="${sx - 8}" y="${og.y + PH}" width="16" height="${eg.y - og.y - PH}" fill="url(#hatch)" opacity=".75" stroke="#9a927d" stroke-dasharray="3 3"/>
+      <text x="${sx + (B.entry === 'r' ? 16 : 16)}" y="${og.y + PH + 66}" font-size="10.5" fill="#5b6476" class="halo">↕ Steigschacht · ${FLOOR_H} m Geschosshöhe</text>`;
+    B.floors.forEach(F => {
+      let lbl = '';
+      // Geschossbeschriftung außen
+      const lx = B.entry === 'r' ? B.x - 14 : B.x + B.w + 22;
+      s += `<text transform="translate(${lx},${F.y + PH / 2}) rotate(-90)" text-anchor="middle" font-size="12" font-weight="800" fill="#5b6476" letter-spacing="1.5">${F.name.toUpperCase()}</text>`;
+      s += `<g filter="url(#sh)"><rect x="${B.x}" y="${F.y}" width="${B.w}" height="${PH}" fill="#fff"/></g>`;
+      s += `<rect x="${B.x}" y="${F.y + TB}" width="${B.w}" height="${CB - TB}" fill="#f2eee3"/>
+        <line x1="${B.x + 6}" x2="${B.x + B.w - 6}" y1="${F.yc}" y2="${F.yc}" stroke="#cfc6ae" stroke-width="7" stroke-linecap="round"/>
+        <text x="${B.entry === 'r' ? B.x + 70 : B.x + B.w - 70}" y="${F.y + TB + 12}" text-anchor="middle" font-size="9" fill="#a09679" letter-spacing="1">FLUR · KABELTRASSE</text>`;
+      F.rooms.forEach(r => {
+        s += `<rect x="${r.ax}" y="${r.ay}" width="${r.aw}" height="${r.ah}" fill="${ROOMFILL[r.t]}" stroke="#3b4556" stroke-width="1.4"/>`;
+        if (r.t === 'stairs') {
+          for (let k = r.ax + 8; k < r.ax + r.aw - 4; k += 9) s += `<line x1="${k}" x2="${k}" y1="${r.ay + 12}" y2="${r.ay + r.ah - 12}" stroke="#b9bfc9" stroke-width="1"/>`;
+        }
+        // Tür zum Flur
+        if (r.aw >= 45) {
+          const dx = r.ax + r.aw - 24;
+          if (r.band === 't') { const wy = r.ay + r.ah; s += `<line x1="${dx}" x2="${dx + 15}" y1="${wy}" y2="${wy}" stroke="#f2eee3" stroke-width="3"/><path d="M${dx},${wy} V${wy - 15} A15,15 0 0,1 ${dx + 15},${wy}" fill="none" stroke="#8f98a8" stroke-width=".9"/>`; }
+          else { const wy = r.ay; s += `<line x1="${dx}" x2="${dx + 15}" y1="${wy}" y2="${wy}" stroke="#f2eee3" stroke-width="3"/><path d="M${dx},${wy} V${wy + 15} A15,15 0 0,0 ${dx + 15},${wy}" fill="none" stroke="#8f98a8" stroke-width=".9"/>`; }
+        }
+        const ly = r.band === 't' ? r.ay + r.ah - 7 : r.ay + 15;
+        const cls = r.t === 'tech' ? ' tech' : r.t === 'server' ? ' server' : '';
+        const label = r.aw < 70 && r.n.length > 7 ? r.n.slice(0, 6) + '.' : r.n;
+        lbl += `<text x="${r.ax + 5}" y="${ly}" class="rlabel${cls} halo">${esc(label)}</text>`;
+      });
+      // Schacht
+      const sx2 = shaftX(B);
+      s += `<rect x="${sx2 - 8}" y="${F.y}" width="16" height="${TB}" fill="url(#hatch)" stroke="#3b4556" stroke-width="1"/>
+            <rect x="${sx2 - 8}" y="${F.y + CB}" width="16" height="${PH - CB}" fill="url(#hatch)" stroke="#3b4556" stroke-width="1"/>`;
+      s += lbl + `<rect x="${B.x}" y="${F.y}" width="${B.w}" height="${PH}" fill="none" stroke="#172033" stroke-width="4"/>`;
+      if (F.id === 'EG') {
+        const ex = entryX(B);
+        s += `<rect x="${ex - 6}" y="${F.yc - 10}" width="12" height="20" rx="2" fill="#5b4630"/><text x="${ex + (B.entry === 'r' ? 8 : -8)}" y="${F.yc + 26}" text-anchor="${B.entry === 'r' ? 'start' : 'end'}" font-size="10" font-weight="800" fill="#5b4630" class="halo">HE</text><title>Hauseinführung</title>`;
+      }
+    });
+  });
+  $('#gStatic').innerHTML = s;
+}
+
+/* ================= Dynamische Zeichnung ================= */
+function render() {
+  LBL = labels();
+  const cabCount = {};
+  state.cables.forEach(c => { cabCount[c.a] = (cabCount[c.a] || 0) + 1; cabCount[c.b] = (cabCount[c.b] || 0) + 1; });
+
+  // Kabel
+  let s = '';
+  state.cables.forEach((c, i) => {
+    const a = getNode(c.a), b = getNode(c.b);
+    const o = ((i * 5) % 9 - 4) * 2.1;
+    const r = route(a, b, o), d = pathD(r.pts), md = MEDIA[c.m];
+    const sel = ui.sel && ui.sel.kind === 'cable' && ui.sel.id === c.id;
+    s += `<g class="cab${sel ? ' sel' : ''}" data-cid="${c.id}">`;
+    if (ui.flags.has(c.id)) s += `<path d="${d}" fill="none" stroke="#dc2626" stroke-width="9" stroke-opacity=".35" stroke-linejoin="round" stroke-linecap="round"/>`;
+    s += `<path class="hl" d="${d}" fill="none" stroke="#0e7c86" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>`;
+    if (md.kind === 'lwl') s += `<path d="${d}" fill="none" stroke="${md.color}" stroke-width="3.8" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1.1" stroke-linejoin="round"/>`;
+    else s += `<path d="${d}" fill="none" stroke="${md.color}" stroke-width="2.4" stroke-linejoin="round"/>`;
+    s += `<path d="${d}" fill="none" stroke="transparent" stroke-width="11" stroke-linejoin="round"/>`;
+    [a, b].forEach(n => { if (n.type === 'pc') s += `<rect x="${n.x - 4}" y="${n.y + n.dir * 17 - 3.5}" width="8" height="7" rx="1.5" fill="#fff" stroke="#334155" stroke-width="1.2"/>`; });
+    s += `</g>`;
+  });
+  $('#gCables').innerHTML = s;
+
+  // Knoten
+  s = '';
+  PCS.forEach(p => {
+    const on = cabCount[p.id] > 0;
+    const sel = (ui.sel && ui.sel.id === p.id) || ui.src === p.id;
+    s += `<g class="node" data-nid="${p.id}" transform="translate(${p.x},${p.y})">
+      <rect x="-13" y="-12" width="26" height="25" fill="transparent"/>
+      ${sel ? '<circle r="15" fill="none" stroke="#0e7c86" stroke-width="2" stroke-dasharray="4 3"/>' : ''}
+      <rect x="-10" y="-8" width="20" height="13" rx="2" fill="#1f2937"/>
+      <rect x="-8" y="-6" width="16" height="9" rx="1" fill="${on ? '#7dd3fc' : '#cbd5e1'}"/>
+      <rect x="-1.5" y="5" width="3" height="3" fill="#1f2937"/><rect x="-6" y="8" width="12" height="2" rx="1" fill="#1f2937"/>
+    </g>`;
+  });
+  state.nodes.forEach(n => {
+    const t = TYPES[n.type];
+    const sel = (ui.sel && ui.sel.id === n.id) || ui.src === n.id;
+    s += `<g class="node" data-nid="${n.id}" transform="translate(${n.x},${n.y})">
+      ${sel ? '<circle r="24" fill="#0e7c86" fill-opacity=".1" stroke="#0e7c86" stroke-width="2" stroke-dasharray="5 3"/>' : ''}
+      ${ui.flags.has(n.id) ? '<circle r="21" fill="none" stroke="#dc2626" stroke-width="3" stroke-opacity=".6"/>' : ''}
+      <rect x="-12" y="-16" width="24" height="31" rx="3" fill="${t.color}" stroke="#0b1220" stroke-opacity=".35"/>
+      <g stroke="#fff" stroke-opacity=".55" stroke-width="1.4"><line x1="-8" x2="8" y1="-9" y2="-9"/><line x1="-8" x2="8" y1="-3" y2="-3"/><line x1="-8" x2="8" y1="3" y2="3"/></g>
+      <circle cx="6" cy="9" r="1.6" fill="#86efac"/><circle cx="1" cy="9" r="1.6" fill="#86efac"/>
+      <text y="27" text-anchor="middle" class="ntext halo">${esc(LBL[n.id])}</text>
+    </g>`;
+  });
+  $('#gNodes').innerHTML = s;
+
+  // Fokus-Effekte
+  s = '';
+  ui.focus.forEach(id => {
+    const n = getNode(id);
+    if (n) s += `<circle class="pulse" cx="${n.x}" cy="${n.y}" r="22" fill="none" stroke="#dc2626" stroke-width="3"/>`;
+    const c = state.cables.find(c => c.id === id);
+    if (c) { const r = route(getNode(c.a), getNode(c.b), 0); s += `<path d="${pathD(r.pts)}" fill="none" stroke="#dc2626" stroke-width="6" stroke-opacity=".55" stroke-dasharray="8 6"><animate attributeName="stroke-dashoffset" from="0" to="-28" dur="0.8s" repeatCount="indefinite"/></path>`; }
+  });
+  $('#gFx').innerHTML = s;
+
+  renderPreview();
+  renderDetails();
+  renderMaterial();
+  renderHint();
+}
+
+function renderPreview() {
+  let s = '';
+  if (ui.mode === 'cable' && ui.src) {
+    const a = getNode(ui.src);
+    const md = MEDIA[ui.medium];
+    if (ui.hover && ui.hover !== ui.src && getNode(ui.hover)) {
+      const b = getNode(ui.hover);
+      const r = route(a, b, 0);
+      const k = [a.type, b.type].sort().join('-');
+      const area = { 'gv-sv': 'prim', 'ev-gv': 'sek', 'ev-pc': 'ter' }[k];
+      const over = area && r.len > LIMIT[area];
+      s += `<path d="${pathD(r.pts)}" fill="none" stroke="${md.color}" stroke-width="3" stroke-dasharray="6 5" stroke-linejoin="round"/>`;
+      const txt = fmt(r.len) + ' m';
+      s += `<g transform="translate(${b.x},${b.y - 30})"><rect x="-32" y="-11" width="64" height="20" rx="10" fill="${over ? '#b91c1c' : '#172033'}"/><text y="4" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${txt}</text></g>`;
+    } else if (ui.hoverRoom) {
+      const r = ui.hoverRoom;
+      s += `<rect x="${r.ax + 2}" y="${r.ay + 2}" width="${r.aw - 4}" height="${r.ah - 4}" fill="#0e7c86" fill-opacity=".08" stroke="#0e7c86" stroke-dasharray="5 4"/>`;
+    }
+  }
+  $('#gPreview').innerHTML = s;
+}
+
+/* ================= Seitenleiste ================= */
+function renderDetails() {
+  const el = $('#cardDetails');
+  el.hidden = !ui.sel;
+  if (!ui.sel) { el.innerHTML = '';
+    return; }
+  if (false) { el.innerHTML = `<h3>Details</h3><p class="small muted">Wähle mit dem Auswahl-Werkzeug einen Verteiler, PC oder ein Kabel aus, um Details zu sehen.</p>
+    <div class="small" style="display:grid;grid-template-columns:auto 1fr;gap:4px 8px;align-items:center;margin-top:8px">
+    <i class="rk" style="--c:var(--sv)"></i><span><b>SV</b> Standortverteiler</span><i class="rk" style="--c:var(--gv)"></i><span><b>GV</b> Gebäudeverteiler</span><i class="rk" style="--c:var(--ev)"></i><span><b>EV</b> Etagenverteiler</span>
+    <svg width="14" height="14" viewBox="-10 -9 20 20"><rect x="-10" y="-8" width="20" height="13" rx="2" fill="#1f2937"/><rect x="-8" y="-6" width="16" height="9" fill="#cbd5e1"/></svg><span>PC (hellblau = angeschlossen)</span></div>`; return; }
+  if (ui.sel.kind === 'node') {
+    const n = getNode(ui.sel.id); if (!n) { ui.sel = null; return renderDetails(); }
+    const cs = state.cables.filter(c => c.a === n.id || c.b === n.id);
+    let h = `<h3>Details</h3><dl class="kv"><dt>Element</dt><dd>${esc(nm(n))}</dd><dt>Typ</dt><dd>${TYPES[n.type].name}</dd><dt>Ort</dt><dd>${esc(where(n))}</dd><dt>Kabel</dt><dd>${cs.length}</dd></dl>`;
+    if (cs.length) {
+      h += '<ul class="conlist">' + cs.slice(0, 14).map(c => {
+        const o = getNode(c.a === n.id ? c.b : c.a), ar = classify(c);
+        return `<li><span>→ ${esc(nm(o))}</span><span><span class="badge ${ar}">${MEDIA[c.m].short}</span> ${fmt(cableLen(c))} m</span></li>`;
+      }).join('') + (cs.length > 14 ? `<li class="muted">… und ${cs.length - 14} weitere</li>` : '') + '</ul>';
+    }
+    if (n.type !== 'pc') h += `<button class="btnlink" data-act="delnode">Verteiler entfernen</button>`;
+    else if (cs.length) h += `<button class="btnlink" data-act="delpccab">Anschlusskabel entfernen</button>`;
+    el.innerHTML = h;
+  } else {
+    const c = state.cables.find(c => c.id === ui.sel.id); if (!c) { ui.sel = null; return renderDetails(); }
+    const a = getNode(c.a), b = getNode(c.b), ar = classify(c), len = cableLen(c);
+    const lim = LIMIT[ar];
+    el.innerHTML = `<h3>Details · Kabel</h3><dl class="kv">
+      <dt>Bereich</dt><dd><span class="badge ${ar}">${AREA[ar]}</span></dd>
+      <dt>Medium</dt><dd>${MEDIA[c.m].name}</dd>
+      <dt>Von</dt><dd>${esc(nm(a))}</dd><dt>Nach</dt><dd>${esc(nm(b))}</dd>
+      <dt>Länge</dt><dd>${fmt(len)} m${lim ? ` <span class="muted">(max. ${lim} m)</span>` : ''}</dd></dl>
+      <button class="btnlink" data-act="delcable">Kabel entfernen</button>`;
+  }
+}
+
+function renderMaterial() {
+  const sum = { os2: 0, om4: 0, cat7: 0, cat5: 0 };
+  state.cables.forEach(c => sum[c.m] += cableLen(c));
+  const cnt = t => state.nodes.filter(n => n.type === t).length;
+  const conn = new Set(); state.cables.forEach(c => { conn.add(c.a); conn.add(c.b); });
+  const pcs = PCS.filter(p => conn.has(p.id)).length;
+  $('#cardMaterial').innerHTML = `<h3>Materialliste deiner Planung</h3>
+    <div class="mat">
+      ${Object.keys(MEDIA).map(k => `<i class="ln${MEDIA[k].kind === 'lwl' ? ' lwl' : ''}" style="--c:${MEDIA[k].color}"></i><span>${MEDIA[k].name}</span><span class="num">${Math.round(sum[k]).toLocaleString('de-DE')} m</span>`).join('')}
+    </div>
+    <div class="mat" style="margin-top:8px;grid-template-columns:repeat(3,1fr);text-align:center">
+      <span><b>${cnt('sv')}</b> SV</span><span><b>${cnt('gv')}</b> GV</span><span><b>${cnt('ev')}</b> EV</span>
+    </div>
+    <div class="small" style="margin-top:8px;display:flex;justify-content:space-between"><span>PCs angeschlossen</span><b>${pcs} / ${PCS.length}</b></div>
+    <div class="meter"><i style="width:${(pcs / PCS.length * 100).toFixed(1)}%"></i></div>`;
+  $('#progress').innerHTML = `<div class="small" style="display:flex;justify-content:space-between"><span>PCs angeschlossen</span><b>${pcs} / ${PCS.length}</b></div><div class="meter" style="margin-top:6px"><i style="width:${(pcs / PCS.length * 100).toFixed(1)}%"></i></div>`;
+}
+
+function renderHint() {
+  const h = $('#hint');
+  const m = ui.mode;
+  const csKey = { select: 'bedienung', delete: 'bedienung', place: 'verteiler', cable: 'medien' }[m];
+  if (m === 'select') h.innerHTML = '<b>Auswahl:</b> Klicke ein Element an oder ziehe einen Verteiler an eine andere Stelle.';
+  else if (m === 'delete') h.innerHTML = '<b>Entfernen:</b> Klicke auf einen Verteiler oder ein Kabel.';
+  else if (m === 'place') h.innerHTML = `<b>${TYPES[ui.type].name} setzen:</b> Klicke in einen Raum.`;
+  else if (m === 'cable') {
+    if (!ui.src) h.innerHTML = `<b>${MEDIA[ui.medium].name}:</b> Klicke auf den Startpunkt (Verteiler oder PC).`;
+    else h.innerHTML = `<b>Start: ${esc(nm(getNode(ui.src)))}</b> → jetzt Ziel anklicken${getNode(ui.src).type !== 'pc' ? ' oder in einen Raum klicken (alle freien PCs)' : ''}. <kbd>Esc</kbd> beendet.`;
+  }
+  h.innerHTML += ` <a href="#" class="goto" data-cs="${csKey}" style="margin-left:6px">📋 nachschlagen</a>`;
+}
+
+/* ================= Aktionen ================= */
+function snapshot() { undo.push(JSON.stringify(state)); if (undo.length > 80) undo.shift(); }
+function changed() { ui.flags = new Set(); ui.focus = []; if (report) stale = true; save(); render(); renderCheckStale(); }
+
+function addNode(type, x, y, loc) {
+  snapshot();
+  const n = { id: 'n' + (state.seq++), type, b: loc.B.id, f: loc.F.id, x: Math.round(x), y: Math.round(y) };
+  state.nodes.push(n); ui.sel = { kind: 'node', id: n.id };
+  changed();
+  return n;
+}
+function addCable(a, b, m, quiet) {
+  const na = getNode(a), nb = getNode(b);
+  if (a === b) return false;
+  if (na.type === 'pc' && nb.type === 'pc') { if (!quiet) toast('Zwei PCs werden nicht direkt miteinander verkabelt.', true); return false; }
+  if (state.cables.some(c => (c.a === a && c.b === b) || (c.a === b && c.b === a))) { if (!quiet) toast('Diese beiden Punkte sind bereits verbunden.', true); return false; }
+  const [x, y] = TYPES[na.type].lvl <= TYPES[nb.type].lvl ? [a, b] : [b, a];
+  state.cables.push({ id: 'c' + (state.seq++), a: x, b: y, m });
+  return true;
+}
+function delNode(id) { snapshot(); state.nodes = state.nodes.filter(n => n.id !== id); state.cables = state.cables.filter(c => c.a !== id && c.b !== id); if (ui.src === id) ui.src = null; ui.sel = null; changed(); }
+function delCable(id) { snapshot(); state.cables = state.cables.filter(c => c.id !== id); ui.sel = null; changed(); }
+function delPcCables(id) { snapshot(); state.cables = state.cables.filter(c => c.a !== id && c.b !== id); changed(); }
+
+function setMode(mode, opt = {}) {
+  ui.mode = mode; ui.src = null; ui.hover = null; ui.hoverRoom = null;
+  if (opt.type) ui.type = opt.type;
+  if (opt.medium) ui.medium = opt.medium;
+  document.querySelectorAll('.tool[data-mode]').forEach(b => {
+    const on = b.dataset.mode === mode && (mode !== 'place' || b.dataset.type === ui.type) && (mode !== 'cable' || b.dataset.medium === ui.medium);
+    b.classList.toggle('active', on);
+  });
+  $('#plan').dataset.mode = mode;
+  render();
+}
+
+/* ================= Zeiger-Interaktion ================= */
+const svg = $('#plan'), tip = $('#tip');
+function svgPt(e) { const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+function hitIds(e) {
+  const t = e.target;
+  const n = t.closest && t.closest('[data-nid]'), c = t.closest && t.closest('[data-cid]');
+  return { nid: n ? n.dataset.nid : null, cid: c ? c.dataset.cid : null };
+}
+const placeError = loc => ({ corridor: 'Verteilerschränke gehören nicht in den Flur – er ist Fluchtweg und muss frei bleiben.', shaft: 'Im Steigschacht ist kein Platz für einen Verteilerschrank.', outside: 'Bitte innerhalb eines Gebäudes platzieren.', none: 'Bitte in einen Raum klicken.' })[loc.zone];
+
+svg.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return;
+  const p = svgPt(e), { nid, cid } = hitIds(e);
+  hideTip();
+  if (ui.mode === 'select') {
+    if (nid) {
+      ui.sel = { kind: 'node', id: nid };
+      const n = getNode(nid);
+      if (n.type !== 'pc') { ui.drag = { id: nid, dx: p.x - n.x, dy: p.y - n.y, ox: n.x, oy: n.y, ob: n.b, of: n.f, moved: false, snap: JSON.stringify(state) }; svg.setPointerCapture(e.pointerId); }
+    } else if (cid) ui.sel = { kind: 'cable', id: cid };
+    else ui.sel = null;
+    render();
+  } else if (ui.mode === 'delete') {
+    if (nid) { const n = getNode(nid); if (n.type === 'pc') { if (state.cables.some(c => c.a === nid || c.b === nid)) delPcCables(nid); else toast('PCs sind vorgegeben und können nicht entfernt werden.'); } else delNode(nid); }
+    else if (cid) delCable(cid);
+  } else if (ui.mode === 'place') {
+    if (nid) { ui.sel = { kind: 'node', id: nid }; render(); return; }
+    const loc = locate(p.x, p.y);
+    if (loc.zone !== 'room') { toast(placeError(loc), true); return; }
+    addNode(ui.type, p.x, p.y, loc);
+  } else if (ui.mode === 'cable') {
+    if (nid) {
+      if (!ui.src) { ui.src = nid; render(); return; }
+      if (nid === ui.src) { ui.src = null; render(); return; }
+      snapshot();
+      if (addCable(ui.src, nid, ui.medium)) {
+        if (getNode(ui.src).type === 'pc') ui.src = null;
+        changed();
+      } else undo.pop();
+      return;
+    }
+    const loc = locate(p.x, p.y);
+    if (ui.src && loc.zone === 'room' && getNode(ui.src).type !== 'pc') {
+      const used = new Set(); state.cables.forEach(c => { used.add(c.a); used.add(c.b); });
+      const free = PCS.filter(pc => pc.room === loc.room.id && !used.has(pc.id));
+      if (!free.length) { toast(`In „${loc.room.n}“ gibt es keine freien PCs.`); return; }
+      snapshot(); free.forEach(pc => addCable(ui.src, pc.id, ui.medium, true));
+      toast(`${free.length} PC${free.length > 1 ? 's' : ''} in „${loc.room.n}“ verbunden.`);
+      changed(); return;
+    }
+    ui.src = null; render();
+  }
+});
+
+svg.addEventListener('pointermove', e => {
+  const p = svgPt(e);
+  if (ui.drag) {
+    const n = getNode(ui.drag.id);
+    n.x = Math.round(p.x - ui.drag.dx); n.y = Math.round(p.y - ui.drag.dy);
+    const loc = locate(n.x, n.y);
+    if (loc.zone === 'room') { n.b = loc.B.id; n.f = loc.F.id; }
+    ui.drag.moved = true; render(); return;
+  }
+  const { nid, cid } = hitIds(e);
+  let changedHover = false;
+  if (ui.hover !== nid) { ui.hover = nid; changedHover = true; }
+  let room = null;
+  if (ui.mode === 'cable' && ui.src && !nid) { const loc = locate(p.x, p.y); if (loc.zone === 'room' && loc.room.pcs) room = loc.room; }
+  if (ui.hoverRoom !== room) { ui.hoverRoom = room; changedHover = true; }
+  if (changedHover && ui.mode === 'cable') renderPreview();
+  // Tooltip
+  let t = '';
+  if (nid) { const n = getNode(nid); t = `<b>${esc(nm(n))}</b><br>${TYPES[n.type].name} · ${esc(where(n))}`; }
+  else if (cid) { const c = state.cables.find(c => c.id === cid); if (c) { const ar = classify(c); t = `<b>${AREA[ar]}</b> · ${MEDIA[c.m].short} · ${fmt(cableLen(c))} m<br>${esc(nm(getNode(c.a)))} → ${esc(nm(getNode(c.b)))}`; } }
+  else if (room) { const used = new Set(); state.cables.forEach(c => { used.add(c.a); used.add(c.b); }); const f = PCS.filter(pc => pc.room === room.id && !used.has(pc.id)).length; t = `Klick: ${f} freie PCs in „${esc(room.n)}“ verbinden`; }
+  if (t) showTip(e, t); else hideTip();
+});
+function endDrag() {
+  if (!ui.drag) return;
+  const d = ui.drag, n = getNode(d.id); ui.drag = null;
+  if (!d.moved) return;
+  const loc = locate(n.x, n.y);
+  if (loc.zone !== 'room') { n.x = d.ox; n.y = d.oy; n.b = d.ob; n.f = d.of; toast(placeError(loc), true); render(); return; }
+  undo.push(d.snap); changed();
+}
+svg.addEventListener('pointerup', endDrag);
+svg.addEventListener('pointercancel', endDrag);
+svg.addEventListener('pointerleave', () => { hideTip(); if (ui.hover || ui.hoverRoom) { ui.hover = null; ui.hoverRoom = null; renderPreview(); } });
+
+function showTip(e, html) {
+  const r = $('#stage').getBoundingClientRect();
+  tip.innerHTML = html; tip.style.opacity = 1;
+  let x = e.clientX - r.left + 14, y = e.clientY - r.top + 14;
+  const w = tip.offsetWidth; if (x + w > r.width - 6) x = e.clientX - r.left - w - 12;
+  tip.style.transform = `translate(${x}px,${y}px)`;
+}
+function hideTip() { tip.style.opacity = 0; }
+
+let toastT;
+function toast(msg, bad) { const t = $('#toast'); t.textContent = msg; t.className = 'show' + (bad ? ' bad' : ''); clearTimeout(toastT); toastT = setTimeout(() => t.className = '', 3200); }
+
+$('#cardDetails').addEventListener('click', e => {
+  const a = e.target.dataset.act; if (!a || !ui.sel) return;
+  if (a === 'delnode') delNode(ui.sel.id);
+  if (a === 'delcable') delCable(ui.sel.id);
+  if (a === 'delpccab') delPcCables(ui.sel.id);
+});
+
+document.querySelectorAll('.tool[data-mode]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode, { type: b.dataset.type, medium: b.dataset.medium })));
+$('#btnUndo').onclick = doUndo;
+function doUndo() { if (!undo.length) { toast('Nichts rückgängig zu machen.'); return; } state = JSON.parse(undo.pop()); ui.sel = null; ui.src = null; changed(); }
+$('#btnReset').onclick = () => { if (!state.nodes.length && !state.cables.length) return; snapshot(); state = { nodes: [], cables: [], seq: state.seq }; ui.sel = null; ui.src = null; report = null; stale = false; changed(); renderCheck(); toast('Planung geleert – mit „Rückgängig“ wiederherstellbar.'); };
+
+document.addEventListener('keydown', e => {
+  if (/INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  if (!$('#tab-plan').classList.contains('active')) return;
+  if (e.key === 'Escape') { if (ui.src) { ui.src = null; render(); } else if (drawerOpen()) closeDrawer(); else { ui.sel = null; render(); } }
+  else if ((e.key === 'Delete' || e.key === 'Backspace') && ui.sel) { e.preventDefault(); if (ui.sel.kind === 'cable') delCable(ui.sel.id); else { const n = getNode(ui.sel.id); if (n.type !== 'pc') delNode(n.id); } }
+  else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); doUndo(); }
+  else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l' && !LMS.ok) { teacher = !teacher; applyTeacher(); toast(teacher ? 'Lehrkraft-Modus aktiv' : 'Lehrkraft-Modus aus'); }
+  else if (e.key === 'v' || e.key === 'V') setMode('select');
+  else if (e.key === 'x' || e.key === 'X') setMode('delete');
+});
+
+/* ================= Lernzielkontrolle ================= */
+const GOALS = [
+  { k: 'prim', t: 'Primärbereich', d: 'SV ↔ GV · LWL Singlemode · ≤ 1500 m' },
+  { k: 'sek',  t: 'Sekundärbereich', d: 'GV ↔ EV im selben Gebäude · LWL Multimode · ≤ 500 m' },
+  { k: 'ter',  t: 'Tertiärbereich', d: 'EV ↔ PC auf derselben Etage · Kupfer Cat.7 · ≤ 90 m' },
+  { k: 'topo', t: 'Hierarchische Sterntopologie', d: 'je eine Verbindung zur nächsthöheren Ebene, keine Querverbindungen' },
+  { k: 'stand',t: 'Standorte der Verteiler', d: 'geschützte Technik-, Server- oder Nebenräume' }
+];
+
+function analyze() {
+  LBL = labels();
+  const issues = [];
+  const add = (goal, sev, msg, ids = [], w = 1) => issues.push({ goal, sev, msg, ids, w });
+  const info = state.cables.map(c => ({ c, a: getNode(c.a), b: getNode(c.b), area: classify(c), len: cableLen(c) }));
+  const cabOf = id => info.filter(x => x.c.a === id || x.c.b === id);
+  const other = (x, id) => x.c.a === id ? x.b : x.a;
+  const svs = state.nodes.filter(n => n.type === 'sv'), gvs = state.nodes.filter(n => n.type === 'gv'), evs = state.nodes.filter(n => n.type === 'ev');
+
+  /* --- Primär --- */
+  if (!svs.length) add('prim', 'err', 'Es fehlt ein Standortverteiler (SV). Er ist der zentrale Ausgangspunkt der Campusverkabelung.', [], 2);
+  if (svs.length > 1) add('prim', 'err', `Es gibt ${svs.length} Standortverteiler – pro Standort ist genau ein SV vorgesehen.`, svs.map(n => n.id));
+  gvs.forEach(g => { if (!cabOf(g.id).some(x => x.area === 'prim')) add('prim', 'err', `${nm(g)} ist nicht an den Standortverteiler angebunden – die Primärverkabelung fehlt.`, [g.id]); });
+  info.filter(x => x.area === 'prim').forEach(x => {
+    const cross = x.a.b !== x.b.b, md = MEDIA[x.c.m];
+    if (md.kind === 'cu') {
+      if (cross) add('prim', 'err', `Kupferkabel zwischen den Gebäuden (${nm(x.a)} – ${nm(x.b)}) ist unzulässig: unterschiedliche Erdpotentiale und Überspannungen (Blitz) gefährden Menschen und Geräte, außerdem ist die Strecke viel zu lang. Verwende LWL.`, [x.c.id], 1.5);
+      else add('prim', 'warn', `Primärverbindung ${nm(x.a)} – ${nm(x.b)} in Kupfer: Der Primärbereich wird in LWL ausgeführt.`, [x.c.id]);
+    } else if (x.c.m === 'om4' && cross) add('prim', 'warn', `Multimode (OM4) zwischen den Gebäuden funktioniert bei ${fmt(x.len)} m zwar, Standard im Campusbereich ist aber Singlemode OS2 (Reichweite, Bandbreite, Zukunftssicherheit).`, [x.c.id]);
+    if (x.len > LIMIT.prim) add('prim', 'err', `Primärstrecke ${fmt(x.len)} m überschreitet 1500 m.`, [x.c.id]);
+  });
+
+  /* --- Sekundär --- */
+  BUILDINGS.forEach(B => {
+    const g = gvs.filter(n => n.b === B.id);
+    if (!g.length) add('sek', 'err', `${B.name} hat keinen Gebäudeverteiler (GV). Jedes Gebäude benötigt genau einen GV.`, [], 1.5);
+    else if (g.length > 1) add('sek', 'err', `${B.name} hat ${g.length} Gebäudeverteiler – pro Gebäude ist genau ein GV vorgesehen.`, g.map(n => n.id));
+  });
+  evs.forEach(e => {
+    const up = cabOf(e.id).filter(x => x.area === 'sek');
+    if (!up.length) add('sek', 'err', `${nm(e)} ist nicht an einen Gebäudeverteiler angebunden – die Sekundärverkabelung fehlt.`, [e.id]);
+    up.forEach(x => { const g = other(x, e.id); if (g.b !== e.b) add('sek', 'err', `${nm(e)} hängt am GV des anderen Gebäudes. Der Sekundärbereich bleibt innerhalb eines Gebäudes – jeder EV wird an den GV seines eigenen Gebäudes angeschlossen.`, [e.id, x.c.id]); });
+  });
+  info.filter(x => x.area === 'sek').forEach(x => {
+    const md = MEDIA[x.c.m];
+    if (md.kind === 'cu') {
+      if (x.len > 90) add('sek', 'err', `Kupferstrecke ${nm(x.a)} – ${nm(x.b)} ist ${fmt(x.len)} m lang – Kupfer reicht nur 90 m. Verwende LWL.`, [x.c.id]);
+      else add('sek', 'warn', `Steigbereich ${nm(x.a)} – ${nm(x.b)} in Kupfer ist bis 90 m zulässig, üblich und empfohlen ist aber LWL Multimode (höhere Bandbreite, EMV-unempfindlich, keine Potentialprobleme zwischen Etagen).`, [x.c.id]);
+    }
+    if (x.len > LIMIT.sek) add('sek', 'err', `Sekundärstrecke ${fmt(x.len)} m überschreitet 500 m.`, [x.c.id]);
+  });
+
+  /* --- Tertiär --- */
+  const pcOk = new Set(), free = {}, longs = {}, skip = { sv: [], gv: [] }, wrongFloor = [], lwlPc = [], cat5 = [], multi = [];
+  PCS.forEach(p => {
+    const cs = cabOf(p.id);
+    if (!cs.length) { (free[p.room] = free[p.room] || []).push(p.id); return; }
+    let ok = true;
+    if (cs.length > 1) { multi.push(p.id); ok = false; }
+    cs.forEach(x => {
+      const o = other(x, p.id);
+      if (o.type !== 'ev') { skip[o.type].push(p.id, x.c.id); ok = false; return; }
+      if (o.b !== p.b || o.f !== p.f) { wrongFloor.push(p.id, x.c.id); ok = false; }
+      if (x.len > LIMIT.ter) { const L = longs[p.room] = longs[p.room] || { ids: [], max: 0 }; L.ids.push(p.id, x.c.id); L.max = Math.max(L.max, x.len); ok = false; }
+      if (MEDIA[x.c.m].kind === 'lwl') { lwlPc.push(x.c.id); ok = false; }
+      else if (x.c.m === 'cat5') cat5.push(x.c.id);
+    });
+    if (ok) pcOk.add(p.id);
+  });
+  const rn = id => ROOMS.find(r => r.id === id);
+  const freeRooms = Object.keys(free), freeIds = Object.values(free).flat();
+  if (freeIds.length) add('ter', 'err', freeRooms.length <= 2
+    ? `${freeIds.length} PC${freeIds.length > 1 ? 's' : ''} in ${freeRooms.map(rid => `„${rn(rid).n}“ (${bld(rn(rid).b).name} ${flr(rn(rid).b, rn(rid).f).short})`).join(' und ')} ${freeIds.length > 1 ? 'sind' : 'ist'} noch nicht angeschlossen.`
+    : `${freeIds.length} PCs in ${freeRooms.length} Räumen sind noch nicht angeschlossen (Klick markiert sie im Plan).`, freeIds, 0);
+  Object.entries(longs).forEach(([rid, L]) => { const r = rn(rid); add('ter', 'err', `Tertiärstrecken nach „${r.n}“ sind bis zu ${fmt(L.max)} m lang – erlaubt sind 90 m (Permanent Link). Platziere den EV zentraler oder plane einen zusätzlichen EV.`, L.ids, 0); });
+  if (wrongFloor.length) add('ter', 'err', `${wrongFloor.length / 2} PC-Anschluss/-Anschlüsse führen zu einem EV auf einer anderen Etage oder in einem anderen Gebäude. Tertiärkabel bleiben auf ihrer Etage.`, wrongFloor, 0);
+  if (lwlPc.length) add('ter', 'err', `${lwlPc.length} PC${lwlPc.length > 1 ? 's sind' : ' ist'} per LWL angeschlossen. Arbeitsplätze werden im Tertiärbereich mit Twisted-Pair-Kupfer (RJ45-Dose) angebunden.`, lwlPc, 0);
+  if (cat5.length) add('ter', 'warn', `${cat5.length} Tertiärkabel in Cat.5e: für Neuinstallationen veraltet. Cat.7 S/FTP (Klasse EA/F) ermöglicht 10GBASE-T und ist besser geschirmt.`, cat5);
+  BUILDINGS.forEach(B => B.floors.forEach(F => {
+    const hasPc = PCS.some(p => p.b === B.id && p.f === F.id);
+    if (hasPc && !evs.some(e => e.b === B.id && e.f === F.id)) add('ter', 'err', `Im ${F.name} von ${B.name} gibt es keinen Etagenverteiler. Jede Etage mit Endgeräten braucht mindestens einen EV.`, [], 0);
+  }));
+
+  /* --- Topologie --- */
+  if (skip.gv.length) add('topo', 'err', `${skip.gv.length / 2} PC${skip.gv.length > 2 ? 's sind' : ' ist'} direkt am Gebäudeverteiler angeschlossen – der Etagenverteiler wird übersprungen. Endgeräte hängen immer am EV ihrer Etage.`, skip.gv);
+  if (skip.sv.length) add('topo', 'err', `${skip.sv.length / 2} PC${skip.sv.length > 2 ? 's sind' : ' ist'} direkt am Standortverteiler angeschlossen – zwei Ebenen werden übersprungen.`, skip.sv);
+  if (multi.length) add('topo', 'err', `${multi.length} PC${multi.length > 1 ? 's haben' : ' hat'} mehrere Anschlusskabel. Jedes Endgerät hat genau eine Verbindung zu seinem EV.`, multi);
+  info.filter(x => x.area === 'inv' && x.a.type !== 'pc' && x.b.type !== 'pc').forEach(x => {
+    if (x.a.type === x.b.type) add('topo', 'err', `Querverbindung ${nm(x.a)} – ${nm(x.b)}: Im hierarchischen Stern werden Verteiler derselben Ebene nicht untereinander verbunden – jeder hängt nur an der nächsthöheren Ebene.`, [x.c.id]);
+    else add('topo', 'err', `${nm(x.a)} – ${nm(x.b)}: Hier wird der Gebäudeverteiler übersprungen. Ein EV wird über den GV seines Gebäudes angebunden.`, [x.c.id]);
+  });
+  gvs.forEach(g => { const up = cabOf(g.id).filter(x => x.area === 'prim'); if (up.length > 1) add('topo', 'err', `${nm(g)} hat ${up.length} Verbindungen zu Standortverteilern – im Stern gibt es genau eine Uplink-Verbindung.`, [g.id]); });
+  evs.forEach(e => {
+    const up = cabOf(e.id).filter(x => x.area === 'sek'); if (up.length > 1) add('topo', 'err', `${nm(e)} hat ${up.length} Verbindungen zu Gebäudeverteilern – im Stern gibt es genau eine Uplink-Verbindung.`, [e.id]);
+    if (!cabOf(e.id).some(x => x.area === 'ter')) add('topo', 'warn', `${nm(e)} versorgt keine Endgeräte – ist dieser Verteiler überflüssig?`, [e.id]);
+  });
+
+  /* --- Standorte --- */
+  if (!state.nodes.length) add('stand', 'err', 'Es wurden noch keine Verteiler platziert.', [], 2);
+  state.nodes.forEach(n => {
+    const r = roomOf(n), t = r ? r.t : 'none';
+    if (n.type !== 'ev' && !['server', 'tech'].includes(t)) add('stand', 'warn', `${nm(n)} steht in „${r ? r.n : '?'}“ (${ROOMTYPE[t] || '?'}). ${TYPES[n.type].name} gehören in einen abschließbaren, klimatisierten Technik- oder Serverraum.`, [n.id], 2);
+    if (n.type === 'ev' && !['server', 'tech', 'storage'].includes(t)) add('stand', 'warn', `${nm(n)} steht in „${r ? r.n : '?'}“ (${ROOMTYPE[t] || '?'}). Etagenverteiler gehören in einen abschließbaren Technik- oder Nebenraum (Zutrittsschutz, Lärm, Abwärme) – nicht in Unterrichts- oder Büroräume.`, [n.id], 2);
+  });
+
+  /* --- Bewertung --- */
+  const connectedFrac = PCS.filter(p => cabOf(p.id).length).length / PCS.length;
+  const goals = GOALS.map(G => {
+    const its = issues.filter(i => i.goal === G.k);
+    const e = its.filter(i => i.sev === 'err'), w = its.filter(i => i.sev === 'warn');
+    let score;
+    if (G.k === 'ter') score = Math.max(0, Math.pow(pcOk.size / PCS.length, 2) - 0.05 * w.length);
+    else {
+      score = Math.max(0, 1 - 0.5 * e.reduce((s, i) => s + i.w, 0) - 0.1 * w.reduce((s, i) => s + i.w, 0));
+      if (G.k === 'topo') score *= connectedFrac;
+      if (G.k === 'stand' && state.nodes.length < 4) score *= state.nodes.length / 4;
+    }
+    const status = e.length ? 'fail' : w.length ? 'warn' : (score < 0.999 ? 'fail' : 'ok');
+    if (status === 'fail') score = Math.min(score, 0.75);
+    return { ...G, score, status, issues: its };
+  });
+  const total = Math.round(goals.reduce((s, g) => s + g.score, 0) / goals.length * 100);
+  return { goals, issues, total, pcOk: pcOk.size, time: new Date() };
+}
+
+function ring(p, size = 64) {
+  const r = size / 2 - 6, c = 2 * Math.PI * r, col = p >= 90 ? '#15803d' : p >= 60 ? '#d97706' : '#b91c1c';
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="#eef0f3" stroke-width="8"/><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${col}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(c * p / 100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${size / 2} ${size / 2})"/></svg>`;
+}
+const ICON = { ok: '✓', warn: '!', fail: '✕' };
+const STAT = { ok: 'erreicht', warn: 'erreicht, mit Hinweisen', fail: 'noch nicht erreicht' };
+
+function goalsHtml(rep, interactive) {
+  const firstOpen = rep.goals.findIndex(x => x.status !== 'ok');
+  return rep.goals.map((g, gi) => `<div class="goal${interactive && gi === firstOpen ? ' open' : ''}" data-g="${g.k}">
+      <div class="goal-h"><span class="ic ${g.status}">${ICON[g.status]}</span><div class="t">${g.t}</div><span class="pct">${Math.round(g.score * 100)} %</span></div>
+      <ul class="issues">${g.issues.length ? g.issues.map((it, k) => `<li class="${it.sev}${k >= 3 ? ' x' : ''}" data-goal="${g.k}" data-i="${k}">${esc(it.msg)}</li>`).join('') : g.status === 'ok' ? '<li class="warn" style="border-color:var(--ok);background:#ecf7ef;cursor:default">Alles korrekt umgesetzt.</li>' : '<li class="warn" style="cursor:default">Bisher korrekt, aber noch unvollständig – es fehlen noch Verteiler bzw. angeschlossene PCs.</li>'}</ul>
+      ${g.issues.length > 3 ? `<button class="more" data-more>+ ${g.issues.length - 3} weitere Hinweise</button>` : ''}
+    </div>`).join('');
+}
+function renderCheck() {
+  const el = $('#cardCheck');
+  if (!report) { el.innerHTML = `<h3>Lernzielkontrolle</h3><p class="small muted" style="margin-bottom:0">Noch nicht geprüft. Klicke auf <b>„✓ Lernziele prüfen“</b>, sobald du einen Zwischenstand hast – du kannst beliebig oft prüfen.</p>`; renderResult(); return; }
+  const ok = report.goals.filter(g => g.status !== 'fail').length;
+  el.innerHTML = `<h3>Lernzielkontrolle</h3>
+    <div class="score">${ring(report.total)}<div><div class="big">${report.total} %</div><div class="small muted">${ok} von ${report.goals.length} Lernzielen erreicht · ${report.pcOk}/${PCS.length} PCs korrekt</div></div></div>
+    <div class="stale${stale ? ' on' : ''}" id="staleNote">⚠ Plan wurde seit der Prüfung geändert – erneut prüfen.</div>
+    ${goalsHtml(report, true)}
+    <p class="small muted" style="margin-bottom:0">Tipp: Ein Klick auf einen Hinweis markiert die Stelle im Plan.</p>`;
+  renderResult();
+}
+function renderCheckStale() { const n = $('#staleNote'); if (n) n.classList.toggle('on', stale); }
+function bindGoalClicks(root) {
+  root.addEventListener('click', e => {
+    const li = e.target.closest('li[data-i]');
+    if (li) {
+      const g = report.goals.find(g => g.k === li.dataset.goal), it = g.issues[+li.dataset.i];
+      if (stale) { toast('Der Plan wurde geändert – bitte erneut prüfen.'); return; }
+      ui.focus = it.ids; ui.flags = new Set(it.ids);
+      switchTab('plan'); render();
+      $('#stage').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return;
+    }
+    const mo = e.target.closest('[data-more]'); if (mo) { const g = mo.parentElement; g.classList.toggle('all'); mo.textContent = g.classList.contains('all') ? '− weniger anzeigen' : `+ ${g.querySelectorAll('li.x').length} weitere Hinweise`; return; }
+    const h = e.target.closest('.goal-h'); if (h) h.parentElement.classList.toggle('open');
+  });
+}
+bindGoalClicks($('#cardCheck')); bindGoalClicks($('#resGoals'));
+
+$('#btnCheck').onclick = () => {
+  report = analyze(); stale = false;
+  ui.flags = new Set(report.issues.filter(i => i.sev === 'err').flatMap(i => i.ids)); ui.focus = [];
+  render(); renderCheck(); save(); reportLMS();
+  toast(report.total === 100 ? 'Hervorragend – alle Lernziele vollständig erreicht! 🎉' : `Ergebnis: ${report.total} % – sieh dir die Hinweise in der Lernzielkontrolle an.`);
+  if (window.innerWidth < 1380) $('#cardCheck').scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+/* ================= Wissenscheck ================= */
+const QUIZ = [
+  { q: 'Welche Verbindung gehört zum Sekundärbereich?', o: ['Standortverteiler ↔ Gebäudeverteiler', 'Gebäudeverteiler ↔ Etagenverteiler', 'Etagenverteiler ↔ Anschlussdose', 'Anschlussdose ↔ PC'], a: 1, x: 'Der Sekundärbereich (Steigbereich) verbindet den Gebäudeverteiler mit den Etagenverteilern innerhalb eines Gebäudes.' },
+  { q: 'Wie lang darf das fest verlegte Kabel im Tertiärbereich (Permanent Link) höchstens sein?', o: ['50 m', '90 m', '100 m', '500 m'], a: 1, x: '90 m Permanent Link + max. 10 m Patch- und Geräteschnüre ergeben den 100-m-Channel.' },
+  { q: 'Warum werden Gebäude untereinander mit Lichtwellenleitern verbunden?', o: ['LWL ist billiger als Kupfer.', 'LWL trennt galvanisch (keine Potentialausgleichsströme, Überspannungsschutz) und überbrückt große Distanzen.', 'Kupferkabel dürfen grundsätzlich nicht im Erdreich verlegt werden.', 'LWL lässt sich leichter selbst konfektionieren.'], a: 1, x: 'Unterschiedliche Erdpotentiale der Gebäude und Blitzeinwirkung machen Kupfer gefährlich; LWL leitet keinen Strom und reicht weit.' },
+  { q: 'Welches Medium ist im Primärbereich (Campus) Standard?', o: ['Cat.7 S/FTP', 'LWL Multimode OM4', 'LWL Singlemode OS2', 'Koaxialkabel'], a: 2, x: 'Singlemode-Fasern (OS2) bieten die größte Reichweite und Bandbreitenreserve.' },
+  { q: 'Welche Topologie schreibt die strukturierte Verkabelung vor?', o: ['Ring', 'Bus', 'Hierarchischer Stern (Baum)', 'Vollvermascht'], a: 2, x: 'SV → GV → EV → Anschlussdose bilden einen hierarchischen Stern.' },
+  { q: 'Wie lang darf eine Strecke im Sekundärbereich maximal sein?', o: ['90 m', '300 m', '500 m', '1500 m'], a: 2, x: 'Sekundärbereich: max. 500 m; Primärbereich: max. 1500 m.' },
+  { q: 'Wo endet das Tertiärkabel eines PCs im 1. OG?', o: ['Am Gebäudeverteiler im EG', 'Am Etagenverteiler des 1. OG', 'Am Etagenverteiler im EG', 'Direkt am Standortverteiler'], a: 1, x: 'Die Tertiärverkabelung bleibt auf der Etage – jedes Endgerät hängt am EV seiner Etage.' },
+  { q: 'Eine Etage ist 120 m lang, der Technikraum liegt an einem Ende. Was ist richtig?', o: ['Ein EV im Technikraum reicht immer.', 'Ein zusätzlicher EV wird eingeplant oder der EV zentraler angeordnet, sodass alle Strecken ≤ 90 m bleiben.', 'Man verwendet Cat.5e, weil es längere Strecken erlaubt.', 'Man hängt einen Repeater in den Flur.'], a: 1, x: 'Pro Etage sind mehrere EVs zulässig. Entscheidend ist, dass jede Anschlussdose innerhalb von 90 m erreichbar ist.' },
+  { q: 'Wie viele Gebäudeverteiler hat ein Gebäude?', o: ['Einen pro Etage', 'Genau einen – er darf im selben Raum wie der SV stehen', 'Beliebig viele', 'Keinen, wenn dort der SV steht'], a: 1, x: 'Jedes Gebäude hat genau einen GV. SV und GV können räumlich zusammenfallen, sind aber logisch getrennte Ebenen.' },
+  { q: 'Wo darf ein Verteilerschrank NICHT stehen?', o: ['Im Technikraum', 'Im Serverraum', 'Im Flur', 'In einem abschließbaren Nebenraum'], a: 2, x: 'Flure sind Fluchtwege und müssen frei bleiben; außerdem fehlt dort der Zutrittsschutz.' }
+];
+let qi = 0;
+function renderQuiz() {
+  const el = $('#quiz');
+  if (meta.quizDone) {
+    const sc = quizScore();
+    const wrong = QUIZ.map((q, i) => i).filter(i => meta.quiz[i] !== QUIZ[i].a);
+    el.innerHTML = `<h2 class="qcard" style="margin-top:6px">Wissenscheck</h2>
+      <div class="card qcard"><div class="score" style="margin:0">${ring(sc / QUIZ.length * 100, 64)}<div><div class="big">${sc} / ${QUIZ.length}</div><div class="small muted">richtig beantwortet</div></div>
+      <button class="tool" data-qnav="reset" style="margin-left:auto">↺ Neuer Versuch</button></div></div>` +
+      (wrong.length ? `<div class="subh">Das solltest du dir noch einmal ansehen</div>` + wrong.map(i => { const q = QUIZ[i]; return `<div class="card qcard rev"><span class="ic" style="background:var(--err)">✕</span><div>
+        <p><b>${esc(q.q)}</b></p><p class="muted">Deine Antwort: ${esc(q.o[meta.quiz[i]])}</p><p>Richtig: <b>${esc(q.o[q.a])}</b></p><p class="muted">${esc(q.x)}</p></div></div>`; }).join('') : '') +
+      (sc ? `<div class="subh">Richtig beantwortet</div><div class="okline">${QUIZ.map((q, i) => i).filter(i => !wrong.includes(i)).map(i => `✓ ${esc(QUIZ[i].q)}`).join('<br>')}</div>` : '');
+    return;
+  }
+  const q = QUIZ[qi], ans = meta.quiz[qi], all = QUIZ.every((_, i) => meta.quiz[i] !== undefined);
+  el.innerHTML = `<h2 class="qcard" style="margin-top:6px">Wissenscheck</h2>
+    <div class="card q qcard">
+      <div class="qprog">${QUIZ.map((_, i) => `<i class="${i === qi ? 'cur' : meta.quiz[i] !== undefined ? 'ans' : ''}"></i>`).join('')}</div>
+      <div class="small muted">Frage ${qi + 1} von ${QUIZ.length}</div>
+      <h4 style="font-size:16px;margin:6px 0 10px">${esc(q.q)}</h4>
+      ${q.o.map((o, k) => `<label><input type="radio" name="qq" value="${k}" ${ans === k ? 'checked' : ''}><span>${esc(o)}</span></label>`).join('')}
+      <div class="qnav"><button class="tool" data-qnav="prev" ${qi === 0 ? 'disabled' : ''}>← Zurück</button>
+      ${qi < QUIZ.length - 1 ? `<button class="tool primary" data-qnav="next" ${ans === undefined ? 'disabled' : ''}>Weiter →</button>` : `<button class="tool primary" data-qnav="eval" ${all ? '' : 'disabled'}>Auswerten</button>`}</div>
+    </div>`;
+}
+const quizScore = () => QUIZ.filter((q, i) => meta.quiz[i] === q.a).length;
+$('#quiz').addEventListener('change', e => { if (e.target.name === 'qq') { meta.quiz[qi] = +e.target.value; save(); renderQuiz(); } });
+$('#quiz').addEventListener('click', e => {
+  const b = e.target.closest('[data-qnav]'); if (!b || b.disabled) return;
+  const a = b.dataset.qnav;
+  if (a === 'prev') { qi = Math.max(0, qi - 1); renderQuiz(); }
+  else if (a === 'next') { qi = Math.min(QUIZ.length - 1, qi + 1); renderQuiz(); }
+  else if (a === 'eval') evaluateQuiz();
+  else if (a === 'reset') { meta.quiz = {}; meta.quizDone = false; qi = 0; save(); renderQuiz(); renderResult(); }
+});
+function evaluateQuiz() {
+  const missing = QUIZ.findIndex((q, i) => meta.quiz[i] === undefined);
+  if (missing >= 0) { qi = missing; renderQuiz(); toast(`Frage ${missing + 1} ist noch unbeantwortet.`, true); return; }
+  meta.quizDone = true; save(); renderQuiz(); renderResult(); reportLMS();
+}
+
+/* ================= Ergebnis ================= */
+function renderResult() {
+  const qs = meta.quizDone ? `${quizScore()} / ${QUIZ.length}` : 'noch nicht ausgewertet';
+  $('#resSummary').innerHTML = `<div class="score">${ring(report ? report.total : 0, 72)}<div><div class="big">${report ? report.total + ' %' : '–'}</div><div class="small muted">Planung${report ? '' : ' (noch nicht geprüft)'}${stale ? ' · seit Prüfung geändert' : ''}</div></div>
+    <div style="margin-left:auto;text-align:right"><div class="big" style="font-size:22px">${meta.quizDone ? quizScore() + '/' + QUIZ.length : '–'}</div><div class="small muted">Wissenscheck</div></div></div>` + (LMS.ok ? `<div class="lmsinfo">Dein Ergebnis wird automatisch an die ByCS-Lernplattform übertragen: Planung ${Math.round(SCORM_CFG.weightPlan * 100)} % + Wissenscheck ${Math.round(SCORM_CFG.weightQuiz * 100)} %, bestanden ab ${SCORM_CFG.mastery} %. Gewertet wird dein bestes Ergebnis.<br><b>Bisher bestes Gesamtergebnis: ${lmsBest} %${lmsBest >= SCORM_CFG.mastery ? ' – bestanden ✓' : ''}</b></div>` : '');
+  $('#resGoals').innerHTML = `<h3>Lernziele</h3>` + (report ? goalsHtml(report, false) : '<p class="small muted">Prüfe zuerst im Tab „① Planen“ deine Planung.</p>') +
+    `<div class="goal"><div class="goal-h" style="cursor:default"><span class="ic ${meta.quizDone ? (quizScore() >= 8 ? 'ok' : quizScore() >= 6 ? 'warn' : 'fail') : 'fail'}">${meta.quizDone ? (quizScore() >= 8 ? '✓' : quizScore() >= 6 ? '!' : '✕') : '–'}</span><div><div class="t">Fachbegriffe & Normwerte</div><div class="d">Wissenscheck: ${qs}</div></div></div></div>`;
+}
+
+function planCode() { return 'SVP1:' + btoa(unescape(encodeURIComponent(JSON.stringify({ n: state.nodes, c: state.cables, s: state.seq })))); }
+function loadCode(code) {
+  const m = String(code).match(/SVP1:([A-Za-z0-9+/=]+)/);
+  if (!m) throw new Error('Kein gültiger Plan-Code gefunden.');
+  const d = JSON.parse(decodeURIComponent(escape(atob(m[1]))));
+  if (!Array.isArray(d.n) || !Array.isArray(d.c)) throw new Error('Plan-Code unvollständig.');
+  const nodes = d.n.filter(n => TYPES[n.type] && n.type !== 'pc' && bld(n.b) && flr(n.b, n.f));
+  const ids = new Set(nodes.map(n => n.id).concat(PCS.map(p => p.id)));
+  const cables = d.c.filter(c => ids.has(c.a) && ids.has(c.b) && MEDIA[c.m]);
+  snapshot(); state = { nodes, cables, seq: Math.max(d.s || 1, 1000) }; report = null; stale = false; ui.sel = null; ui.src = null;
+}
+function reportText() {
+  const L = [];
+  const d = new Date();
+  L.push('STRUKTURIERTE VERKABELUNG – ERGEBNISPROTOKOLL');
+  L.push(`Name: ${meta.name || '–'} | Klasse: ${meta.klasse || '–'} | ${d.toLocaleDateString('de-DE')} ${d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`);
+  L.push('');
+  if (report) {
+    L.push(`Planung: ${report.total} %${stale ? ' (Plan seit der Prüfung geändert)' : ''} – ${report.pcOk}/${PCS.length} PCs korrekt angebunden`);
+    report.goals.forEach(g => { L.push(` ${g.status === 'fail' ? '✗' : '✓'} ${g.t}: ${Math.round(g.score * 100)} % (${STAT[g.status]})`); g.issues.forEach(i => L.push(`     – ${i.sev === 'err' ? 'Fehler' : 'Hinweis'}: ${i.msg}`)); });
+  } else L.push('Planung: noch nicht geprüft');
+  L.push(`Wissenscheck: ${meta.quizDone ? quizScore() + ' von ' + QUIZ.length + ' richtig' : 'nicht ausgewertet'}`);
+  L.push('');
+  L.push('Plan-Code (für die Lehrkraft):');
+  L.push(planCode());
+  return L.join('\n');
+}
+function copyText(t) {
+  const fallback = () => { const ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove(); return ok; };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(() => toast('Ergebnisprotokoll in die Zwischenablage kopiert.'), () => { fallback() ? toast('Ergebnisprotokoll kopiert.') : showCodeFallback(t); });
+  else fallback() ? toast('Ergebnisprotokoll kopiert.') : showCodeFallback(t);
+}
+function showCodeFallback(t) { $('#codeBox').value = t; $('#codeBox').select(); toast('Kopieren nicht erlaubt – Text steht im Feld rechts zum manuellen Kopieren.', true); }
+$('#btnCopy').onclick = () => { if (!report || stale) { report = analyze(); stale = false; renderCheck(); } copyText(reportText()); };
+$('#btnPrint').onclick = () => window.print();
+$('#btnExport').onclick = () => { $('#codeBox').value = planCode(); $('#codeBox').select(); toast('Plan-Code erzeugt.'); };
+$('#btnImport').onclick = () => { try { loadCode($('#codeBox').value); changed(); renderCheck(); switchTab('plan'); toast('Planung geladen.'); } catch (e) { toast(e.message, true); } };
+$('#inName').oninput = e => { meta.name = e.target.value; save(); };
+$('#inClass').oninput = e => { meta.klasse = e.target.value; save(); };
+
+/* ================= Musterlösung (Lehrkraft) ================= */
+let teacher = /lehrer/i.test(location.hash) || new URLSearchParams(location.search).get('modus') === 'lehrer';
+function applyTeacher() { $('#btnSolution').hidden = !teacher; }
+function solution() {
+  const P = (type, b, f, rx, ry) => { const B = bld(b), F = flr(b, f); return { id: 'n' + (state.seq++), type, b, f, x: B.x + rx, y: F.y + ry }; };
+  state = { nodes: [], cables: [], seq: 1 };
+  const sv = P('sv', 'A', 'EG', 252, 30), gva = P('gv', 'A', 'EG', 328, 52), eva0 = P('ev', 'A', 'EG', 252, 76), eva1 = P('ev', 'A', 'OG', 272, 45);
+  const gvb = P('gv', 'B', 'EG', 28, 45), evb0 = P('ev', 'B', 'EG', 330, 45), evb1 = P('ev', 'B', 'OG', 320, 45);
+  state.nodes.push(sv, gva, eva0, eva1, gvb, evb0, evb1);
+  addCable(sv.id, gva.id, 'os2', true); addCable(sv.id, gvb.id, 'os2', true);
+  [eva0, eva1].forEach(e => addCable(gva.id, e.id, 'om4', true));
+  [evb0, evb1].forEach(e => addCable(gvb.id, e.id, 'om4', true));
+  const evOf = { AEG: eva0, AOG: eva1, BEG: evb0, BOG: evb1 };
+  PCS.forEach(p => addCable(evOf[p.b + p.f].id, p.id, 'cat7', true));
+}
+$('#btnSolution').onclick = () => { snapshot(); solution(); report = null; changed(); renderCheck(); toast('Musterlösung geladen.'); };
+
+/* ================= Tabs, Vollbild, Speichern ================= */
+function switchTab(t) {
+  if (t !== 'plan' && typeof closeDrawer === 'function') closeDrawer();
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+  document.querySelectorAll('.tab').forEach(s => s.classList.toggle('active', s.id === 'tab-' + t));
+  if (t === 'ergebnis') renderResult();
+}
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => switchTab(b.dataset.tab));
+document.addEventListener('click', e => { const g = e.target.closest('[data-goto]'); if (g) { e.preventDefault(); switchTab(g.dataset.goto); window.scrollTo(0, 0); } });
+$('#btnCsPrint').onclick = () => window.print();
+
+/* ================= Nachschlage-Leiste ================= */
+const CS_KEYS = ['bereiche', 'verteiler', 'medien', 'regeln', 'lwl', 'begriffe', 'bedienung', 'lernziele'];
+function buildDrawer() {
+  const body = $('#drawerBody');
+  [...document.querySelectorAll('#tab-cheat .cs-grid > .card')].forEach((card, i) => {
+    const d = document.createElement('details');
+    d.dataset.key = CS_KEYS[i] || 'x' + i;
+    const sm = document.createElement('summary');
+    sm.textContent = card.querySelector('h3').textContent;
+    const sec = document.createElement('div'); sec.className = 'sec';
+    [...card.children].forEach(ch => { if (ch.tagName !== 'H3') sec.appendChild(ch.cloneNode(true)); });
+    sec.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+    d.append(sm, sec); body.appendChild(d);
+  });
+  const f = document.createElement('p'); f.className = 'foot';
+  f.textContent = 'Tipp: Mit „⤢ Ganze Seite“ siehst du alles auf einmal – z. B. zum Ausdrucken.';
+  body.appendChild(f);
+}
+const drawerOpen = () => $('#drawer').classList.contains('open');
+function openDrawer(key) {
+  const dr = $('#drawer');
+  dr.classList.add('open'); dr.setAttribute('aria-hidden', 'false'); $('#app').classList.add('drawer-open');
+  $('#btnDrawer').classList.add('active');
+  if (key) {
+    const d = dr.querySelector(`details[data-key="${key}"]`);
+    dr.querySelectorAll('details').forEach(x => { if (x !== d) x.open = false; });
+    if (d) { d.open = true; setTimeout(() => d.scrollIntoView({ block: 'start', behavior: 'smooth' }), 60); }
+  }
+}
+function closeDrawer() {
+  const dr = $('#drawer');
+  dr.classList.remove('open'); dr.setAttribute('aria-hidden', 'true'); $('#app').classList.remove('drawer-open');
+  $('#btnDrawer').classList.remove('active');
+}
+buildDrawer();
+$('#btnDrawer').onclick = () => drawerOpen() ? closeDrawer() : openDrawer({ select: 'bedienung', delete: 'bedienung', place: 'verteiler', cable: 'medien' }[ui.mode]);
+$('#btnDrawerClose').onclick = closeDrawer;
+document.addEventListener('click', e => {
+  const c = e.target.closest('[data-cs]'); if (!c) return;
+  e.preventDefault();
+  if (!$('#tab-plan').classList.contains('active')) switchTab('plan');
+  openDrawer(c.dataset.cs);
+});
+$('#btnFull').onclick = () => {
+  const el = $('#app');
+  if (document.fullscreenElement) { document.exitFullscreen(); return; }
+  const fn = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (!fn) { toast('Vollbild ist hier nicht verfügbar – öffne die Datei ggf. in einem neuen Tab.', true); return; }
+  Promise.resolve(fn.call(el)).catch(() => toast('Vollbild wird in der eingebetteten Ansicht blockiert – öffne die Datei in einem neuen Tab.', true));
+};
+
+function save() {
+  if (LMS.ok) { lmsSaveState(); return; }
+  try { localStorage.setItem(STORE, JSON.stringify({ state, meta })); } catch (e) { /* Speicher nicht verfügbar */ }
+}
+function load() {
+  if (LMS.ok) { lmsLoadState(); return; }
+  try {
+    const d = JSON.parse(localStorage.getItem(STORE) || 'null');
+    if (d && d.state && Array.isArray(d.state.nodes)) {
+      const nodes = d.state.nodes.filter(n => TYPES[n.type] && bld(n.b) && flr(n.b, n.f));
+      const ids = new Set(nodes.map(n => n.id).concat(PCS.map(p => p.id)));
+      state = { nodes, cables: (d.state.cables || []).filter(c => ids.has(c.a) && ids.has(c.b) && MEDIA[c.m]), seq: d.state.seq || 1 };
+    }
+    if (d && d.meta) meta = Object.assign(meta, d.meta);
+  } catch (e) { /* ignorieren */ }
+}
+
+/* ================= SCORM 1.2 ================= */
+// Bewertung: hier anpassbar
+const SCORM_CFG = { weightPlan: 0.7, weightQuiz: 0.3, mastery: 80 };
+const LMS = (() => {
+  const find = w => { for (let n = 0; w && n < 12; n++) { try { if (w.API) return w.API; } catch (e) {} if (w.parent === w) break; w = w.parent; } return null; };
+  let api = null;
+  try { api = find(window) || (window.opener ? find(window.opener) : null); } catch (e) { api = null; }
+  let ok = false;
+  if (api) { try { ok = String(api.LMSInitialize('')) === 'true'; } catch (e) { ok = false; } }
+  const start = Date.now();
+  let finished = false, commitT = null;
+  const get = k => { try { return ok ? String(api.LMSGetValue(k) || '') : ''; } catch (e) { return ''; } };
+  const set = (k, v) => { try { return ok && String(api.LMSSetValue(k, String(v))) === 'true'; } catch (e) { return false; } };
+  const commit = () => { clearTimeout(commitT); try { if (ok) api.LMSCommit(''); } catch (e) {} };
+  const commitSoon = () => { clearTimeout(commitT); commitT = setTimeout(commit, 2500); };
+  const pad = (n, l = 2) => String(n).padStart(l, '0');
+  const finish = () => {
+    if (!ok || finished) return; finished = true;
+    const t = Math.round((Date.now() - start) / 1000);
+    set('cmi.core.session_time', `${pad(Math.floor(t / 3600), 4)}:${pad(Math.floor(t / 60) % 60)}:${pad(t % 60)}`);
+    set('cmi.core.exit', 'suspend');
+    commit();
+    try { api.LMSFinish(''); } catch (e) {}
+  };
+  return { ok, get, set, commit, commitSoon, finish };
+})();
+let lmsBest = 0;
+
+function packState() {
+  const idx = {};
+  state.nodes.forEach((n, i) => idx[n.id] = 'n' + i);
+  PCS.forEach(p => idx[p.id] = 'p' + p.id.slice(2));
+  return JSON.stringify({ v: 1,
+    n: state.nodes.map(n => [n.type, n.b, n.f, Math.round(n.x), Math.round(n.y)]),
+    c: state.cables.map(c => [idx[c.a], idx[c.b], c.m]),
+    q: QUIZ.map((q, i) => meta.quiz[i] === undefined ? '-' : meta.quiz[i]).join(''),
+    d: meta.quizDone ? 1 : 0, k: meta.klasse || '' });
+}
+function unpackState(str) {
+  const d = JSON.parse(str);
+  if (!d || d.v !== 1) return;
+  const st = { nodes: [], cables: [], seq: 1 }, map = {};
+  (d.n || []).forEach((a, i) => {
+    if (!TYPES[a[0]] || a[0] === 'pc' || !bld(a[1]) || !bld(a[1]).floors.some(F => F.id === a[2])) return;
+    const n = { id: 'n' + (st.seq++), type: a[0], b: a[1], f: a[2], x: +a[3], y: +a[4] };
+    st.nodes.push(n); map['n' + i] = n.id;
+  });
+  PCS.forEach(p => map['p' + p.id.slice(2)] = p.id);
+  (d.c || []).forEach(a => { const x = map[a[0]], y = map[a[1]]; if (x && y && MEDIA[a[2]]) st.cables.push({ id: 'c' + (st.seq++), a: x, b: y, m: a[2] }); });
+  state = st;
+  meta.quiz = {}; String(d.q || '').split('').forEach((ch, i) => { if (/\d/.test(ch)) meta.quiz[i] = +ch; });
+  meta.quizDone = !!d.d; meta.klasse = d.k || '';
+}
+function lmsSaveState() {
+  const s = packState();
+  if (s.length <= 4000) { LMS.set('cmi.suspend_data', s); LMS.commitSoon(); }
+}
+function lmsLoadState() {
+  const sd = LMS.get('cmi.suspend_data');
+  if (sd) { try { unpackState(sd); } catch (e) { /* ungültiger Stand */ } }
+  const nm = LMS.get('cmi.core.student_name');
+  if (nm) meta.name = nm.includes(',') ? nm.split(',').map(x => x.trim()).reverse().join(' ') : nm;
+  const raw = parseFloat(LMS.get('cmi.core.score.raw'));
+  if (!isNaN(raw)) lmsBest = Math.round(raw);
+  const st = LMS.get('cmi.core.lesson_status');
+  if (!st || st === 'not attempted') { LMS.set('cmi.core.lesson_status', 'incomplete'); LMS.commit(); }
+}
+function lmsBadge() {
+  const b = $('#lmsBadge'); if (!LMS.ok) return;
+  b.hidden = false;
+  const pass = lmsBest >= SCORM_CFG.mastery;
+  b.classList.toggle('pass', pass);
+  b.textContent = pass ? `ByCS: bestanden (${lmsBest} %)` : `ByCS verbunden · bisher ${lmsBest} % (bestanden ab ${SCORM_CFG.mastery} %)`;
+}
+function reportLMS() {
+  if (!LMS.ok) return;
+  const plan = analyze().total;
+  const quiz = meta.quizDone ? quizScore() / QUIZ.length * 100 : 0;
+  const total = Math.round(plan * SCORM_CFG.weightPlan + quiz * SCORM_CFG.weightQuiz);
+  const wasPassed = lmsBest >= SCORM_CFG.mastery;
+  if (total > lmsBest) lmsBest = total;
+  LMS.set('cmi.core.score.min', 0); LMS.set('cmi.core.score.max', 100);
+  LMS.set('cmi.core.score.raw', lmsBest);
+  LMS.set('cmi.core.lesson_status', lmsBest >= SCORM_CFG.mastery ? 'passed' : 'incomplete');
+  lmsSaveState(); LMS.commit();
+  lmsBadge(); renderResult();
+  if (!wasPassed && lmsBest >= SCORM_CFG.mastery) setTimeout(() => toast(`Bestanden! Gesamtergebnis ${lmsBest} % wurde an die ByCS-Lernplattform übertragen. ✓`), 1600);
+  else if (!meta.quizDone && total < SCORM_CFG.mastery) setTimeout(() => toast(`Gesamtergebnis ${total} % übertragen. Tipp: Der Wissenscheck zählt ${Math.round(SCORM_CFG.weightQuiz * 100)} % – bestanden ab ${SCORM_CFG.mastery} %.`), 1600);
+}
+window.addEventListener('pagehide', () => { if (LMS.ok) { lmsSaveState(); LMS.finish(); } });
+window.addEventListener('beforeunload', () => { if (LMS.ok) { lmsSaveState(); LMS.finish(); } });
+if (LMS.ok) { teacher = false; $('#btnImport').hidden = true; }
+
+/* ================= Start ================= */
+load();
+$('#inName').value = meta.name || ''; $('#inClass').value = meta.klasse || '';
+applyTeacher();
+lmsBadge();
+renderStatic();
+setMode('select');
+renderCheck();
+renderQuiz();
+
+window.SVPlanspiel = LMS.ok ? { analyze, packState } : { analyze, solution: () => { solution(); changed(); }, state: () => state, PCS, cableLen, packState };
+})();
+</script>
+</body>
+</html>

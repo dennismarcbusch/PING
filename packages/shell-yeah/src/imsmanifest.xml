@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="de.bs-lif.shell-yeah" version="1.0"
+  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+  <organizations default="org_linux">
+    <organization identifier="org_linux">
+      <title>Shell Yeah! – Linux im Terminal</title>
+      <item identifier="item_linux" identifierref="res_linux" isvisible="true">
+        <title>Shell Yeah! – Tutorial, Üben, Kompetenznachweis</title>
+        <adlcp:masteryscore>70</adlcp:masteryscore>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="res_linux" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="css/app.css"/>
+      <file href="fonts/UFL-LICENSE.txt"/>
+      <file href="fonts/ubuntu-latin-400-normal.woff2"/>
+      <file href="fonts/ubuntu-latin-500-normal.woff2"/>
+      <file href="fonts/ubuntu-latin-700-normal.woff2"/>
+      <file href="fonts/ubuntu-mono-latin-400-normal.woff2"/>
+      <file href="fonts/ubuntu-mono-latin-700-normal.woff2"/>
+      <file href="index.html"/>
+      <file href="js/app.js"/>
+      <file href="js/cmds.js"/>
+      <file href="js/content-exam.js"/>
+      <file href="js/content-practice.js"/>
+      <file href="js/content-tutorial.js"/>
+      <file href="js/flow.js"/>
+      <file href="js/man.js"/>
+      <file href="js/net.js"/>
+      <file href="js/scorm.js"/>
+      <file href="js/shell.js"/>
+      <file href="js/term.js"/>
+      <file href="js/vfs.js"/>
+      <file href="js/worlds.js"/>
+    </resource>
+  </resources>
+</manifest>

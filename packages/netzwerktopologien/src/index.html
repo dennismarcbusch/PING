@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Netzwerktopologien erleben</title>
+<style>
+:root{
+  --bg:#eef2f8; --card:#ffffff; --card2:#f6f8fc; --ink:#1b2333; --ink-soft:#4a5568; --muted:#6b7588; --line:#dbe2ec;
+  --accent:#2f6fde; --accent-soft:#e3ecfd; --ok:#1f9d55; --ok-soft:#e2f5e9; --bad:#d64545; --bad-soft:#fde8e8;
+  --warn:#b67d00; --warn-soft:#fff3d1; --wire:#7b879b; --canvas:#fbfcfe; --grid:#e6ebf3;
+  --shadow:0 1px 2px rgba(20,30,50,.06),0 6px 20px rgba(20,30,50,.07); --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.45}
+.app{max-width:1400px;margin:0 auto;padding:14px}
+h1,h2,h3{margin:0 0 .4em;line-height:1.2}
+h3{font-size:1.05rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px}
+button{font:inherit;color:var(--ink);background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:7px 12px;cursor:pointer;transition:background .15s,border-color .15s,transform .05s}
+button:hover{border-color:var(--accent)}
+button:active{transform:translateY(1px)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.primary:hover{filter:brightness(1.08)}
+button.active,button.toggle.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+button:disabled{opacity:.5;cursor:default}
+.hidden{display:none!important}
+
+/* Header */
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand h1{font-size:1.45rem;margin:0}
+.brand p{margin:0;color:var(--muted);font-size:.9rem}
+.logo{width:46px;height:46px;flex:none}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:5px;box-shadow:var(--shadow)}
+.tabs button{border:none;background:transparent;padding:8px 14px;border-radius:8px;font-weight:600;color:var(--ink-soft)}
+.tabs button.active{background:var(--accent);color:#fff}
+details.goals{margin-bottom:12px;padding:10px 14px}
+details.goals summary{cursor:pointer;font-weight:700}
+details.goals ul{margin:.6em 0 0;padding-left:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px}
+details.goals li{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.92rem}
+details.goals li b{display:block;color:var(--accent)}
+.tab{display:none}
+.tab.active{display:block}
+
+/* Layout */
+.grid3{display:grid;grid-template-columns:220px minmax(0,1fr) 330px;gap:12px;align-items:start}
+@media (max-width:1150px){.grid3{grid-template-columns:200px minmax(0,1fr)}.grid3>.side-r{grid-column:1/-1}}
+@media (max-width:760px){.grid3{grid-template-columns:1fr}}
+
+/* Picker */
+.pick{display:flex;flex-direction:column;gap:7px}
+.pick button{display:flex;align-items:center;gap:10px;text-align:left;padding:6px 8px;background:var(--card2)}
+.pick button svg{width:58px;height:36px;flex:none;background:var(--canvas);border-radius:6px;border:1px solid var(--line)}
+.pick button.active{background:var(--accent-soft)}
+.pick button span{font-weight:600}
+@media (max-width:760px){.pick{flex-direction:row;flex-wrap:wrap}.pick button{flex:1 1 140px}}
+@media (max-width:1150px){.pick button svg{width:44px;height:28px}.pick button{gap:8px}}
+@media (max-width:600px){.tabs{width:100%}.tabs button{flex:1;padding:8px 4px;font-size:.88rem}}
+.slider{display:block;margin-top:12px;font-size:.9rem;color:var(--ink-soft)}
+.slider input{width:100%;accent-color:var(--accent)}
+
+/* Stage */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:none;border-radius:0;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:none}
+.chk{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card2);cursor:pointer;font-size:.93rem}
+.chk input{accent-color:var(--accent)}
+.toolhint{font-size:.85rem;color:var(--muted);margin:-2px 0 8px}
+.canvas{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);touch-action:none;user-select:none;-webkit-user-select:none;
+  background-color:var(--canvas);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px}
+.stagewrap{position:relative}
+.toast{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:var(--ink);color:var(--card);padding:6px 12px;border-radius:8px;font-size:.88rem;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center}
+.toast.show{opacity:.92}
+.statusbar{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.reach{display:flex;align-items:center;gap:10px;font-size:.9rem}
+.reach span{color:var(--muted);white-space:nowrap}
+.bar{flex:1;height:10px;background:var(--card2);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .35s,background .35s}
+.msg{min-height:2.6em;padding:8px 12px;border-radius:10px;font-size:.93rem;background:var(--card2);border:1px solid var(--line)}
+.msg.ok{background:var(--ok-soft);border-color:var(--ok)}
+.msg.bad{background:var(--bad-soft);border-color:var(--bad)}
+.msg.warn{background:var(--warn-soft);border-color:var(--warn)}
+
+/* SVG scene */
+.link{stroke:var(--wire);stroke-width:3;stroke-linecap:round}
+.link.hi{stroke:var(--accent);stroke-width:6}
+.link.failed{stroke:var(--bad);stroke-dasharray:9 7;opacity:.85}
+.hit{stroke:transparent;stroke-width:18;cursor:pointer;fill:none}
+.node{cursor:pointer}
+.pc-body{fill:var(--card);stroke:var(--ink-soft);stroke-width:2}
+.pc-stand{fill:var(--ink-soft)}
+.sw-body{fill:#2b3445;stroke:#0f141c;stroke-width:1.5}
+.port{fill:#4ade80}
+.lbl{font-size:13px;fill:var(--ink);text-anchor:middle;font-weight:700;paint-order:stroke;stroke:var(--canvas);stroke-width:4px;stroke-linejoin:round;pointer-events:none}
+.node.failed{opacity:.42}
+.xmark{stroke:var(--bad);stroke-width:5;stroke-linecap:round;fill:none}
+.halo{fill:none;stroke:var(--accent);stroke-width:3;stroke-dasharray:6 5}
+.hiring{fill:var(--accent);opacity:.18}
+.good{fill:none;stroke:var(--ok);stroke-width:5}
+.heat{opacity:.45}
+.term{fill:#39414f;stroke:#11161e}
+.bus-line{stroke-width:10}
+.busglow{stroke:var(--accent);stroke-width:22;opacity:.25;stroke-linecap:round}
+.arrow{opacity:.85}
+.packet{fill:var(--accent);stroke:#fff;stroke-width:2.5;filter:drop-shadow(0 0 4px rgba(47,111,222,.8))}
+.packet.p-b{fill:#e8862a;filter:drop-shadow(0 0 4px rgba(232,134,42,.8))}
+.spread{stroke:var(--accent);stroke-width:14;opacity:.35;stroke-linecap:round}
+.pulse{fill:none;stroke-width:3}
+.burst{fill:none;stroke:var(--bad);stroke-width:6}
+.bursttxt{font-size:20px;font-weight:800;fill:var(--bad);text-anchor:middle;paint-order:stroke;stroke:var(--canvas);stroke-width:5px}
+.rubber{stroke:var(--accent);stroke-width:3;stroke-dasharray:6 5;pointer-events:none}
+.mini .link{stroke-width:7}
+.mini .bus-line{stroke-width:16}
+.dots .link{stroke-width:14}
+.dots .bus-line{stroke-width:24}
+
+/* Info */
+.info h2{font-size:1.3rem;display:flex;align-items:center;gap:8px}
+.info .dot{width:14px;height:14px;border-radius:50%;display:inline-block}
+.info p{margin:.3em 0 .7em;font-size:.93rem}
+.pc-list{list-style:none;padding:0;margin:.2em 0 .8em;font-size:.92rem}
+.pc-list li{padding:3px 0 3px 26px;position:relative}
+.pc-list li::before{position:absolute;left:0;top:2px;font-weight:800;width:20px;text-align:center;border-radius:5px}
+.pros li::before{content:"+";color:var(--ok);background:var(--ok-soft)}
+.cons li::before{content:"−";color:var(--bad);background:var(--bad-soft)}
+.subh{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-top:.6em}
+.kpi{display:grid;grid-template-columns:1fr auto;gap:4px 10px;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.9rem}
+.kpi b{text-align:right}
+.legend{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);margin-top:8px}
+.legend i{flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,hsl(120,65%,45%),hsl(60,75%,48%),hsl(0,70%,50%))}
+
+/* Compare */
+.cmp{margin-top:12px}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+tr.cur td{background:var(--accent-soft)}
+.rating{letter-spacing:2px;white-space:nowrap}
+.note{margin-top:10px;font-size:.9rem;background:var(--warn-soft);border:1px solid var(--warn);border-radius:10px;padding:8px 12px}
+
+/* Builder */
+.tasks ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.tasks li button{width:100%;text-align:left;display:flex;gap:8px;align-items:flex-start;background:var(--card2)}
+.tasks li button.active{background:var(--accent-soft);border-color:var(--accent)}
+.tasks .st{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:.8rem;font-weight:800;background:var(--line);color:var(--ink-soft)}
+.tasks .st.done{background:var(--ok);color:#fff}
+.tasks small{display:block;color:var(--muted);font-weight:400}
+.detect{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 12px;border-radius:10px;background:var(--card2);border:1px solid var(--line);margin-bottom:8px;font-size:.93rem}
+.detect .dot{width:12px;height:12px;border-radius:50%}
+.detect small{color:var(--muted)}
+.metrics{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:.86rem}
+.chip b{margin-left:4px}
+.chip.bad{border-color:var(--bad);background:var(--bad-soft)}
+.task .badge{display:inline-block;font-size:.75rem;font-weight:700;background:var(--accent-soft);color:var(--accent);padding:2px 8px;border-radius:999px;margin-bottom:6px}
+.goalbox{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:.92rem}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.hints{margin:0;padding-left:20px;font-size:.9rem;color:var(--ink-soft)}
+.fb{border-radius:10px;padding:10px 12px;margin-top:8px;font-size:.93rem}
+.fb.ok{background:var(--ok-soft);border:1px solid var(--ok)}
+.fb.bad{background:var(--bad-soft);border:1px solid var(--bad)}
+.fb table{margin:8px 0;font-size:.86rem}
+.howto{font-size:.85rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;margin-top:10px}
+
+/* Options (quiz + reflection) */
+.opts{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+.opt{text-align:left;padding:9px 12px;background:var(--card2)}
+.opt.chosen{border-color:var(--accent);background:var(--accent-soft)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+
+/* Quiz */
+.quiz{max-width:860px;margin:0 auto}
+.q-top{display:flex;justify-content:space-between;gap:10px;font-size:.85rem;color:var(--muted);flex-wrap:wrap}
+.lzchip{background:var(--accent-soft);color:var(--accent);padding:2px 9px;border-radius:999px;font-weight:700}
+.progress{height:6px;background:var(--card2);border-radius:4px;overflow:hidden;margin:8px 0 14px}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.q-text{font-size:1.12rem;margin-bottom:10px}
+.q-img{max-width:520px;margin:0 auto 10px}
+.match-row{display:grid;grid-template-columns:1fr 200px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
+@media (max-width:600px){.match-row{grid-template-columns:1fr}}
+select,input[type=number],input[type=text]{font:inherit;color:var(--ink);background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:7px 9px}
+select.right,input.right{border-color:var(--ok);background:var(--ok-soft)}
+select.wrong,input.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.lzres{display:grid;grid-template-columns:minmax(0,1fr) 160px 70px;gap:6px 12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.lzres .bar{height:12px}
+.lzres small{color:var(--muted);display:block}
+.state{font-weight:700;font-size:.85rem}
+.state.ok{color:var(--ok)}.state.mid{color:var(--warn)}.state.no{color:var(--bad)}
+@media (max-width:600px){.lzres{grid-template-columns:1fr 80px}.lzres .bar{grid-column:1/-1}}
+#qzNamePrint{display:none}
+.scnote{font-size:.88rem;background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;padding:8px 12px;margin:8px 0}
+.big{font-size:2.2rem;font-weight:800;color:var(--accent)}
+.qlist{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.qlist span{font-size:.8rem;padding:3px 8px;border-radius:999px;border:1px solid var(--line)}
+.qlist .y{background:var(--ok-soft);border-color:var(--ok)}
+.qlist .n{background:var(--bad-soft);border-color:var(--bad)}
+.qlist .h{background:var(--warn-soft);border-color:var(--warn)}
+footer{color:var(--muted);font-size:.8rem;text-align:center;margin:16px 0 4px}
+@media print{
+  body{background:#fff}
+  .top .tabs,details.goals,footer,.noprint,#tab-explore,#tab-build{display:none!important}
+  #tab-quiz{display:block!important}
+  #qzNamePrint{display:block!important}
+  .card{box-shadow:none;border:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+        <rect x="1" y="1" width="46" height="46" rx="12" fill="#2f6fde"/>
+        <g stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="24" y1="24" x2="11" y2="12"/><line x1="24" y1="24" x2="37" y2="12"/><line x1="24" y1="24" x2="11" y2="36"/><line x1="24" y1="24" x2="37" y2="36"/><line x1="11" y1="12" x2="37" y2="12" opacity=".5"/></g>
+        <g fill="#fff"><circle cx="11" cy="12" r="4"/><circle cx="37" cy="12" r="4"/><circle cx="11" cy="36" r="4"/><circle cx="37" cy="36" r="4"/><rect x="18" y="19" width="12" height="10" rx="2.5" fill="#ffd166"/></g>
+      </svg>
+      <div>
+        <h1>Netzwerktopologien erleben</h1>
+        <p>Interaktives Lernmodul für Auszubildende der Fachinformatik</p>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-tab="explore" class="active">① Entdecken</button>
+      <button data-tab="build">② Umbauen</button>
+      <button data-tab="quiz">③ Lernzielkontrolle</button>
+    </nav>
+  </header>
+
+  <details class="card goals" id="goals">
+    <summary>🎯 Lernziele dieses Moduls</summary>
+    <ul id="goalList"></ul>
+  </details>
+
+  <!-- ============ ENTDECKEN ============ -->
+  <section class="tab active" id="tab-explore">
+    <div class="grid3">
+      <aside class="card">
+        <h3>Topologie wählen</h3>
+        <div class="pick" id="pickList"></div>
+        <label class="slider">Anzahl Endgeräte: <b id="nVal">6</b>
+          <input type="range" id="nRange" min="4" max="10" value="6">
+        </label>
+      </aside>
+
+      <div class="card">
+        <div class="toolbar">
+          <div class="seg">
+            <button data-extool="fail" class="active">⚡ Ausfall simulieren</button>
+            <button data-extool="send">✉ Paket senden</button>
+          </div>
+          <button id="exHeat" class="toggle" title="Zeigt, wie viele Geräte der Ausfall eines Elements trennen würde">🔥 Schwachstellen</button>
+          <button id="exRepair">🔧 Alles reparieren</button>
+          <label class="chk hidden" id="exDblWrap"><input type="checkbox" id="exDbl"> Doppelring</label>
+          <button id="exCollide" class="hidden">💥 Kollision vorführen</button>
+        </div>
+        <div class="toolhint" id="exHint"></div>
+        <div class="stagewrap">
+          <svg id="exSvg" class="canvas" viewBox="0 0 800 480"><g class="scene"></g><g class="fx"></g></svg>
+        </div>
+        <div class="statusbar">
+          <div class="reach"><span>Erreichbarkeit</span><div class="bar"><i id="exBar"></i></div><b id="exReach"></b></div>
+          <div class="msg" id="exMsg"></div>
+        </div>
+      </div>
+
+      <aside class="card info side-r" id="exInfo"></aside>
+    </div>
+
+    <div class="card cmp">
+      <h3>Vergleich aller Topologien bei <span id="cmpN">6</span> Endgeräten</h3>
+      <div class="tablewrap"><table id="cmpTable"></table></div>
+      <div class="note"><b>Gut zu wissen – physikalisch vs. logisch:</b> Die <i>physikalische</i> Topologie beschreibt die Verkabelung, die <i>logische</i> den Weg der Daten. Ein Netz mit <b>Hub</b> ist physikalisch ein Stern, arbeitet logisch aber wie ein Bus (alle bekommen alles, Kollisionen möglich). Erst der <b>Switch</b> macht den Stern auch logisch zum Stern. Auch WLAN ist physikalisch „ein Stern um den Access Point“, logisch aber ein geteiltes Medium.</div>
+    </div>
+  </section>
+
+  <!-- ============ UMBAUEN ============ -->
+  <section class="tab" id="tab-build">
+    <div class="grid3">
+      <aside class="card tasks">
+        <h3>Umbau-Aufgaben</h3>
+        <ol id="taskList"></ol>
+      </aside>
+
+      <div class="card">
+        <div class="toolbar">
+          <div class="seg">
+            <button data-bdtool="connect" class="active">🔗 Verbinden</button>
+            <button data-bdtool="move">✋ Verschieben</button>
+            <button data-bdtool="delete">🗑 Löschen</button>
+          </div>
+          <div class="seg">
+            <button id="addPC">+ PC</button>
+            <button id="addSW">+ Switch</button>
+            <button id="addBus">+ Bus-Kabel</button>
+          </div>
+          <button id="bdClear" title="Entfernt alle Kabel">✂ Alle Kabel lösen</button>
+          <button id="bdHeat" class="toggle">🔥 Schwachstellen</button>
+          <button id="bdReset">↺ Neu starten</button>
+        </div>
+        <div class="toolhint" id="bdHint"></div>
+        <div class="detect" id="bdDetect"></div>
+        <div class="stagewrap">
+          <svg id="bdSvg" class="canvas" viewBox="0 0 800 480"><g class="scene"></g><g class="fx"></g></svg>
+          <div class="toast" id="bdToast"></div>
+        </div>
+        <div class="metrics" id="bdMetrics"></div>
+      </div>
+
+      <aside class="card task side-r" id="bdTask"></aside>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="tab" id="tab-quiz">
+    <div class="card quiz" id="quiz"></div>
+  </section>
+
+  <footer>SCORM 1.2 · <span id="scState">Ergebnis wird an die Lernplattform übermittelt</span></footer>
+</div>
+
+<script>
+'use strict';
+/* ================================================================
+   Grundlagen & Daten
+   ================================================================ */
+var NS = 'http://www.w3.org/2000/svg';
+var $ = function(s, r){ return (r || document).querySelector(s); };
+var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+var _id = 0; function nid(){ return 'e' + (++_id); }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function shuffle(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+var ORDER = ['bus','ring','star','tree','full','partial'];
+var TOPO = {
+  bus: { name:'Bus', color:'#e8862a', short:'Ein gemeinsames Kabel für alle Stationen',
+    recog:'Erkennbar am durchgehenden Kabel mit Abschlusswiderständen (Terminatoren) an beiden Enden.',
+    desc:'Alle Stationen hängen an einem gemeinsamen Übertragungsmedium (klassisch ein Koaxialkabel). An beiden Enden sitzen Abschlusswiderstände (Terminatoren), die Signalreflexionen verhindern. Jedes Signal erreicht alle Stationen – nur der Empfänger übernimmt die Daten. Den Zugriff regelt z. B. CSMA/CD.',
+    pros:['Geringer Kabelbedarf, günstig','Einfacher Aufbau ohne aktive Komponenten','Ausfall eines Endgeräts stört die anderen nicht','Leicht erweiterbar (Station anklemmen)'],
+    cons:['Kabelbruch oder fehlender Terminator legt das ganze Netz lahm','Nur eine Station kann gleichzeitig senden → Kollisionen','Leistung sinkt mit der Zahl der Stationen','Alle Stationen „hören mit“ (Datenschutz)','Fehlersuche aufwendig, Länge begrenzt'],
+    practice:'Früher Ethernet 10BASE2/10BASE5 (Koaxialkabel). Heute z. B. CAN-Bus im Auto und Feldbusse in der Industrie.',
+    sim:'Sende ein Paket und beobachte, dass alle Stationen das Signal empfangen. Klicke dann auf das Bus-Kabel (Kabelbruch) – oder führe eine Kollision vor.' },
+  ring: { name:'Ring', color:'#8e5bd6', short:'Jede Station hat genau zwei Nachbarn',
+    recog:'Jedes Gerät hat genau zwei Nachbarn – die Verbindungen bilden einen geschlossenen Kreis.',
+    desc:'Jede Station ist mit genau zwei Nachbarn verbunden. Die Daten laufen in eine Richtung von Station zu Station; jede Station frischt das Signal auf und gibt es weiter (Repeater). Der Zugriff wird häufig per Token Passing geregelt: Nur wer das Token hat, darf senden.',
+    pros:['Kollisionsfrei durch Token – deterministische Zugriffszeiten','Alle Stationen sind gleichberechtigt','Signal wird von jeder Station aufgefrischt → große Ausdehnung','Geringer Kabelaufwand (n Kabel)'],
+    cons:['Ausfall einer Station oder Leitung unterbricht den ganzen Ring (ohne Doppelring)','Laufzeit steigt mit jeder weiteren Station','Erweitern erfordert Unterbrechen des Rings','Fehlersuche aufwendig'],
+    practice:'Token Ring (IEEE 802.5), FDDI als Doppelring. Heute: Glasfaser-Ringe bei Providern und Ring-Redundanz im Industrial Ethernet.',
+    sim:'Lass eine Station ausfallen und sende ein Paket. Aktiviere danach den Doppelring und vergleiche!' },
+  star: { name:'Stern', color:'#2f7fd6', short:'Alle Geräte an einem zentralen Verteiler',
+    recog:'Alle Geräte sind einzeln an genau einen zentralen Verteiler (Switch) angeschlossen.',
+    desc:'Jedes Endgerät ist mit einem eigenen Kabel an einen zentralen Verteiler angeschlossen – heute ein Switch, früher ein Hub. Der Switch leitet Daten gezielt nur an den Empfänger weiter.',
+    pros:['Defektes Kabel/Gerät betrifft nur dieses eine Gerät','Einfach erweiterbar und leicht zu warten','Fehler lassen sich gut eingrenzen','Switch verhindert Kollisionen, hohe Datenraten'],
+    cons:['Der zentrale Switch ist ein Single Point of Failure','Hoher Kabelaufwand: jedes Gerät braucht ein eigenes Kabel','Anzahl der Switch-Ports begrenzt die Größe','Kosten für die aktive Komponente'],
+    practice:'Standard in nahezu jedem heutigen LAN (Ethernet mit Switch), z. B. im Klassenzimmer.',
+    sim:'Lass einen PC ausfallen – und dann den Switch. Was ist der Unterschied?' },
+  tree: { name:'Baum', color:'#2f9e5b', short:'Hierarchisch verbundene Sterne (erweiterter Stern)',
+    recog:'Mehrere Verteiler sind hierarchisch miteinander verbunden – ohne Kreise.',
+    desc:'Mehrere Sterne werden hierarchisch über Switches gekoppelt (erweiterter Stern): ein zentraler Core-Switch, darunter Etagen- bzw. Raumverteiler, daran die Endgeräte.',
+    pros:['Gut skalierbar, auch für große Netze','Ausfälle bleiben auf Teilbäume begrenzt','Klare, strukturierte Verkabelung (Etagenverteiler)','Große Entfernungen überbrückbar'],
+    cons:['Fällt ein Verteiler aus, ist sein ganzer Teilbaum getrennt','Die Wurzel (Core-Switch) ist besonders kritisch','Uplinks können zum Engpass werden','Höherer Planungsaufwand'],
+    practice:'Typisches Schul- oder Firmennetz: Core-Switch im Serverraum, Etagen- und Raumswitches.',
+    sim:'Lass einen Raum-Switch ausfallen – wer kann noch mit wem sprechen? Und was passiert beim Core-Switch?' },
+  full: { name:'Vollvermascht', color:'#d64545', short:'Jedes Gerät ist mit jedem verbunden',
+    recog:'Jedes Gerät ist direkt mit jedem anderen Gerät verbunden.',
+    desc:'Jedes Gerät besitzt eine direkte Verbindung zu jedem anderen Gerät. Fällt eine Leitung aus, gibt es sofort zahlreiche Umwege.',
+    pros:['Höchste Ausfallsicherheit, viele alternative Wege','Direkte Kommunikation ohne Zwischenstationen','Keine zentrale Komponente, kein Engpass'],
+    cons:['Extrem hoher Kabelaufwand: n·(n−1)/2 Verbindungen','Jedes Gerät braucht n−1 Anschlüsse','Teuer und schlecht erweiterbar'],
+    practice:'Kleine Kernnetze, Cluster-Verbindungen, VPN-Full-Mesh zwischen wenigen Standorten.',
+    sim:'Erhöhe die Anzahl der Endgeräte und beobachte den Kabelaufwand. Lass mehrere Kabel ausfallen und sende Pakete.' },
+  partial: { name:'Teilvermascht', color:'#14958a', short:'Mehrere, aber nicht alle Verbindungen',
+    recog:'Geräte haben mehrere, aber nicht alle möglichen Verbindungen.',
+    desc:'Geräte sind mit mehreren, aber nicht mit allen anderen verbunden. Daten werden – oft über Zwischenstationen – auf einem passenden Weg weitergeleitet (Routing).',
+    pros:['Guter Kompromiss aus Ausfallsicherheit und Aufwand','Alternative Wege bei Leitungsausfall','Gut erweiterbar'],
+    cons:['Wegewahl (Routing) nötig','Planung und Verwaltung aufwendiger','Unterschiedlich lange Wege und Laufzeiten'],
+    practice:'Das Internet, Provider- und Firmen-WANs, WLAN-Mesh-Systeme.',
+    sim:'Wie viele Ausfälle verkraftet das Netz, bevor es zerfällt? Probiere es aus!' }
+};
+var LZ = {
+  lz1:{ t:'Topologien erkennen und benennen', d:'Ich kann Bus, Ring, Stern, Baum, Voll- und Teilvermaschung am Aufbau erkennen und richtig benennen.', tip:'Schau dir im Bereich „Entdecken“ alle sechs Topologien noch einmal genau an.' },
+  lz2:{ t:'Vor- und Nachteile beurteilen', d:'Ich kann typische Vor- und Nachteile den Topologien zuordnen und begründen.', tip:'Lies die Vor- und Nachteile im Infobereich und überprüfe sie mit eigenen Ausfall-Simulationen.' },
+  lz3:{ t:'Topologien überführen und Aufwand berechnen', d:'Ich kann eine Topologie in eine andere umbauen und den Verkabelungsaufwand berechnen.', tip:'Löse die Umbau-Aufgaben und übe die Formel n·(n−1)/2.' },
+  lz4:{ t:'Ausfallsicherheit bewerten', d:'Ich kann Single Points of Failure erkennen und die Folgen von Ausfällen einschätzen.', tip:'Aktiviere „Schwachstellen“ und simuliere gezielt Ausfälle.' }
+};
+function colorOf(key){ return (TOPO[key] && TOPO[key].color) || '#8a94a6'; }
+function treeSwitches(n){ return n <= 6 ? 2 : 3; }
+
+/* ================================================================
+   Graph-Erzeugung
+   ================================================================ */
+function makeGraph(key, n){
+  var nodes = [], links = [], pc = 0;
+  function P(x, y){ var o = {id:nid(), type:'pc', x:Math.round(x), y:Math.round(y), label:'PC' + (++pc)}; nodes.push(o); return o; }
+  function S(x, y, label){ var o = {id:nid(), type:'switch', x:x, y:y, label:label}; nodes.push(o); return o; }
+  function L(a, b){ links.push({id:nid(), a:a.id, b:b.id}); }
+  function circle(){ var r = []; for (var i = 0; i < n; i++){ var a = -Math.PI/2 + i*2*Math.PI/n; r.push(P(400 + 280*Math.cos(a), 240 + 172*Math.sin(a))); } return r; }
+  var i, j, r;
+  switch (key){
+    case 'bus': {
+      var w = clamp(n*100, 380, 740), b = {id:nid(), type:'bus', x:400, y:240, w:w, label:'Bus'};
+      nodes.push(b); var span = w - 90;
+      for (i = 0; i < n; i++){ var p = P(400 - span/2 + i*span/(n-1), i % 2 ? 380 : 100); L(p, b); }
+      break; }
+    case 'ring': r = circle(); for (i = 0; i < n; i++) L(r[i], r[(i+1) % n]); break;
+    case 'star': r = circle(); var s = S(400, 240, 'Switch'); r.forEach(function(p){ L(p, s); }); break;
+    case 'tree': {
+      var m = treeSwitches(n), core = S(400, 70, 'Core'), base = Math.floor(n/m), extra = n % m;
+      for (i = 0; i < m; i++){
+        var sx = m === 2 ? (i === 0 ? 240 : 560) : [160, 400, 640][i];
+        var sw = S(sx, 225, 'SW' + (i+1)); L(sw, core);
+        var k = base + (i < extra ? 1 : 0);
+        for (j = 0; j < k; j++){ var q = P(sx - (k-1)*62/2 + j*62, 385); L(q, sw); }
+      }
+      break; }
+    case 'full': r = circle(); for (i = 0; i < n; i++) for (j = i+1; j < n; j++) L(r[i], r[j]); break;
+    case 'partial': {
+      r = circle(); for (i = 0; i < n; i++) L(r[i], r[(i+1) % n]);
+      var h = Math.floor(n/2);
+      for (i = 0; i < n; i += 2){
+        j = (i + h) % n; var a = r[i], c = r[j];
+        if (j === (i+1) % n || i === (j+1) % n) continue;
+        if (links.some(function(l){ return (l.a === a.id && l.b === c.id) || (l.a === c.id && l.b === a.id); })) continue;
+        L(a, c);
+      }
+      break; }
+    default: circle();
+  }
+  return {nodes:nodes, links:links};
+}
+function byId(G, id){ for (var i = 0; i < G.nodes.length; i++) if (G.nodes[i].id === id) return G.nodes[i]; return null; }
+function linkById(G, id){ for (var i = 0; i < G.links.length; i++) if (G.links[i].id === id) return G.links[i]; return null; }
+function labelOf(G, id){ var n = byId(G, id); if (n) return n.type === 'bus' ? 'Bus-Kabel' : n.label; var l = linkById(G, id); if (l) return 'Kabel ' + labelOf(G, l.a) + '–' + labelOf(G, l.b); return '?'; }
+
+/* ================================================================
+   Graph-Analyse
+   ================================================================ */
+function adj(G, skip){
+  var m = new Map();
+  G.nodes.forEach(function(n){ if (!skip || !skip.has(n.id)) m.set(n.id, []); });
+  G.links.forEach(function(l){
+    if (skip && skip.has(l.id)) return;
+    if (m.has(l.a) && m.has(l.b)){ m.get(l.a).push({to:l.b, link:l.id}); m.get(l.b).push({to:l.a, link:l.id}); }
+  });
+  return m;
+}
+function comps(A){
+  var seen = new Set(), out = [];
+  A.forEach(function(_, id){
+    if (seen.has(id)) return;
+    var c = [], st = [id]; seen.add(id);
+    while (st.length){ var u = st.pop(); c.push(u); A.get(u).forEach(function(e){ if (!seen.has(e.to)){ seen.add(e.to); st.push(e.to); } }); }
+    out.push(c);
+  });
+  return out;
+}
+function R(key, hint){ return {key:key, name:TOPO[key].name, hint:hint || TOPO[key].short}; }
+function mixed(h){ return {key:'mixed', name:'Misch-/Hybridtopologie', hint:h}; }
+function classify(G){
+  var pcs = G.nodes.filter(function(n){ return n.type === 'pc'; });
+  var sws = G.nodes.filter(function(n){ return n.type === 'switch'; });
+  var buses = G.nodes.filter(function(n){ return n.type === 'bus'; });
+  var n = pcs.length, E = G.links.length;
+  if (n < 3) return {key:null, name:'Noch keine Topologie', hint:'Es werden mindestens 3 Endgeräte (PCs) benötigt.'};
+  var A = adj(G);
+  if (comps(A).length > 1) return {key:null, name:'Nicht zusammenhängend', hint:'Mindestens ein Gerät ist noch nicht mit dem Rest des Netzes verbunden.'};
+  var deg = function(id){ return A.get(id).length; };
+  var typ = function(id){ var x = byId(G, id); return x ? x.type : null; };
+  var pcpc = G.links.filter(function(l){ return typ(l.a) === 'pc' && typ(l.b) === 'pc'; }).length;
+  if (buses.length > 1) return mixed('Mehrere Bus-Segmente – das ist eine gekoppelte Bus-Struktur.');
+  if (buses.length === 1){
+    if (sws.length === 0 && pcpc === 0 && pcs.every(function(p){ return deg(p.id) === 1; })) return R('bus');
+    return mixed('Bus kombiniert mit weiteren Verbindungen oder Verteilern.');
+  }
+  if (sws.length === 0){
+    if (E === n && pcs.every(function(p){ return deg(p.id) === 2; })) return R('ring');
+    if (E === n*(n-1)/2) return R('full');
+    if (E === n-1){
+      if (pcs.every(function(p){ return deg(p.id) <= 2; })) return {key:'line', name:'Linie (Kette)', hint:'Die Geräte bilden eine offene Kette. Schließt du sie, entsteht ein Ring.'};
+      return mixed('Baumartige Struktur ohne Verteiler – hier leiten PCs für andere weiter.');
+    }
+    return R('partial');
+  }
+  var swSet = new Set(sws.map(function(s){ return s.id; }));
+  var leaf = pcs.every(function(p){ return deg(p.id) === 1 && swSet.has(A.get(p.id)[0].to); });
+  if (leaf){
+    if (sws.length === 1) return R('star');
+    if (E === G.nodes.length - 1) return R('tree');
+    return mixed('Die Switches sind mit Kreisen (redundant) verbunden – eine vermaschte Switch-Struktur.');
+  }
+  return mixed('Kombination aus Switch-Anschlüssen und direkten PC-Verbindungen.');
+}
+function ringOrder(G){
+  var A = adj(G), first = G.nodes.find(function(n){ return n.type === 'pc'; });
+  var start = first.id, ord = [], prev = null, cur = start, g = 0;
+  do {
+    var nb = A.get(cur);
+    var e = prev === null ? nb[0] : (nb.find(function(x){ return x.to !== prev; }) || nb[0]);
+    ord.push({id:cur, link:e.link, next:e.to}); prev = cur; cur = e.to;
+  } while (cur !== start && ++g < 500);
+  return ord;
+}
+function findPath(G, failed, s, t, ringSingle){
+  if (failed.has(s) || failed.has(t)) return null;
+  if (ringSingle){
+    if (failed.size) return {blocked:true};
+    var ord = ringOrder(G), i = ord.findIndex(function(o){ return o.id === s; }), nodes = [s], links = [], g = 0;
+    while (ord[i].id !== t && g++ < 500){ links.push(ord[i].link); i = (i + 1) % ord.length; nodes.push(ord[i].id); }
+    return {nodes:nodes, links:links};
+  }
+  var A = adj(G, failed), prev = new Map([[s, null]]), q = [s];
+  while (q.length){
+    var u = q.shift(); if (u === t) break;
+    A.get(u).forEach(function(e){ if (!prev.has(e.to)){ prev.set(e.to, {from:u, link:e.link}); q.push(e.to); } });
+  }
+  if (!prev.has(t)) return null;
+  var ns = [t], ls = [], c = t;
+  while (prev.get(c)){ var p = prev.get(c); ls.unshift(p.link); ns.unshift(p.from); c = p.from; }
+  return {nodes:ns, links:ls};
+}
+function pcGroups(G, failed, ringSingle){
+  var alive = G.nodes.filter(function(n){ return n.type === 'pc' && !failed.has(n.id); }).map(function(n){ return n.id; });
+  if (ringSingle && failed.size) return alive.map(function(id){ return [id]; });
+  var set = new Set(alive);
+  return comps(adj(G, failed)).map(function(c){ return c.filter(function(id){ return set.has(id); }); }).filter(function(c){ return c.length; });
+}
+function impact(G, id, rs){
+  var gr = pcGroups(G, new Set([id]), rs), tot = 0, big = 0;
+  gr.forEach(function(g){ tot += g.length; big = Math.max(big, g.length); });
+  return tot - big;
+}
+function heatMap(G, rs){
+  var nPC = G.nodes.filter(function(n){ return n.type === 'pc'; }).length, m = new Map();
+  G.nodes.forEach(function(n){ var k = impact(G, n.id, rs); m.set(n.id, {k:k, f:nPC > 1 ? k/(nPC-1) : 0, crit:k >= 1}); });
+  G.links.forEach(function(l){ var k = impact(G, l.id, rs); m.set(l.id, {k:k, f:nPC > 1 ? k/(nPC-1) : 0, crit:k >= 2}); });
+  return m;
+}
+function reachStats(G, failed, rs){
+  var n = G.nodes.filter(function(x){ return x.type === 'pc'; }).length, gr = pcGroups(G, failed, rs), ok = 0;
+  gr.forEach(function(g){ ok += g.length*(g.length-1)/2; });
+  var all = n*(n-1)/2;
+  return {ok:ok, all:all, pct:all ? ok/all : 1, groups:gr};
+}
+function metrics(G, rs){
+  if (rs === undefined) rs = classify(G).key === 'ring';
+  var A = adj(G), pcs = G.nodes.filter(function(n){ return n.type === 'pc'; });
+  var buses = G.nodes.filter(function(n){ return n.type === 'bus'; }).length;
+  var crit = 0; heatMap(G, rs).forEach(function(v){ if (v.crit) crit++; });
+  return {
+    pcs:pcs.length, cables:G.links.length + buses,
+    sws:G.nodes.filter(function(n){ return n.type === 'switch'; }).length,
+    maxPorts:pcs.reduce(function(m, p){ return Math.max(m, A.get(p.id).length); }, 0),
+    crit:crit
+  };
+}
+function heatCol(f){ return 'hsl(' + Math.round(120*(1 - clamp(f, 0, 1))) + ',70%,47%)'; }
+
+/* ================================================================
+   Darstellung (SVG)
+   ================================================================ */
+function ep(n, other){
+  if (n.type === 'bus'){ var hw = n.w/2 - 14; return {x:clamp(other.x, n.x - hw, n.x + hw), y:n.y}; }
+  return {x:n.x, y:n.y};
+}
+function scene(G, o){
+  o = o || {};
+  var failed = o.failed || new Set(), heat = o.heat || null, hiN = o.hiNodes || new Set(), hiL = o.hiLinks || new Set();
+  var good = o.good || new Set(), color = o.color || '#2f6fde', labels = o.labels !== false, dots = !!o.dots, inter = !!o.interactive;
+  var N = new Map(G.nodes.map(function(n){ return [n.id, n]; }));
+  var s = '';
+  function nodeSVG(n){
+    var f = failed.has(n.id), h = heat && heat.get(n.id), inner = '';
+    var attrs = inter ? ' data-id="' + n.id + '" data-kind="node"' : '';
+    var title = h ? '<title>' + esc(labelOf(G, n.id)) + ': Ausfall trennt ' + h.k + ' Gerät(e)</title>' : '';
+    if (n.type === 'bus'){
+      var hw = n.w/2, stroke = f ? 'var(--bad)' : (h ? heatCol(h.f) : color);
+      if (o.sel === n.id || hiN.has(n.id)) inner += '<line x1="' + (-hw) + '" y1="0" x2="' + hw + '" y2="0" class="busglow"/>';
+      if (good.has(n.id)) inner += '<rect x="' + (-hw-16) + '" y="-20" width="' + (n.w+32) + '" height="40" rx="12" class="good"/>';
+      inner += '<line x1="' + (-hw) + '" y1="0" x2="' + hw + '" y2="0" class="bus-line" style="stroke:' + stroke + '"/>';
+      inner += '<line x1="' + (-hw) + '" y1="0" x2="' + hw + '" y2="0" class="hit" style="stroke-width:34"/>';
+      inner += '<rect x="' + (-hw-11) + '" y="-12" width="11" height="24" rx="2" class="term"/><rect x="' + hw + '" y="-12" width="11" height="24" rx="2" class="term"/>';
+      if (f) inner += '<path d="M-16,-18 L-4,0 L-16,18 M16,-18 L4,0 L16,18" class="xmark"/>';
+      if (labels) inner += '<text x="' + (-hw+2) + '" y="30" class="lbl" style="text-anchor:start">Bus-Kabel</text>';
+      return '<g class="node bus' + (f ? ' failed-bus' : '') + '"' + attrs + ' transform="translate(' + n.x + ',' + n.y + ')">' + title + inner + '</g>';
+    }
+    if (h && !f) inner += '<circle r="34" class="heat" style="fill:' + heatCol(h.f) + '"/>';
+    if (hiN.has(n.id)) inner += '<circle r="32" class="hiring"/>';
+    if (good.has(n.id)) inner += '<circle r="36" class="good"/>';
+    if (o.sel === n.id) inner += '<circle r="34" class="halo"/>';
+    if (dots){
+      inner += n.type === 'pc' ? '<circle r="30" style="fill:' + color + '"/>' : '<rect x="-48" y="-30" width="96" height="60" rx="12" fill="#2b3445"/>';
+    } else if (n.type === 'pc'){
+      inner += '<rect x="-20" y="-18" width="40" height="28" rx="4" class="pc-body"/>' +
+        '<rect x="-16" y="-14" width="32" height="20" rx="2" style="fill:' + color + ';opacity:.9"/>' +
+        '<path d="M-12,-10 L-2,-10" stroke="#fff" stroke-width="2" opacity=".6"/>' +
+        '<rect x="-4" y="10" width="8" height="5" class="pc-stand"/><rect x="-12" y="15" width="24" height="3.5" rx="1.5" class="pc-stand"/>';
+      if (labels) inner += '<text y="34" class="lbl">' + esc(n.label) + '</text>';
+    } else {
+      var ports = ''; for (var i = 0; i < 6; i++) ports += '<rect x="' + (-23 + i*8) + '" y="-2" width="5" height="5" rx="1" class="port"/>';
+      inner += '<rect x="-30" y="-14" width="60" height="28" rx="5" class="sw-body"/><rect x="-26" y="-10" width="18" height="4" rx="2" fill="#7f8ba1"/>' + ports;
+      if (labels) inner += '<text y="32" class="lbl">' + esc(n.label) + '</text>';
+    }
+    if (f) inner += '<path d="M-16,-16 L16,16 M16,-16 L-16,16" class="xmark"/>';
+    return '<g class="node ' + n.type + (f ? ' failed' : '') + '"' + attrs + ' transform="translate(' + n.x + ',' + n.y + ')">' + title + inner + '</g>';
+  }
+  G.nodes.forEach(function(n){ if (n.type === 'bus') s += nodeSVG(n); });
+  G.links.forEach(function(l){
+    var a = N.get(l.a), b = N.get(l.b); if (!a || !b) return;
+    var p = ep(a, b), q = ep(b, a), f = failed.has(l.id), h = heat && heat.get(l.id);
+    var st = (h && !f) ? ' style="stroke:' + heatCol(h.f) + '"' : '';
+    var xy = ' x1="' + p.x + '" y1="' + p.y + '" x2="' + q.x + '" y2="' + q.y + '"';
+    s += '<line class="link' + (f ? ' failed' : '') + (hiL.has(l.id) ? ' hi' : '') + '"' + xy + st + '/>';
+    if (good.has(l.id)) s += '<line class="good"' + xy + '/>';
+    if (inter) s += '<g data-id="' + l.id + '" data-kind="link"><line class="hit"' + xy + '/>' + (h ? '<title>' + esc(labelOf(G, l.id)) + ': Ausfall trennt ' + h.k + ' Gerät(e)</title>' : '') + '</g>';
+  });
+  if (o.ring){
+    ringOrder(G).forEach(function(st){
+      var a = N.get(st.id), b = N.get(st.next), mx = (a.x + b.x)/2, my = (a.y + b.y)/2;
+      var ang = Math.atan2(b.y - a.y, b.x - a.x), deg = ang*180/Math.PI, px = -Math.sin(ang)*11, py = Math.cos(ang)*11;
+      if (o.ring === 'double'){
+        s += '<path d="M-8,-6 L8,0 L-8,6 Z" class="arrow" style="fill:' + color + '" transform="translate(' + (mx+px) + ',' + (my+py) + ') rotate(' + deg + ')"/>';
+        s += '<path d="M-8,-6 L8,0 L-8,6 Z" class="arrow" style="fill:' + color + '" transform="translate(' + (mx-px) + ',' + (my-py) + ') rotate(' + (deg+180) + ')"/>';
+      } else {
+        s += '<path d="M-9,-7 L9,0 L-9,7 Z" class="arrow" style="fill:' + color + '" transform="translate(' + mx + ',' + my + ') rotate(' + deg + ')"/>';
+      }
+    });
+  }
+  G.nodes.forEach(function(n){ if (n.type !== 'bus') s += nodeSVG(n); });
+  return s;
+}
+function miniSVG(G, o, cls){ return '<svg viewBox="0 0 800 480" class="' + (cls || 'mini') + '">' + scene(G, o) + '</svg>'; }
+
+/* Animationen */
+function svgEl(tag, attrs){ var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+function animate(fx, pts, opt){
+  opt = opt || {};
+  return new Promise(function(res){
+    var c = svgEl('circle', {r:opt.r || 10, 'class':'packet' + (opt.cls ? ' ' + opt.cls : ''), cx:pts[0].x, cy:pts[0].y});
+    fx.appendChild(c);
+    var segs = [], total = 0;
+    for (var i = 0; i < pts.length - 1; i++){ var d = Math.hypot(pts[i+1].x - pts[i].x, pts[i+1].y - pts[i].y); segs.push(d); total += d; }
+    var dur = opt.dur || Math.max(500, total/(opt.speed || 330)*1000), t0 = performance.now();
+    function step(t){
+      var u = Math.min(1, (t - t0)/dur), dist = u*total, k = 0;
+      while (k < segs.length - 1 && dist > segs[k]){ dist -= segs[k]; k++; }
+      var r = segs[k] ? dist/segs[k] : 1, A = pts[k], B = pts[k+1] || pts[k];
+      c.setAttribute('cx', A.x + (B.x - A.x)*r); c.setAttribute('cy', A.y + (B.y - A.y)*r);
+      if (u < 1) requestAnimationFrame(step); else { c.remove(); res(); }
+    }
+    requestAnimationFrame(step);
+  });
+}
+function pulse(fx, x, y, color, delay){
+  setTimeout(function(){
+    var c = svgEl('circle', {cx:x, cy:y, r:16, 'class':'pulse', style:'stroke:' + color}); fx.appendChild(c);
+    var t0 = performance.now();
+    (function st(t){ var u = Math.min(1, (t - t0)/650); c.setAttribute('r', 16 + 24*u); c.setAttribute('opacity', 1 - u); if (u < 1) requestAnimationFrame(st); else c.remove(); })(t0);
+  }, delay || 0);
+}
+function spreadBus(fx, bus, x0, speed){
+  var hw = bus.w/2, L = bus.x - hw, Rr = bus.x + hw, maxD = Math.max(x0 - L, Rr - x0), dur = maxD/speed*1000;
+  var line = svgEl('line', {'class':'spread', x1:x0, y1:bus.y, x2:x0, y2:bus.y}); fx.appendChild(line);
+  var t0 = performance.now();
+  (function st(t){
+    var u = Math.min(1, (t - t0)/dur), d = u*maxD;
+    line.setAttribute('x1', Math.max(L, x0 - d)); line.setAttribute('x2', Math.min(Rr, x0 + d));
+    if (u < 1) requestAnimationFrame(st); else { line.style.transition = 'opacity .6s'; line.style.opacity = 0; setTimeout(function(){ line.remove(); }, 650); }
+  })(t0);
+  return dur;
+}
+function burst(fx, x, y){
+  var c = svgEl('circle', {cx:x, cy:y, r:6, 'class':'burst'}); fx.appendChild(c);
+  var tx = svgEl('text', {x:x, y:y - 34, 'class':'bursttxt'}); tx.textContent = '💥 Kollision!'; fx.appendChild(tx);
+  var t0 = performance.now();
+  (function st(t){ var u = Math.min(1, (t - t0)/700); c.setAttribute('r', 6 + 50*u); c.setAttribute('opacity', 1 - u); if (u < 1) requestAnimationFrame(st); else c.remove(); })(t0);
+  setTimeout(function(){ tx.remove(); }, 2200);
+}
+function polyPoints(G, path){
+  var pts = [];
+  path.forEach(function(id, i){
+    var n = byId(G, id);
+    if (n.type === 'bus'){ var pr = byId(G, path[i-1]), nx = byId(G, path[i+1]); if (pr) pts.push(ep(n, pr)); if (nx) pts.push(ep(n, nx)); }
+    else pts.push({x:n.x, y:n.y});
+  });
+  return pts;
+}
+
+/* Interaktion auf der Zeichenfläche */
+function setupCanvas(svg, h){
+  var d = null, fx = $('.fx', svg);
+  function P(e){ var m = svg.getScreenCTM(); if (!m) return {x:0, y:0}; var p = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse()); return {x:p.x, y:p.y}; }
+  function clearRubber(){ var rb = fx.querySelector('.rubber'); if (rb) rb.remove(); }
+  svg.addEventListener('pointerdown', function(e){
+    if (e.button > 0) return;
+    var el = e.target.closest ? e.target.closest('[data-id]') : null, p = P(e);
+    d = {id:el ? el.dataset.id : null, kind:el ? el.dataset.kind : null, x:p.x, y:p.y, moved:false};
+    if (d.kind === 'node'){
+      var n = byId(h.G(), d.id); if (!n){ d = null; return; }
+      d.ox = n.x; d.oy = n.y;
+      try { svg.setPointerCapture(e.pointerId); } catch(_){}
+      e.preventDefault();
+    }
+  });
+  svg.addEventListener('pointermove', function(e){
+    if (!d || d.kind !== 'node') return;
+    var p = P(e), dx = p.x - d.x, dy = p.y - d.y;
+    if (!d.moved && Math.hypot(dx, dy) < 6) return;
+    d.moved = true;
+    var mode = h.dragMode ? h.dragMode() : 'move', n = byId(h.G(), d.id); if (!n) return;
+    if (mode === 'connect'){
+      var rb = fx.querySelector('.rubber'); if (!rb){ rb = svgEl('line', {'class':'rubber'}); fx.appendChild(rb); }
+      var a = ep(n, p); rb.setAttribute('x1', a.x); rb.setAttribute('y1', a.y); rb.setAttribute('x2', p.x); rb.setAttribute('y2', p.y);
+    } else if (mode === 'move'){
+      if (n.type === 'bus'){ n.x = clamp(d.ox + dx, n.w/2 + 12, 800 - n.w/2 - 12); n.y = clamp(d.oy + dy, 30, 450); }
+      else { n.x = clamp(d.ox + dx, 30, 770); n.y = clamp(d.oy + dy, 26, 440); }
+      h.redraw();
+    }
+  });
+  svg.addEventListener('pointerup', function(e){
+    if (!d) return;
+    var dd = d; d = null; clearRubber();
+    if (dd.moved){
+      if (h.dragMode && h.dragMode() === 'connect'){
+        var el = document.elementFromPoint(e.clientX, e.clientY);
+        var t = el && el.closest ? el.closest('[data-kind="node"]') : null;
+        if (t && t.dataset.id !== dd.id) h.onConnect(dd.id, t.dataset.id);
+      }
+      return;
+    }
+    if (dd.kind === 'node'){ if (h.onNode) h.onNode(dd.id); }
+    else if (dd.kind === 'link'){ if (h.onLink) h.onLink(dd.id); }
+    else if (h.onEmpty) h.onEmpty();
+  });
+  svg.addEventListener('pointercancel', function(){ d = null; clearRubber(); });
+}
+
+/* Speicherung (optional, falls erlaubt) */
+/* ================================================================
+   SCORM 1.2 – Anbindung an die Lernplattform
+   ================================================================ */
+var PASS = 60; /* Bestehensgrenze in Prozent (wie masteryscore im Manifest) */
+var SC = (function(){
+  var api = null, ok = false, finished = false, t0 = Date.now();
+  function find(w){ var n = 0; try { while (w && !w.API && w.parent && w.parent !== w && n < 12){ n++; w = w.parent; } return (w && w.API) ? w.API : null; } catch(_){ return null; } }
+  api = find(window);
+  if (!api){ try { if (window.opener) api = find(window.opener); } catch(_){} }
+  function get(k){ try { return api ? String(api.LMSGetValue(k)) : ''; } catch(_){ return ''; } }
+  function set(k, v){ try { if (api) return String(api.LMSSetValue(k, String(v))) === 'true'; } catch(_){} return false; }
+  function commit(){ try { if (api) api.LMSCommit(''); } catch(_){} }
+  if (api){ try { ok = String(api.LMSInitialize('')) === 'true'; } catch(_){ ok = false; } }
+  if (ok){
+    var st = get('cmi.core.lesson_status');
+    if (st === '' || st === 'not attempted'){ set('cmi.core.lesson_status', 'incomplete'); commit(); }
+  }
+  function hms(ms){ var t = Math.floor(ms/1000), h = Math.floor(t/3600), m = Math.floor(t%3600/60), x = t%60;
+    function p(v){ return (v < 10 ? '0' : '') + v; } return p(Math.min(h, 9999)) + ':' + p(m) + ':' + p(x); }
+  function finish(){
+    if (!ok || finished) return; finished = true;
+    set('cmi.core.session_time', hms(Date.now() - t0));
+    set('cmi.core.exit', 'suspend'); commit();
+    try { api.LMSFinish(''); } catch(_){}
+  }
+  window.addEventListener('pagehide', finish);
+  window.addEventListener('beforeunload', finish);
+  function studentName(){ var n = get('cmi.core.student_name'); if (!n) return ''; var p = n.split(','); return p.length === 2 ? (p[1].trim() + ' ' + p[0].trim()) : n; }
+  return {active:ok, get:get, set:set, commit:commit, finish:finish, studentName:studentName};
+})();
+var scBest = null;
+function scReport(total, s){
+  scBest = scBest === null ? total : Math.max(scBest, total);
+  saveStore();
+  if (!SC.active) return;
+  SC.set('cmi.core.score.min', 0); SC.set('cmi.core.score.max', 100);
+  SC.set('cmi.core.score.raw', scBest);
+  SC.set('cmi.core.lesson_status', scBest >= PASS ? 'passed' : 'failed');
+  Object.keys(LZ).forEach(function(k, i){
+    var r = s[k], pct = r.p ? Math.round(r.e/r.p*100) : 0, b = 'cmi.objectives.' + i + '.';
+    SC.set(b + 'id', 'LZ' + (i+1)); SC.set(b + 'score.min', 0); SC.set(b + 'score.max', 100);
+    SC.set(b + 'score.raw', pct); SC.set(b + 'status', pct >= 80 ? 'passed' : 'failed');
+  });
+  var n0 = parseInt(SC.get('cmi.interactions._count'), 10) || 0;
+  qz.res.forEach(function(r, i){
+    var b = 'cmi.interactions.' + (n0 + i) + '.';
+    SC.set(b + 'id', 'V' + (Math.floor(n0/12) + 1) + '_F' + (i+1) + '_' + r.lz.toUpperCase());
+    SC.set(b + 'type', 'other');
+    SC.set(b + 'objectives.0.id', 'LZ' + r.lz.slice(2));
+    SC.set(b + 'student_response', r.score === 1 ? 'richtig' : r.score > 0 ? 'teilweise' : 'falsch');
+    SC.set(b + 'result', r.score === 1 ? 'correct' : r.score > 0 ? String(Math.round(r.score*100)/100) : 'wrong');
+  });
+  SC.commit();
+}
+
+var STORE_KEY = 'topologie-lernmodul-v1';
+function loadStore(){ var o = {}; try { var s = SC.active ? SC.get('cmi.suspend_data') : localStorage.getItem(STORE_KEY); o = s ? JSON.parse(s) : {}; } catch(_){ o = {}; } if (typeof o.best === 'number') scBest = o.best; return o; }
+function saveStore(){ var d = JSON.stringify({done:bd.done, refl:bd.refl, best:scBest}); if (SC.active){ SC.set('cmi.suspend_data', d); SC.commit(); return; } try { localStorage.setItem(STORE_KEY, d); } catch(_){} }
+
+/* ================================================================
+   ① ENTDECKEN
+   ================================================================ */
+var ex = {key:'star', n:6, G:null, failed:new Set(), tool:'fail', heat:false, dbl:false, sel:null, hiN:new Set(), hiL:new Set(), token:0, busy:false};
+var exSvg;
+function exRS(){ return ex.key === 'ring' && !ex.dbl; }
+function exMsg(html, cls){ var m = $('#exMsg'); m.className = 'msg' + (cls ? ' ' + cls : ''); m.innerHTML = html; }
+function exLoad(){
+  ex.G = makeGraph(ex.key, ex.n); ex.failed = new Set(); ex.sel = null; ex.hiN = new Set(); ex.hiL = new Set(); ex.token++;
+  $('.fx', exSvg).innerHTML = '';
+  $('#exDblWrap').classList.toggle('hidden', ex.key !== 'ring');
+  $('#exCollide').classList.toggle('hidden', ex.key !== 'bus');
+  $$('#pickList button').forEach(function(b){ b.classList.toggle('active', b.dataset.key === ex.key); });
+  exDraw(); exInfo(); cmpRender();
+  exMsg('💡 ' + TOPO[ex.key].sim, '');
+}
+function exDraw(){
+  var heat = ex.heat ? heatMap(ex.G, exRS()) : null;
+  $('.scene', exSvg).innerHTML = scene(ex.G, {failed:ex.failed, heat:heat, sel:ex.sel, hiNodes:ex.hiN, hiLinks:ex.hiL, color:TOPO[ex.key].color, interactive:true, ring:ex.key === 'ring' ? (ex.dbl ? 'double' : 'single') : null});
+  var r = reachStats(ex.G, ex.failed, exRS()), pct = Math.round(r.pct*100), bar = $('#exBar');
+  bar.style.width = pct + '%';
+  bar.style.background = pct >= 99 ? 'var(--ok)' : pct >= 50 ? 'var(--warn)' : 'var(--bad)';
+  $('#exReach').textContent = r.ok + ' / ' + r.all + ' PC-Paare (' + pct + ' %)';
+  $('#exHint').textContent = ex.tool === 'fail'
+    ? 'Klicke auf ein Gerät oder Kabel, um einen Ausfall zu simulieren (erneut klicken = reparieren). Geräte lassen sich verschieben.'
+    : (ex.sel ? 'Jetzt auf den Empfänger-PC klicken.' : 'Klicke zuerst auf den Absender-PC, dann auf den Empfänger-PC.');
+}
+function exInfo(){
+  var t = TOPO[ex.key], m = metrics(ex.G, exRS()), n = m.pcs;
+  var formula = {
+    bus:'n Anschlüsse + 1 Hauptleitung = ' + (n+1), ring:'n = ' + n, star:'n = ' + n,
+    tree:'Knoten − 1 = ' + (ex.G.nodes.length - 1), full:'n·(n−1)/2 = ' + n*(n-1)/2,
+    partial:'zwischen n und n·(n−1)/2 – hier ' + ex.G.links.length
+  }[ex.key];
+  var html = '<h2><span class="dot" style="background:' + t.color + '"></span>' + t.name + '</h2>' +
+    '<p>' + t.desc + '</p>' +
+    '<div class="subh">Vorteile</div><ul class="pc-list pros">' + t.pros.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>' +
+    '<div class="subh">Nachteile</div><ul class="pc-list cons">' + t.cons.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>' +
+    '<div class="subh">In der Praxis</div><p>' + t.practice + '</p>' +
+    '<div class="subh">Kennzahlen (aktuelles Netz)</div><div class="kpi">' +
+      '<span>Kabel</span><b>' + formula + '</b>' +
+      '<span>Netzwerkanschlüsse je PC</span><b>' + m.maxPorts + '</b>' +
+      '<span>Aktive Verteiler (Switches)</span><b>' + m.sws + '</b>' +
+      '<span>Kritische Elemente (SPOF)</span><b style="color:' + (m.crit ? 'var(--bad)' : 'var(--ok)') + '">' + m.crit + '</b>' +
+    '</div>' +
+    (ex.heat ? '<div class="legend">Ausfall trennt <span>wenige</span><i></i><span>alle</span></div>' : '');
+  if (ex.key === 'ring') html += '<p style="font-size:.85rem;color:var(--muted);margin-top:8px">' + (ex.dbl ? 'Doppelring aktiv: Daten können in beide Richtungen laufen. Ein einzelner Ausfall wird überbrückt.' : 'Einfacher Ring: Die Pfeile zeigen die Senderichtung. Jede Unterbrechung stoppt das Token.') + '</p>';
+  $('#exInfo').innerHTML = html;
+}
+function cmpRender(){
+  var n = ex.n; $('#cmpN').textContent = n;
+  function dots(v, c){ return '<span class="rating" style="color:' + c + '">' + '●'.repeat(v) + '<span style="opacity:.3">' + '●'.repeat(5 - v) + '</span></span>'; }
+  var rows = {
+    bus:   [n + 1 + ' <small>(inkl. Hauptleitung)</small>', '1', 'keine (gemeinsames Kabel)', 1, 1, 3],
+    ring:  [n, '2', 'keine', 1, 2, 1],
+    star:  [n, '1', 'Switch', 3, 3, 4],
+    tree:  [n + treeSwitches(n) + ' <small>(' + treeSwitches(n) + ' Uplinks)</small>', '1', 'mehrere Switches', 3, 3, 5],
+    full:  [n*(n-1)/2, String(n-1), 'keine', 5, 5, 1],
+    partial:[n + ' bis ' + (n*(n-1)/2 - 1), '≥ 2', 'keine (Routing nötig)', 4, 4, 4]
+  };
+  var h = '<tr><th>Topologie</th><th>Kabel</th><th>Anschlüsse je PC</th><th>Zentrale Komponente</th><th>Ausfallsicherheit</th><th>Kosten / Aufwand</th><th>Erweiterbarkeit</th></tr>';
+  ORDER.forEach(function(k){
+    var r = rows[k], c = TOPO[k].color;
+    h += '<tr class="' + (k === ex.key ? 'cur' : '') + '"><td><b style="color:' + c + '">● </b><b>' + TOPO[k].name + '</b></td><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + dots(r[3], 'var(--ok)') + (k === 'ring' ? ' <small>(Doppelring: höher)</small>' : '') + '</td><td>' + dots(r[4], 'var(--bad)') + '</td><td>' + dots(r[5], 'var(--accent)') + '</td></tr>';
+  });
+  $('#cmpTable').innerHTML = h;
+}
+function exToggleFail(id){
+  var was = ex.failed.has(id);
+  if (was) ex.failed.delete(id); else ex.failed.add(id);
+  ex.hiN = new Set(); ex.hiL = new Set(); ex.token++; $('.fx', exSvg).innerHTML = '';
+  exDraw(); exInfo();
+  var name = labelOf(ex.G, id);
+  if (was && !ex.failed.size){ exMsg('🔧 ' + esc(name) + ' repariert – das Netz ist wieder vollständig intakt.', 'ok'); return; }
+  if (was){ exMsg('🔧 ' + esc(name) + ' repariert.', ''); }
+  var r = reachStats(ex.G, ex.failed, exRS()), pre = was ? '' : '⚡ <b>' + esc(name) + '</b> ist ausgefallen. ';
+  if (exRS() && ex.failed.size){ exMsg(pre + 'Der einfache Ring ist unterbrochen – das Token kann nicht mehr kreisen, <b>das gesamte Netz steht still!</b> Tipp: Aktiviere den Doppelring.', 'bad'); return; }
+  var bus = ex.G.nodes.find(function(n){ return n.type === 'bus'; });
+  if (bus && ex.failed.has(bus.id)){ exMsg(pre + 'Kabelbruch! Ohne durchgehendes Kabel und korrekte Terminierung werden Signale reflektiert – <b>keine Station kann mehr kommunizieren.</b>', 'bad'); return; }
+  if (r.groups.length <= 1) exMsg(pre + 'Alle übrigen PCs können weiterhin miteinander kommunizieren. ✅', 'ok');
+  else {
+    var big = Math.max.apply(null, r.groups.map(function(g){ return g.length; }));
+    exMsg(pre + 'Das Netz ist in <b>' + r.groups.length + ' getrennte Teile</b> zerfallen' + (big <= 1 ? ' – kein PC erreicht mehr einen anderen.' : '.'), big <= 1 ? 'bad' : 'warn');
+  }
+}
+function exSend(s, t){
+  var G = ex.G, r = findPath(G, ex.failed, s, t, exRS()), A = labelOf(G, s), B = labelOf(G, t);
+  if (r && r.blocked){ exMsg('⛔ Der einfache Ring ist unterbrochen – ohne kreisendes Token darf <b>niemand</b> senden. Aktiviere den Doppelring oder repariere den Ausfall.', 'bad'); return; }
+  if (!r){
+    var why = ex.failed.has(s) ? A + ' ist selbst ausgefallen.' : ex.failed.has(t) ? B + ' ist ausgefallen.' : 'Alle möglichen Wege sind unterbrochen.';
+    exMsg('⛔ Keine Verbindung von ' + esc(A) + ' zu ' + esc(B) + ': ' + esc(why), 'bad'); return;
+  }
+  var tok = ++ex.token;
+  ex.hiN = new Set(r.nodes); ex.hiL = new Set(r.links); exDraw();
+  var hops = r.links.length, route = r.nodes.map(function(id){ return labelOf(G, id); }).join(' → '), txt = '';
+  var nsw = r.nodes.filter(function(id){ return byId(G, id).type === 'switch'; }).length;
+  switch (ex.key){
+    case 'bus': txt = 'Das Signal breitet sich auf dem gesamten Bus aus und erreicht <b>alle</b> Stationen – nur ' + esc(B) + ' übernimmt die Daten, die anderen verwerfen sie.'; break;
+    case 'ring': txt = ex.dbl ? 'Im Doppelring wird der kürzere bzw. noch intakte Weg genutzt.' : 'Im Ring wandert das Paket immer in dieselbe Richtung von Station zu Station – hier über ' + hops + ' Abschnitte. Jede Station leitet weiter.'; break;
+    case 'star': txt = 'Der Switch leitet das Paket gezielt nur an ' + esc(B) + ' weiter.'; break;
+    case 'tree': txt = 'Das Paket durchläuft ' + nsw + ' Switch(es) der Hierarchie.'; break;
+    case 'full': txt = hops === 1 ? 'Direkte Leitung – kein Umweg nötig.' : 'Die direkte Leitung fehlt – das Netz nutzt einen Umweg über ' + (hops-1) + ' Zwischenstation(en).'; break;
+    case 'partial': txt = hops === 1 ? 'Es gibt eine direkte Leitung.' : 'Keine direkte Leitung: Das Paket wird über ' + (hops-1) + ' Zwischenstation(en) geroutet.'; break;
+  }
+  exMsg('✉ <b>' + esc(route) + '</b><br>' + txt, 'ok');
+  var fx = $('.fx', exSvg), pts = polyPoints(G, r.nodes), speed = 330;
+  var bus = G.nodes.find(function(n){ return n.type === 'bus'; });
+  if (bus && r.nodes.indexOf(bus.id) >= 0){
+    var tap = pts[1], tdelay = Math.hypot(tap.x - pts[0].x, tap.y - pts[0].y)/speed*1000;
+    setTimeout(function(){
+      if (tok !== ex.token) return;
+      spreadBus(fx, bus, tap.x, speed);
+      G.nodes.forEach(function(n){
+        if (n.type !== 'pc' || n.id === s || ex.failed.has(n.id)) return;
+        var tp = ep(bus, n), dl = (Math.abs(tp.x - tap.x) + Math.abs(n.y - bus.y))/speed*1000;
+        pulse(fx, n.x, n.y, n.id === t ? 'var(--ok)' : 'var(--wire)', dl);
+      });
+    }, tdelay);
+  }
+  animate(fx, pts, {speed:speed}).then(function(){
+    if (!(bus && r.nodes.indexOf(bus.id) >= 0)) pulse(fx, byId(G, t).x, byId(G, t).y, 'var(--ok)');
+    setTimeout(function(){ if (tok === ex.token){ ex.hiN = new Set(); ex.hiL = new Set(); exDraw(); } }, 900);
+  });
+}
+function exCollide(){
+  var G = ex.G, bus = G.nodes.find(function(n){ return n.type === 'bus'; });
+  if (!bus) return;
+  if (ex.failed.has(bus.id)){ exMsg('Das Bus-Kabel ist unterbrochen – repariere es zuerst.', 'warn'); return; }
+  var pcs = G.nodes.filter(function(n){ return n.type === 'pc' && !ex.failed.has(n.id); }).sort(function(a, b){ return a.x - b.x; });
+  if (pcs.length < 2){ exMsg('Es werden mindestens zwei funktionierende Stationen benötigt.', 'warn'); return; }
+  if (ex.busy) return; ex.busy = true;
+  var A = pcs[0], B = pcs[pcs.length - 1], ta = ep(bus, A), tb = ep(bus, B), mid = {x:(ta.x + tb.x)/2, y:bus.y};
+  var fx = $('.fx', exSvg), tok = ++ex.token;
+  ex.hiN = new Set(); ex.hiL = new Set(); exDraw();
+  exMsg('📡 <b>' + A.label + '</b> und <b>' + B.label + '</b> prüfen das Medium, finden es frei – und senden <b>gleichzeitig</b> …', '');
+  Promise.all([animate(fx, [A, ta, mid], {dur:1600}), animate(fx, [B, tb, mid], {dur:1600, cls:'p-b'})]).then(function(){
+    burst(fx, mid.x, mid.y);
+    exMsg('💥 <b>Kollision!</b> Die Signale überlagern sich und sind unbrauchbar. Bei <b>CSMA/CD</b> erkennen die Stationen die Kollision, senden ein Jam-Signal und warten eine <b>zufällige Zeit (Backoff)</b>. ' + A.label + ' wartet kürzer und sendet zuerst …', 'warn');
+    return sleep(1900);
+  }).then(function(){
+    if (tok !== ex.token) return;
+    spreadBus(fx, bus, ta.x, 330);
+    return animate(fx, [A, ta, tb, B], {speed:330});
+  }).then(function(){
+    if (tok !== ex.token) return;
+    pulse(fx, B.x, B.y, 'var(--ok)');
+    exMsg('✅ Nach dem Backoff hat ' + A.label + ' erfolgreich gesendet; ' + B.label + ' folgt danach. <b>Merke:</b> Je mehr Stationen sich den Bus teilen, desto häufiger kommt es zu Kollisionen – die nutzbare Datenrate sinkt.', 'ok');
+  }).then(function(){ ex.busy = false; }, function(){ ex.busy = false; });
+}
+function exInit(){
+  exSvg = $('#exSvg');
+  $('#pickList').innerHTML = ORDER.map(function(k){
+    return '<button data-key="' + k + '">' + miniSVG(makeGraph(k, k === 'full' ? 5 : 5), {dots:true, labels:false, color:TOPO[k].color}, 'mini dots') + '<span>' + TOPO[k].name + '</span></button>';
+  }).join('');
+  $$('#pickList button').forEach(function(b){ b.onclick = function(){ ex.key = b.dataset.key; exLoad(); }; });
+  $('#nRange').oninput = function(e){ ex.n = +e.target.value; $('#nVal').textContent = ex.n; exLoad(); };
+  $$('[data-extool]').forEach(function(b){ b.onclick = function(){
+    ex.tool = b.dataset.extool; ex.sel = null;
+    $$('[data-extool]').forEach(function(x){ x.classList.toggle('active', x === b); }); exDraw();
+  }; });
+  $('#exHeat').onclick = function(){ ex.heat = !ex.heat; this.classList.toggle('on', ex.heat); exDraw(); exInfo();
+    if (ex.heat) exMsg('🔥 Die Farbe zeigt, wie viele Geräte der Ausfall des jeweiligen Elements vom Rest trennen würde (grün = keine, rot = alle). Fahre mit der Maus darüber für Details.', ''); };
+  $('#exRepair').onclick = function(){ ex.failed = new Set(); ex.sel = null; ex.token++; $('.fx', exSvg).innerHTML = ''; ex.hiN = new Set(); ex.hiL = new Set(); exDraw(); exInfo(); exMsg('🔧 Alle Ausfälle wurden repariert.', 'ok'); };
+  $('#exDbl').onchange = function(e){ ex.dbl = e.target.checked; exDraw(); exInfo();
+    exMsg(ex.dbl ? '🔁 Doppelring aktiv: Ein zweiter, gegenläufiger Ring (z. B. FDDI) überbrückt einzelne Ausfälle.' : 'Einfacher Ring: jede Unterbrechung legt das gesamte Netz lahm.', ex.dbl ? 'ok' : ''); };
+  $('#exCollide').onclick = exCollide;
+  setupCanvas(exSvg, {
+    G:function(){ return ex.G; },
+    dragMode:function(){ return 'move'; },
+    redraw:exDraw,
+    onNode:function(id){
+      if (ex.tool === 'fail'){ exToggleFail(id); return; }
+      var n = byId(ex.G, id);
+      if (n.type !== 'pc'){ exMsg('Bitte einen PC als Absender bzw. Empfänger wählen.', 'warn'); return; }
+      if (!ex.sel){ ex.sel = id; exDraw(); return; }
+      if (ex.sel === id){ ex.sel = null; exDraw(); return; }
+      var s = ex.sel; ex.sel = null; exSend(s, id);
+    },
+    onLink:function(id){ if (ex.tool === 'fail') exToggleFail(id); }
+  });
+  exLoad();
+}
+
+/* ================================================================
+   ② UMBAUEN
+   ================================================================ */
+var TASKS = [
+  { id:'t1', title:'Vom Bus zum Stern', start:['bus',5], goal:'star',
+    text:'Das alte Koaxial-Netz in einem Fachraum soll modernisiert werden. Ersetze das gemeinsame Bus-Kabel durch einen zentralen Switch.',
+    hints:['Wähle „Löschen“ und klicke auf das Bus-Kabel – seine Anschlüsse verschwinden mit.','Füge mit „+ Switch“ einen zentralen Verteiler hinzu.','Wähle „Verbinden“ und ziehe von jedem PC eine Linie zum Switch.'],
+    reflect:{lz:'lz2', q:'Welchen Vorteil bringt der Stern gegenüber dem Bus?', opts:['Ein defektes Anschlusskabel betrifft nur noch einen PC und der Switch verhindert Kollisionen – dafür ist der Switch nun ein Single Point of Failure.','Der Stern benötigt weniger Kabel als der Bus.','Im Stern gibt es überhaupt keinen Single Point of Failure mehr.']} },
+  { id:'t2', title:'Vom Stern zum Ring', start:['star',5], goal:'ring',
+    text:'Für eine Token-Ring-Demonstration soll der Switch entfallen. Verbinde die PCs zu einem Ring.',
+    hints:['Lösche den Switch.','Verbinde PC1–PC2, PC2–PC3 … und schließlich PC5–PC1.','Im Ring hat jeder PC genau zwei Nachbarn.'],
+    reflect:{lz:'lz4', q:'Was passiert in deinem neuen (einfachen) Ring, wenn PC3 ausfällt?', opts:['Der Ring ist unterbrochen – ohne Doppelring fällt das gesamte Netz aus.','Nur PC3 ist nicht mehr erreichbar, der Rest arbeitet normal.','Die Daten werden automatisch über einen Switch umgeleitet.']} },
+  { id:'t3', title:'Vom Ring zur Vollvermaschung', start:['ring',5], goal:'full',
+    text:'Maximale Ausfallsicherheit gefordert! Verbinde jeden PC direkt mit jedem anderen PC.',
+    hints:['Jeder PC muss mit jedem anderen verbunden sein.','Formel: n·(n−1)/2 → bei 5 PCs sind es 10 Kabel.','Es fehlen noch die „Diagonalen“ im Inneren des Rings.'],
+    reflect:{lz:'lz3', q:'Wie viele Kabel brauchst du bei 5 PCs – und wie viele wären es bei 20 PCs?', opts:['10 Kabel – bei 20 PCs wären es 190.','10 Kabel – bei 20 PCs wären es 40.','20 Kabel – bei 20 PCs wären es 400.']} },
+  { id:'t4', title:'Vom Stern zum Baum', start:['star',6], goal:'tree',
+    text:'Die Schule wächst: Verteile die PCs auf mindestens zwei Switches, die hierarchisch (ohne Kreis) miteinander verbunden sind.',
+    hints:['Füge einen zweiten (oder dritten) Switch hinzu.','Verbinde die Switches miteinander – aber ohne Kreis!','Löse einige PCs vom ersten Switch und hänge sie an den neuen Switch.'],
+    reflect:{lz:'lz4', q:'In deinem Baum fällt ein Switch der unteren Ebene aus. Was passiert?', opts:['Nur die PCs an diesem Switch sind getrennt, der Rest arbeitet weiter.','Das gesamte Netz fällt aus.','Nichts – die PCs sind ja zusätzlich direkt miteinander verbunden.']} },
+  { id:'t5', title:'Ring → Teilvermascht (Profi)', start:['ring',6], goal:'partial',
+    text:'Ergänze den Ring so, dass jeder PC mindestens 3 Verbindungen hat – mit möglichst wenigen Kabeln (höchstens 9).',
+    extra:'Jeder PC ≥ 3 Verbindungen, höchstens 9 Kabel',
+    check:function(G){
+      var A = adj(G), pcs = G.nodes.filter(function(n){ return n.type === 'pc'; });
+      var minD = Math.min.apply(null, pcs.map(function(p){ return A.get(p.id).length; }));
+      if (minD < 3) return 'Noch nicht jeder PC hat mindestens 3 Verbindungen.';
+      if (G.links.length > 9) return 'Du verwendest ' + G.links.length + ' Kabel – es geht mit höchstens 9!';
+      return null;
+    },
+    hints:['Jeder PC hat im Ring schon 2 Verbindungen – es fehlt jeweils eine.','Ein zusätzliches Kabel versorgt immer zwei PCs gleichzeitig.','Verbinde gegenüberliegende PCs: PC1–PC4, PC2–PC5, PC3–PC6.'],
+    reflect:{lz:'lz2', q:'Warum ist Teilvermaschung in großen Netzen (z. B. dem Internet) besser geeignet als Vollvermaschung?', opts:['Sie bietet alternative Wege bei deutlich geringerem Kabel- und Portaufwand.','Sie kommt ganz ohne Routing aus.','Sie ist ausfallsicherer als jede Vollvermaschung.']} },
+  { id:'t6', title:'Vollvermascht → Stern', start:['full',5], goal:'star',
+    text:'Die Vollvermaschung ist zu teuer geworden. Baue das Netz zu einem Stern zurück.',
+    hints:['Nutze „✂ Alle Kabel lösen“ oder lösche die Kabel einzeln.','Füge einen Switch hinzu und verbinde jeden PC damit.'],
+    reflect:{lz:'lz3', q:'Was hast du durch den Rückbau eingespart?', opts:['Statt 10 nur noch 5 Kabel; jeder PC braucht 1 statt 4 Anschlüsse – dafür ist der Switch nun ein Single Point of Failure.','5 Kabel – und die Ausfallsicherheit steigt dadurch sogar.','Nichts – Stern und Vollvermaschung brauchen gleich viele Kabel.']} },
+  { id:'free', title:'Freies Bauen', start:['none',5], goal:null,
+    text:'Baue eigene Netze und beobachte, welche Topologie erkannt wird. Wie verändern sich Kabelzahl und Schwachstellen?', hints:['Probiere auch Mischformen, z. B. zwei Sterne, deren Switches redundant verbunden sind.'] }
+];
+var bd = {i:0, G:null, tool:'connect', sel:null, heat:false, before:null, hint:0, solved:false, done:{}, refl:{}, reflOrder:null};
+var bdSvg;
+function bdToast(t){ var el = $('#bdToast'); el.textContent = t; el.classList.add('show'); clearTimeout(bdToast._t); bdToast._t = setTimeout(function(){ el.classList.remove('show'); }, 2200); }
+function bdLoad(i){
+  bd.i = i; var t = TASKS[i];
+  bd.G = makeGraph(t.start[0], t.start[1]); bd.sel = null; bd.hint = 0; bd.solved = false;
+  bd.before = metrics(bd.G); bd.beforeKey = t.start[0];
+  bd.reflOrder = t.reflect ? shuffle(t.reflect.opts.map(function(_, k){ return k; })) : null;
+  bdDraw(); bdTaskList(); bdTaskPanel();
+}
+function bdDraw(){
+  var c = classify(bd.G), rs = c.key === 'ring';
+  var heat = bd.heat ? heatMap(bd.G, rs) : null;
+  $('.scene', bdSvg).innerHTML = scene(bd.G, {heat:heat, sel:bd.sel, color:colorOf(c.key), interactive:true, ring:rs ? 'single' : null});
+  $('#bdDetect').innerHTML = '<span class="dot" style="background:' + colorOf(c.key) + '"></span><span>Erkannte Topologie: <b>' + c.name + '</b></span><small>' + c.hint + '</small>';
+  var m = metrics(bd.G, rs);
+  $('#bdMetrics').innerHTML = '<span class="chip">PCs<b>' + m.pcs + '</b></span><span class="chip">Kabel<b>' + m.cables + '</b></span><span class="chip">Switches<b>' + m.sws + '</b></span><span class="chip">max. Anschlüsse je PC<b>' + m.maxPorts + '</b></span><span class="chip' + (m.crit ? ' bad' : '') + '">Kritische Elemente<b>' + m.crit + '</b></span>';
+  $('#bdHint').textContent = {
+    connect: bd.sel ? 'Jetzt das zweite Gerät anklicken (oder Linie ziehen). Bestehende Verbindung anklicken = entfernen.' : 'Ziehe eine Linie von Gerät zu Gerät – oder klicke nacheinander zwei Geräte an. Erneut verbinden entfernt das Kabel.',
+    move:'Geräte mit der Maus verschieben, um das Netz übersichtlich anzuordnen.',
+    delete:'Klicke auf ein Gerät oder Kabel, um es zu entfernen.'
+  }[bd.tool];
+}
+function bdTaskList(){
+  $('#taskList').innerHTML = TASKS.map(function(t, i){
+    var done = bd.done[t.id];
+    return '<li><button data-i="' + i + '" class="' + (i === bd.i ? 'active' : '') + '"><span class="st' + (done ? ' done' : '') + '">' + (done ? '✓' : (t.goal ? i + 1 : '★')) + '</span><span><b>' + t.title + '</b><small>' + (t.goal ? 'Ziel: ' + TOPO[t.goal].name : 'Sandkasten') + '</small></span></button></li>';
+  }).join('');
+  $$('#taskList button').forEach(function(b){ b.onclick = function(){ bdLoad(+b.dataset.i); }; });
+}
+function bdTaskPanel(){
+  var t = TASKS[bd.i], nMain = TASKS.filter(function(x){ return x.goal; }).length;
+  var h = '<span class="badge">' + (t.goal ? 'Aufgabe ' + (bd.i + 1) + ' von ' + nMain : 'Sandkasten') + '</span><h3>' + t.title + '</h3><p>' + t.text + '</p>';
+  if (t.goal) h += '<div class="goalbox">Ziel: <b style="color:' + TOPO[t.goal].color + '">' + TOPO[t.goal].name + '</b>' + (t.extra ? '<br><small>Zusatzbedingung: ' + t.extra + '</small>' : '') + '</div>';
+  h += '<div class="btnrow"><button class="primary" id="bdCheck">✔ Prüfen</button><button id="bdHintBtn">💡 Tipp</button>' + (bd.i < TASKS.length - 1 ? '<button id="bdNext">Nächste →</button>' : '') + '</div>';
+  h += '<ol class="hints" id="bdHints">' + t.hints.slice(0, bd.hint).map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ol>';
+  h += '<div id="bdFb"></div>';
+  h += '<div class="howto"><b>Bedienung:</b> 🔗 Verbinden – Linie zwischen zwei Geräten ziehen · ✋ Verschieben – Geräte anordnen · 🗑 Löschen – Gerät/Kabel anklicken. Mit 🔥 siehst du kritische Stellen.</div>';
+  $('#bdTask').innerHTML = h;
+  $('#bdCheck').onclick = bdCheck;
+  $('#bdHintBtn').onclick = function(){
+    if (bd.hint < t.hints.length) bd.hint++;
+    $('#bdHints').innerHTML = t.hints.slice(0, bd.hint).map(function(x){ return '<li>' + x + '</li>'; }).join('');
+    if (bd.hint >= t.hints.length) this.disabled = true;
+  };
+  if (bd.hint >= t.hints.length) $('#bdHintBtn').disabled = true;
+  var nx = $('#bdNext'); if (nx) nx.onclick = function(){ bdLoad(bd.i + 1); };
+  if (bd.done[t.id] && t.goal) $('#bdFb').innerHTML = '<div class="fb ok">✅ Diese Aufgabe hast du bereits gelöst. Du kannst sie gern noch einmal bauen.</div>';
+}
+function bdCheck(){
+  var t = TASKS[bd.i], c = classify(bd.G), fb = $('#bdFb');
+  if (!t.goal){
+    fb.innerHTML = '<div class="fb ' + (c.key && c.key !== 'mixed' && c.key !== 'line' ? 'ok' : 'bad') + '">Erkannt: <b>' + c.name + '</b> – ' + c.hint + (TOPO[c.key] ? '<br><small>' + TOPO[c.key].recog + '</small>' : '') + '</div>'; return;
+  }
+  if (c.key !== t.goal){
+    fb.innerHTML = '<div class="fb bad">❌ Noch nicht geschafft. Aktuell erkannt: <b>' + c.name + '</b>.<br><small>' + c.hint + '</small><br><small>Ziel ist: ' + TOPO[t.goal].name + ' – ' + TOPO[t.goal].recog + '</small></div>'; return;
+  }
+  if (t.check){ var err = t.check(bd.G); if (err){ fb.innerHTML = '<div class="fb bad">Fast! Die Topologie stimmt (' + c.name + '), aber: ' + err + '</div>'; return; } }
+  bd.solved = true; bd.done[t.id] = true; saveStore(); bdTaskList();
+  var a = bd.before, b = metrics(bd.G);
+  function row(lbl, x, y, lowerIsBetter){ var cl = x === y ? '' : ((y < x) === lowerIsBetter ? 'color:var(--ok)' : 'color:var(--bad)'); return '<tr><td>' + lbl + '</td><td>' + x + '</td><td style="' + cl + ';font-weight:700">' + y + '</td></tr>'; }
+  var h = '<div class="fb ok">🎉 <b>Geschafft!</b> Du hast ' + TOPO[bd.beforeKey].name + ' in ' + TOPO[t.goal].name + ' überführt.' +
+    '<table><tr><th></th><th>vorher</th><th>nachher</th></tr>' +
+    row('Kabel', a.cables, b.cables, true) + row('Switches', a.sws, b.sws, true) +
+    row('max. Anschlüsse je PC', a.maxPorts, b.maxPorts, true) + row('Kritische Elemente', a.crit, b.crit, true) + '</table></div>';
+  if (t.reflect){
+    h += '<div class="fb" style="border:1px solid var(--line);background:var(--card2)"><b>Reflexion:</b> ' + t.reflect.q + '<div class="opts" id="rfOpts">' +
+      bd.reflOrder.map(function(k){ return '<button class="opt" data-k="' + k + '">' + t.reflect.opts[k] + '</button>'; }).join('') + '</div><div id="rfFb"></div></div>';
+  }
+  fb.innerHTML = h;
+  if (t.reflect){
+    var answered = false;
+    $$('#rfOpts .opt').forEach(function(btn){ btn.onclick = function(){
+      if (answered) return; answered = true;
+      var k = +btn.dataset.k, ok = k === 0;
+      if (bd.refl[t.id] === undefined){ bd.refl[t.id] = ok; saveStore(); }
+      $$('#rfOpts .opt').forEach(function(x){ if (+x.dataset.k === 0) x.classList.add('right'); else if (x === btn) x.classList.add('wrong'); x.disabled = true; });
+      $('#rfFb').innerHTML = ok ? '<p>✅ Richtig!</p>' : '<p>Nicht ganz – die richtige Antwort ist grün markiert. Überprüfe es mit „🔥 Schwachstellen“ oder im Bereich „Entdecken“.</p>';
+    }; });
+  }
+}
+function bdFreeSpot(){
+  for (var tries = 0; tries < 200; tries++){
+    var x = 60 + Math.random()*680, y = 50 + Math.random()*380;
+    if (bd.G.nodes.every(function(n){ return n.type === 'bus' ? Math.abs(n.y - y) > 60 : Math.hypot(n.x - x, n.y - y) > 85; })) return {x:Math.round(x), y:Math.round(y)};
+  }
+  return {x:400, y:240};
+}
+function bdNextLabel(prefix){ var k = 1; while (bd.G.nodes.some(function(n){ return n.label === prefix + k; })) k++; return prefix + k; }
+function bdToggleLink(a, b){
+  var A = byId(bd.G, a), B = byId(bd.G, b);
+  if (!A || !B) return;
+  if (A.type === 'bus' && B.type === 'bus'){ bdToast('Zwei Bus-Kabel lassen sich hier nicht direkt verbinden.'); return; }
+  var ex_ = bd.G.links.find(function(l){ return (l.a === a && l.b === b) || (l.a === b && l.b === a); });
+  if (ex_){ bd.G.links = bd.G.links.filter(function(l){ return l !== ex_; }); bdToast('Verbindung ' + labelOf(bd.G, a) + '–' + labelOf(bd.G, b) + ' entfernt'); }
+  else bd.G.links.push({id:nid(), a:a, b:b});
+  bdDraw();
+}
+function bdInit(){
+  bdSvg = $('#bdSvg');
+  var st = loadStore(); bd.done = st.done || {}; bd.refl = st.refl || {};
+  $$('[data-bdtool]').forEach(function(b){ b.onclick = function(){
+    bd.tool = b.dataset.bdtool; bd.sel = null;
+    $$('[data-bdtool]').forEach(function(x){ x.classList.toggle('active', x === b); }); bdDraw();
+  }; });
+  $('#addPC').onclick = function(){ var p = bdFreeSpot(); bd.G.nodes.push({id:nid(), type:'pc', x:p.x, y:p.y, label:bdNextLabel('PC')}); bdDraw(); };
+  $('#addSW').onclick = function(){ var p = bdFreeSpot(); var lbl = bd.G.nodes.some(function(n){ return n.type === 'switch'; }) ? bdNextLabel('SW') : 'Switch'; bd.G.nodes.push({id:nid(), type:'switch', x:p.x, y:p.y, label:lbl}); bdDraw(); };
+  $('#addBus').onclick = function(){ var p = bdFreeSpot(); bd.G.nodes.push({id:nid(), type:'bus', x:400, y:p.y, w:560, label:'Bus'}); bdDraw(); bdToast('Bus-Kabel eingefügt – verbinde die PCs damit.'); };
+  $('#bdClear').onclick = function(){ bd.G.links = []; bd.sel = null; bdDraw(); bdToast('Alle Kabel wurden entfernt.'); };
+  $('#bdHeat').onclick = function(){ bd.heat = !bd.heat; this.classList.toggle('on', bd.heat); bdDraw(); };
+  $('#bdReset').onclick = function(){ bdLoad(bd.i); };
+  setupCanvas(bdSvg, {
+    G:function(){ return bd.G; },
+    dragMode:function(){ return bd.tool === 'move' ? 'move' : bd.tool === 'connect' ? 'connect' : 'none'; },
+    redraw:bdDraw,
+    onConnect:function(a, b){ bd.sel = null; bdToggleLink(a, b); },
+    onNode:function(id){
+      if (bd.tool === 'delete'){
+        bd.G.nodes = bd.G.nodes.filter(function(n){ return n.id !== id; });
+        bd.G.links = bd.G.links.filter(function(l){ return l.a !== id && l.b !== id; });
+        bd.sel = null; bdDraw(); return;
+      }
+      if (bd.tool === 'connect'){
+        if (!bd.sel){ bd.sel = id; bdDraw(); return; }
+        if (bd.sel === id){ bd.sel = null; bdDraw(); return; }
+        var s = bd.sel; bd.sel = null; bdToggleLink(s, id);
+      }
+    },
+    onLink:function(id){ if (bd.tool === 'delete'){ bd.G.links = bd.G.links.filter(function(l){ return l.id !== id; }); bdDraw(); } else if (bd.tool === 'connect') bdToast('Tipp: Zum Entfernen „Löschen“ wählen oder die beiden Geräte erneut verbinden.'); },
+    onEmpty:function(){ if (bd.sel){ bd.sel = null; bdDraw(); } }
+  });
+  bdLoad(0);
+}
+
+/* ================================================================
+   ③ LERNZIELKONTROLLE
+   ================================================================ */
+var POOL = ORDER.map(function(k){ return {type:'img', lz:'lz1', topo:k, q:'Welche Netzwerktopologie ist hier abgebildet?'}; }).concat([
+  {type:'mc', lz:'lz1', q:'Mehrere Switches sind hierarchisch über einen zentralen Switch verbunden, an ihnen hängen die Endgeräte. Wie heißt diese Topologie?',
+    opts:['Baum (erweiterter Stern)','Teilvermascht','Ring','Bus'], expl:'Hierarchisch gekoppelte Sterne ohne Kreise ergeben eine Baumtopologie.'},
+  {type:'mc', lz:'lz1', q:'Ein modernes Ethernet-LAN, in dem alle PCs an einem Switch hängen, ist physikalisch eine …',
+    opts:['Sterntopologie','Bustopologie','Ringtopologie','Vollvermaschung'], expl:'Jedes Gerät hat ein eigenes Kabel zum zentralen Switch – das ist ein Stern.'},
+  {type:'mc', lz:'lz1', q:'Woran erkennt man eine Bustopologie?',
+    opts:['Alle Geräte teilen sich ein durchgehendes Kabel, das an beiden Enden terminiert ist.','Jedes Gerät hat genau zwei Nachbarn.','Alle Geräte hängen an einem zentralen Verteiler.','Jedes Gerät ist mit jedem anderen verbunden.'], expl:'Typisch für den Bus sind das gemeinsame Medium und die Abschlusswiderstände.'},
+  {type:'match', lz:'lz2', q:'Ordne jede Aussage der passenden Topologie zu.',
+    rows:[['Alle Stationen teilen sich ein Medium – gleichzeitiges Senden führt zu Kollisionen.','bus'],['Ein Token wird von Station zu Station weitergereicht.','ring'],['Fällt der zentrale Verteiler aus, steht das ganze Netz still.','star'],['Der Verkabelungsaufwand wächst quadratisch mit der Anzahl der Geräte.','full']]},
+  {type:'match', lz:'lz2', q:'Ordne jede Aussage der passenden Topologie zu.',
+    rows:[['Typisch für Schul- und Firmennetze mit Core-, Etagen- und Raumverteilern.','tree'],['Das Internet ist ein Beispiel dafür.','partial'],['Ein fehlender Abschlusswiderstand stört das gesamte Netz.','bus'],['Jede Station frischt das Signal auf und gibt es an ihren Nachbarn weiter.','ring']]},
+  {type:'mc', lz:'lz2', q:'Welche Aussage ist KEIN Vorteil der Sterntopologie?',
+    opts:['Es gibt keinen Single Point of Failure.','Ein defektes Patchkabel betrifft nur ein Gerät.','Neue Geräte lassen sich einfach anschließen.','Fehler lassen sich leicht eingrenzen.'], expl:'Der zentrale Switch ist sehr wohl ein Single Point of Failure.'},
+  {type:'mc', lz:'lz2', q:'Warum sinkt die Leistung eines Busnetzes, wenn viele Stationen viel senden?',
+    opts:['Alle teilen sich ein Medium – es gibt mehr Kollisionen und Wartezeiten (CSMA/CD).','Jedes Gerät muss das Signal verstärken.','Der Switch ist überlastet.','Die Kabel werden automatisch länger.'], expl:'Im Bus darf immer nur einer senden. Mehr Stationen bedeuten mehr Kollisionen und Backoff-Zeiten.'},
+  {type:'mc', lz:'lz2', q:'Was ist ein typischer Vorteil des Rings mit Token Passing?',
+    opts:['Kollisionsfreier, deterministischer Zugriff – jede Station kommt garantiert an die Reihe.','Der Ausfall einer Station hat keine Folgen.','Er ist die günstigste aller Topologien.','Keine Station muss Daten weiterleiten.'], expl:'Nur wer das Token hat, sendet – dadurch gibt es keine Kollisionen und berechenbare Wartezeiten.'},
+  {type:'mc', lz:'lz2', q:'Was ist der wichtigste Nachteil der Teilvermaschung?',
+    opts:['Wegewahl (Routing) und Planung sind aufwendiger.','Ein einzelner Kabelbruch legt das ganze Netz lahm.','Sie benötigt Abschlusswiderstände.','Sie hat den höchsten Kabelbedarf aller Topologien.'], expl:'Weil es mehrere Wege gibt, muss ein passender Weg gewählt werden – das erfordert Routing.'},
+  {type:'num', lz:'lz3', q:'Wie viele Verbindungen benötigt ein vollvermaschtes Netz mit 6 Geräten?', a:15, expl:'n·(n−1)/2 = 6·5/2 = 15'},
+  {type:'num', lz:'lz3', q:'Wie viele Verbindungen benötigt ein vollvermaschtes Netz mit 10 Geräten?', a:45, expl:'n·(n−1)/2 = 10·9/2 = 45'},
+  {type:'num', lz:'lz3', q:'Wie viele Netzwerkanschlüsse braucht jedes Gerät in einem vollvermaschten Netz mit 8 Geräten?', a:7, expl:'Jedes Gerät ist mit allen anderen verbunden: n − 1 = 7 Anschlüsse.'},
+  {type:'num', lz:'lz3', q:'Ein Ring mit 5 PCs soll in eine Vollvermaschung überführt werden. Wie viele Kabel musst du zusätzlich verlegen?', a:5, expl:'Vollvermaschung: 5·4/2 = 10 Kabel. Der Ring hat bereits 5 → 5 zusätzliche Kabel.'},
+  {type:'num', lz:'lz3', q:'Ein Baum besteht aus 1 Core-Switch, 3 Etagen-Switches und 12 PCs. Jeder PC und jeder Etagen-Switch hat genau einen Uplink. Wie viele Kabel werden benötigt?', a:15, expl:'Ein Baum hat immer Knoten − 1 Kabel: 16 − 1 = 15 (12 PC-Kabel + 3 Uplinks).'},
+  {type:'mc', lz:'lz3', q:'Du überführst einen Stern mit 8 PCs in einen Ring. Was ändert sich?',
+    opts:['Der Switch entfällt, jeder PC braucht zwei Anschlüsse; es bleiben 8 Kabel.','Man braucht 16 Kabel.','Jeder PC braucht weiterhin nur einen Anschluss.','Es wird ein zweiter Switch benötigt.'], expl:'Ring und Stern brauchen beide n Kabel – aber im Ring hat jeder PC zwei Nachbarn.'},
+  {type:'spot', lz:'lz4', build:function(){ return makeGraph('star', 5); }, q:'Klicke auf das Element, dessen Ausfall das GESAMTE Netz lahmlegt (Single Point of Failure).',
+    ok:function(n){ return n && n.type === 'switch'; }, expl:'Im Stern hängt jede Verbindung am zentralen Switch – fällt er aus, kann kein PC mehr kommunizieren.'},
+  {type:'spot', lz:'lz4', build:function(){ return makeGraph('bus', 5); }, q:'Ein einziger Defekt soll alle Stationen voneinander trennen. Klicke auf das Element, bei dem das passiert.',
+    ok:function(n){ return n && n.type === 'bus'; }, expl:'Ein Bruch des Bus-Kabels (oder ein fehlender Terminator) stört das gesamte Netz.'},
+  {type:'spot', lz:'lz4', build:function(){ return makeGraph('tree', 6); }, q:'Klicke auf das Gerät, dessen Ausfall die beiden Raumgruppen voneinander trennt, während die PCs innerhalb einer Gruppe weiterarbeiten können.',
+    ok:function(n){ return n && n.label === 'Core'; }, expl:'Der Core-Switch verbindet die Teilbäume. Fällt er aus, bleiben die Gruppen intern arbeitsfähig, sind aber voneinander getrennt.'},
+  {type:'mc', lz:'lz4', q:'In einem einfachen Ring (ohne Doppelring) fällt eine Station aus. Was ist die Folge?',
+    opts:['Der Ring ist unterbrochen – das gesamte Netz fällt aus.','Nur diese Station ist nicht erreichbar.','Die Daten werden automatisch über den Switch umgeleitet.','Nichts, Ringe sind grundsätzlich ausfallsicher.'], expl:'Ohne zweiten Ring kann das Token nicht mehr kreisen.'},
+  {type:'mc', lz:'lz4', q:'Welche Maßnahme macht eine Ringtopologie ausfallsicherer?',
+    opts:['Ein Doppelring mit gegenläufiger Datenrichtung (z. B. FDDI)','Abschlusswiderstände an beiden Enden','Ein Hub in der Mitte','Mehr Stationen im Ring'], expl:'Der zweite, gegenläufige Ring überbrückt eine Unterbrechung.'},
+  {type:'mc', lz:'lz4', q:'Bei welcher Topologie bleiben nach dem Ausfall eines beliebigen einzelnen Kabels garantiert alle Geräte erreichbar?',
+    opts:['Vollvermascht','Stern','Bus','Baum'], expl:'In der Vollvermaschung gibt es zu jeder Verbindung viele Umwege.'},
+  {type:'mc', lz:'lz4', q:'In einem Busnetz fällt ein PC aus, das Bus-Kabel bleibt intakt. Was passiert?',
+    opts:['Die übrigen Stationen arbeiten normal weiter.','Das gesamte Netz fällt aus.','Der Bus wird automatisch zum Ring.','Alle Stationen müssen neu gestartet werden.'], expl:'Die Endgeräte sind passiv angeschlossen – der Ausfall eines einzelnen PCs stört die anderen nicht.'}
+]);
+var qz = {state:'start', items:[], i:0, res:[]};
+function qzPrep(q){
+  var o = Object.assign({}, q);
+  if (q.type === 'mc'){ o.order = shuffle(q.opts.map(function(_, k){ return k; })); }
+  if (q.type === 'img'){ o.order = shuffle(ORDER.slice()); o.G = makeGraph(q.topo, q.topo === 'full' ? 5 : 6); o.expl = 'Richtig ist: <b>' + TOPO[q.topo].name + '</b>. ' + TOPO[q.topo].recog; }
+  if (q.type === 'spot'){ o.G = q.build(); o.chosen = null; }
+  if (q.type === 'match'){ o.expl = 'Bus = gemeinsames Medium/Terminator · Ring = Token & Weiterleiten · Stern = zentraler Verteiler · Baum = Hierarchie · Vollvermascht = n·(n−1)/2 · Teilvermascht = z. B. Internet'; }
+  return o;
+}
+function qzStart(){
+  var img = shuffle(POOL.filter(function(q){ return q.type === 'img'; })).slice(0, 2);
+  var lz1 = shuffle(POOL.filter(function(q){ return q.lz === 'lz1' && q.type !== 'img'; })).slice(0, 1);
+  function pick(lz){ return shuffle(POOL.filter(function(q){ return q.lz === lz; })).slice(0, 3); }
+  qz.items = shuffle(img.concat(lz1, pick('lz2'), pick('lz3'), pick('lz4'))).map(qzPrep);
+  qz.i = 0; qz.res = []; qz.state = 'q'; qzRender();
+}
+function qzRender(){
+  var el = $('#quiz');
+  if (qz.state === 'start'){
+    var done = TASKS.filter(function(t){ return t.goal && bd.done[t.id]; }).length, total = TASKS.filter(function(t){ return t.goal; }).length;
+    el.innerHTML = '<h2>③ Lernzielkontrolle</h2><p>Mit 12 Fragen prüfst du, ob du die Lernziele erreicht hast. Die Auswertung berücksichtigt zusätzlich deine gelösten <b>Umbau-Aufgaben</b> (aktuell ' + done + ' von ' + total + ') und deine Antworten auf die Reflexionsfragen.</p>' +
+      '<div class="opts">' + Object.keys(LZ).map(function(k, i){ return '<div class="goalbox"><b>LZ' + (i+1) + ' · ' + LZ[k].t + '</b><br><small>' + LZ[k].d + '</small></div>'; }).join('') + '</div>' +
+      (SC.active ? '<div class="scnote">📤 Dein Ergebnis wird an die Lernplattform übermittelt. Es zählt deine <b>beste</b> Punktzahl, bestanden ist ab <b>' + PASS + ' %</b>.' + (scBest !== null ? ' Bisher beste Punktzahl: <b>' + scBest + ' %</b>.' : '') + '</div>' : '') +
+      '<div class="btnrow"><button class="primary" id="qzGo">▶ Lernzielkontrolle starten</button></div>' +
+      (done < total ? '<p style="color:var(--muted);font-size:.9rem">Tipp: Löse vorher die Aufgaben im Bereich „② Umbauen“ – sie zählen für LZ3.</p>' : '');
+    $('#qzGo').onclick = qzStart; return;
+  }
+  if (qz.state === 'done'){ qzResults(); return; }
+  var q = qz.items[qz.i], n = qz.items.length, lzI = Object.keys(LZ).indexOf(q.lz) + 1;
+  var h = '<div class="q-top"><span>Frage ' + (qz.i + 1) + ' von ' + n + '</span><span class="lzchip">LZ' + lzI + ' · ' + LZ[q.lz].t + '</span></div>' +
+    '<div class="progress"><i style="width:' + (qz.i/n*100) + '%"></i></div><div class="q-text">' + q.q + '</div><div id="qBody"></div><div id="qFb"></div>' +
+    '<div class="btnrow"><button class="primary" id="qCheck">Antwort prüfen</button><button id="qNext" class="hidden">' + (qz.i === n - 1 ? 'Zur Auswertung →' : 'Weiter →') + '</button></div>';
+  el.innerHTML = h;
+  var body = $('#qBody'), sel = null;
+  if (q.type === 'mc' || q.type === 'img'){
+    var labels = q.type === 'mc' ? q.order.map(function(k){ return [k, q.opts[k]]; }) : q.order.map(function(k){ return [k, TOPO[k].name]; });
+    body.innerHTML = (q.type === 'img' ? '<div class="q-img">' + miniSVG(q.G, {labels:false, color:'#5b7fc7'}, 'canvas mini') + '</div>' : '') +
+      '<div class="opts">' + labels.map(function(x){ return '<button class="opt" data-k="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>';
+    $$('.opt', body).forEach(function(b){ b.onclick = function(){ sel = b.dataset.k; $$('.opt', body).forEach(function(x){ x.classList.toggle('chosen', x === b); }); }; });
+  } else if (q.type === 'num'){
+    body.innerHTML = '<input type="number" id="qNum" style="width:140px" placeholder="Zahl">';
+    $('#qNum').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('#qCheck').click(); });
+  } else if (q.type === 'match'){
+    q.rowOrder = q.rowOrder || shuffle(q.rows.map(function(_, k){ return k; }));
+    body.innerHTML = q.rowOrder.map(function(k){ return '<div class="match-row"><span>' + q.rows[k][0] + '</span><select data-k="' + k + '"><option value="">– wählen –</option>' + ORDER.map(function(t){ return '<option value="' + t + '">' + TOPO[t].name + '</option>'; }).join('') + '</select></div>'; }).join('');
+  } else if (q.type === 'spot'){
+    body.innerHTML = '<div class="q-img"><svg viewBox="0 0 800 480" class="canvas" id="qSpot"></svg></div>';
+    var sv = $('#qSpot');
+    var draw = function(extra){ sv.innerHTML = scene(q.G, Object.assign({interactive:true, color:'#5b7fc7', sel:q.chosen, hiLinks:q.chosen && linkById(q.G, q.chosen) ? new Set([q.chosen]) : new Set()}, extra || {})); };
+    draw(); q._draw = draw;
+    sv.addEventListener('click', function(e){ if (q._locked) return; var t = e.target.closest('[data-id]'); if (!t) return; q.chosen = t.dataset.id; draw(); });
+  }
+  $('#qCheck').onclick = function(){
+    var score = 0, fb = '';
+    if (q.type === 'mc' || q.type === 'img'){
+      if (sel === null){ $('#qFb').innerHTML = '<div class="fb bad">Bitte wähle eine Antwort.</div>'; return; }
+      var correct = q.type === 'mc' ? '0' : q.topo;
+      score = sel === correct ? 1 : 0;
+      $$('.opt', body).forEach(function(x){ x.disabled = true; if (x.dataset.k === correct) x.classList.add('right'); else if (x.dataset.k === sel) x.classList.add('wrong'); });
+      fb = q.expl;
+    } else if (q.type === 'num'){
+      var inp = $('#qNum'); if (inp.value === ''){ $('#qFb').innerHTML = '<div class="fb bad">Bitte gib eine Zahl ein.</div>'; return; }
+      score = +inp.value === q.a ? 1 : 0; inp.disabled = true; inp.classList.add(score ? 'right' : 'wrong');
+      fb = (score ? '' : 'Richtig wäre: <b>' + q.a + '</b>. ') + q.expl;
+    } else if (q.type === 'match'){
+      var sels = $$('select', body);
+      if (sels.some(function(s){ return !s.value; })){ $('#qFb').innerHTML = '<div class="fb bad">Bitte ordne alle Aussagen zu.</div>'; return; }
+      var right = 0, wrongs = [];
+      sels.forEach(function(s){ var k = +s.dataset.k, ok = s.value === q.rows[k][1]; if (ok) right++; else wrongs.push('„' + q.rows[k][0] + '“ → <b>' + TOPO[q.rows[k][1]].name + '</b>'); s.disabled = true; s.classList.add(ok ? 'right' : 'wrong'); });
+      score = right/sels.length; fb = right + ' von ' + sels.length + ' richtig.' + (wrongs.length ? '<br>Korrekt wäre: ' + wrongs.join('<br>') : '');
+    } else if (q.type === 'spot'){
+      if (!q.chosen){ $('#qFb').innerHTML = '<div class="fb bad">Bitte klicke ein Element in der Grafik an.</div>'; return; }
+      q._locked = true;
+      var n0 = byId(q.G, q.chosen); score = q.ok(n0) ? 1 : 0;
+      var good = new Set(q.G.nodes.filter(function(x){ return q.ok(x); }).map(function(x){ return x.id; }));
+      q._draw({good:good});
+      fb = (score ? '' : 'Du hast „' + esc(labelOf(q.G, q.chosen)) + '“ gewählt. Grün markiert ist die richtige Lösung. ') + q.expl;
+    }
+    qz.res.push({lz:q.lz, score:score, q:q.q});
+    $('#qFb').innerHTML = '<div class="fb ' + (score === 1 ? 'ok' : 'bad') + '">' + (score === 1 ? '✅ Richtig! ' : score > 0 ? '🟡 Teilweise richtig. ' : '❌ Leider falsch. ') + fb + '</div>';
+    this.classList.add('hidden'); $('#qNext').classList.remove('hidden'); $('#qNext').focus();
+  };
+  $('#qNext').onclick = function(){ qz.i++; if (qz.i >= qz.items.length) qz.state = 'done'; qzRender(); };
+}
+function lzScores(){
+  var s = {}; Object.keys(LZ).forEach(function(k){ s[k] = {e:0, p:0, qe:0, qp:0, be:0, bp:0}; });
+  qz.res.forEach(function(r){ s[r.lz].e += r.score; s[r.lz].p += 1; s[r.lz].qe += r.score; s[r.lz].qp += 1; });
+  TASKS.forEach(function(t){
+    if (!t.goal) return;
+    s.lz3.p += 1; s.lz3.bp += 1; if (bd.done[t.id]){ s.lz3.e += 1; s.lz3.be += 1; }
+    if (t.reflect && bd.refl[t.id] !== undefined){ var r = s[t.reflect.lz]; r.p += 1; r.bp += 1; if (bd.refl[t.id]){ r.e += 1; r.be += 1; } }
+  });
+  return s;
+}
+function qzResults(){
+  var s = lzScores(), E = 0, Pt = 0, today = new Date().toLocaleDateString('de-DE');
+  Object.keys(s).forEach(function(k){ E += s[k].e; Pt += s[k].p; });
+  var total = Pt ? Math.round(E/Pt*100) : 0;
+  scReport(total, s);
+  var msg = total >= 85 ? 'Hervorragend – du beherrschst die Netzwerktopologien sicher! 🏆' : total >= 65 ? 'Gut gemacht! Ein paar Punkte solltest du noch vertiefen.' : 'Da geht noch was – nutze die Empfehlungen unten und versuche es erneut.';
+  var h = '<h2>Auswertung</h2><div class="btnrow noprint" style="margin-top:0"><label style="display:flex;align-items:center;gap:8px">Name: <input type="text" id="qzName" placeholder="Vor- und Nachname"></label></div>' +
+    '<p id="qzNamePrint" style="margin:0 0 6px"></p>' +
+    (SC.active ? '<div class="scnote noprint">📤 An die Lernplattform übermittelt: <b>' + scBest + ' %</b> (beste Punktzahl) – ' + (scBest >= PASS ? '<b style="color:var(--ok)">bestanden</b>' : 'Bestehensgrenze ' + PASS + ' % noch nicht erreicht') + '.</div>' : '') +
+    '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><span class="big">' + total + ' %</span><span>' + msg + '<br><small style="color:var(--muted)">Stand: ' + today + '</small></span></div>';
+  Object.keys(LZ).forEach(function(k, i){
+    var r = s[k], pct = r.p ? Math.round(r.e/r.p*100) : 0;
+    var stc = pct >= 80 ? 'ok' : pct >= 50 ? 'mid' : 'no', stt = pct >= 80 ? 'erreicht ✔' : pct >= 50 ? 'teilweise erreicht' : 'noch nicht erreicht';
+    var det = 'Quiz: ' + (Math.round(r.qe*10)/10) + '/' + r.qp + (r.bp ? ' · Umbauen/Reflexion: ' + r.be + '/' + r.bp : '');
+    h += '<div class="lzres"><div><b>LZ' + (i+1) + ' · ' + LZ[k].t + '</b><small>' + det + '</small>' + (pct < 80 ? '<small>→ ' + LZ[k].tip + '</small>' : '') + '</div>' +
+      '<div class="bar"><i style="width:' + pct + '%;background:' + (stc === 'ok' ? 'var(--ok)' : stc === 'mid' ? 'var(--warn)' : 'var(--bad)') + '"></i></div><div class="state ' + stc + '">' + pct + ' %<br><small style="font-weight:400">' + stt + '</small></div></div>';
+  });
+  h += '<div class="subh" style="margin-top:14px">Deine Antworten</div><div class="qlist">' + qz.res.map(function(r, i){ return '<span class="' + (r.score === 1 ? 'y' : r.score > 0 ? 'h' : 'n') + '" title="' + esc(r.q.replace(/<[^>]+>/g, '')) + '">F' + (i+1) + ' ' + (r.score === 1 ? '✔' : r.score > 0 ? '½' : '✘') + '</span>'; }).join('') + '</div>';
+  h += '<div class="subh" style="margin-top:14px">Umbau-Aufgaben</div><div class="qlist">' + TASKS.filter(function(t){ return t.goal; }).map(function(t){ return '<span class="' + (bd.done[t.id] ? 'y' : 'n') + '">' + t.title + ' ' + (bd.done[t.id] ? '✔' : '✘') + '</span>'; }).join('') + '</div>';
+  h += '<div class="btnrow noprint" style="margin-top:16px"><button class="primary" id="qzPrint">🖨 Ergebnis drucken / als PDF</button><button id="qzAgain">↺ Neuer Versuch</button><button id="qzBuild">② Zu den Umbau-Aufgaben</button></div>';
+  $('#quiz').innerHTML = h;
+  $('#qzName').oninput = function(e){ $('#qzNamePrint').textContent = e.target.value ? 'Name: ' + e.target.value : ''; };
+  var sn = SC.studentName(); if (sn){ $('#qzName').value = sn; $('#qzNamePrint').textContent = 'Name: ' + sn; }
+  $('#qzPrint').onclick = function(){ window.print(); };
+  $('#qzAgain').onclick = qzStart;
+  $('#qzBuild').onclick = function(){ showTab('build'); };
+}
+
+/* ================================================================
+   Start
+   ================================================================ */
+function showTab(name){
+  $$('#tabs button').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === name); });
+  $$('.tab').forEach(function(t){ t.classList.toggle('active', t.id === 'tab-' + name); });
+  if (name === 'quiz' && qz.state === 'start') qzRender();
+  if (name === 'build') bdTaskList();
+}
+function init(){
+  $('#goalList').innerHTML = Object.keys(LZ).map(function(k, i){ return '<li><b>LZ' + (i+1) + ' · ' + LZ[k].t + '</b>' + LZ[k].d + '</li>'; }).join('');
+  $$('#tabs button').forEach(function(b){ b.onclick = function(){ showTab(b.dataset.tab); }; });
+  exInit(); bdInit(); qzRender();
+  if (!SC.active){ var st = $('#scState'); if (st) st.textContent = 'keine Lernplattform gefunden – Ergebnis wird nur angezeigt'; }
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+</script>
+</body>
+</html>

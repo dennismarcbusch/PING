@@ -6,10 +6,10 @@ Interaktive SCORM-1.2-Pakete zu Networking- und IT-Grundlagen für Fachinformati
 
 | Ordner | Paket | Steckbrief |
 |---|---|---|
-| `packages/pc-aufbau` | Aufbau eines modernen PCs | ja |
-| `packages/netzwerktopologien` | Netzwerktopologien erleben | offen |
+| `packages/plug-and-pray` | Plug & Pray – Aufbau eines modernen PCs | ja |
+| `packages/netzwerktopologien` | Netzwerktopologien erleben | ja |
 | `packages/shell-yeah` | Shell Yeah! – Linux im Terminal | ja |
-| `packages/strukturierte-verkabelung` | Strukturierte Verkabelung – Planspiel | offen |
+| `packages/strukturierte-verkabelung` | Strukturierte Verkabelung – Planspiel | ja |
 
 `tools/bycs-lernmodul` enthält den Skill zum Bauen weiterer Module im einheitlichen Look.
 
@@ -23,7 +23,7 @@ Interaktive SCORM-1.2-Pakete zu Networking- und IT-Grundlagen für Fachinformati
 
 ```bash
 ./build.sh                # alle Pakete -> dist/
-./build.sh pc-aufbau      # ein Paket
+./build.sh plug-and-pray     # ein Paket
 ```
 
 Das Skript bricht ab, wenn `imsmanifest.xml` nicht im Wurzelverzeichnis des ZIPs liegt.
@@ -31,7 +31,7 @@ Das Skript bricht ab, wenn `imsmanifest.xml` nicht im Wurzelverzeichnis des ZIPs
 ## Veröffentlichen
 
 - Tag `v1.0` setzen und pushen: die GitHub Action baut alle Pakete und hängt die ZIPs an ein Release.
-- Tag `pc-aufbau-v1.1`: baut nur dieses Paket.
+- Tag `plug-and-pray-v1.1`: baut nur dieses Paket.
 
 ## Neues Paket anlegen
 

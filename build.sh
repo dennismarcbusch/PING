@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Baut aus packages/<name>/src ein SCORM-ZIP: dist/<name>_scorm12.zip
 # Aufruf: ./build.sh            (alle Pakete)
-#         ./build.sh pc-aufbau  (nur ein Paket)
+#         ./build.sh plug-and-pray (nur ein Paket)
 set -euo pipefail
 cd "$(dirname "$0")"
 mkdir -p dist

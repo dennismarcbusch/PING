@@ -1,6 +1,9 @@
-# SCORM-Paket „Aufbau eines modernen PCs“
+# SCORM-Paket „Plug & Pray“ (Aufbau eines modernen PCs)
 
-Stand: 16.10.2026 · SCORM 1.2 · ein Paket (index.html + imsmanifest.xml), selbstgesteuert · Zielgruppe: Fachinformatik-Einstiegsklasse
+Stand: 22.10.2026 · SCORM 1.2 · ein Paket `plug-and-pray_scorm12.zip` (index.html + imsmanifest.xml, ca. 50 KB), selbstgesteuert · Zielgruppe: Fachinformatik-Einstiegsklasse
+
+## Name
+„Plug & Pray“ (vom Lehrer gewählt) – Wortspiel auf „Plug & Play“, passend zum Einschalten nach dem Zusammenbau. Untertitel „Aufbau eines modernen PCs“. Manifest-Identifier `ping-plug-and-pray`.
 
 ## Leitidee
 PC zerlegen → wieder zusammenbauen → anderen PC nach Kundenauftrag bauen. Teile per Drag & Drop oder per Antippen (erst Teil, dann Platz – tablettauglich).
@@ -24,3 +27,4 @@ PC zerlegen → wieder zusammenbauen → anderen PC nach Kundenauftrag bauen. Te
 - Grafikkarten generisch („Grafikkarte A/B/C“ mit Länge/Watt), CPUs real (Ryzen 7 9700X, Core Ultra 7 265K + Fehlteile AM4/LGA1700).
 - Im Nachweis wirken sich Fehler im POST aus (Single-Channel, Überhitzung ohne Paste, Wärmestau) statt direkt erklärt zu werden.
 - SCORM: score.raw = bestes Ergebnis, lesson_status passed/failed, masteryscore 70, Fortschritt in suspend_data, Name aus cmi.core.student_name vorbelegt; Ergebnis druckbar als PDF.
+- Getestet in nachgebautem SCORM-1.2-Player; Test in der echten ByCS Lernplattform steht noch aus.

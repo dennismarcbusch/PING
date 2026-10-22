@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aufbau eines modernen PCs</title>
+<title>Plug &amp; Pray – Aufbau eines modernen PCs</title>
 <style>
 :root{
   --bg:#eef2f8; --card:#ffffff; --card2:#f6f8fc; --ink:#1b2333; --ink-soft:#4a5568; --muted:#6b7588; --line:#dbe2ec;
@@ -144,8 +144,8 @@ svg .fade{transition:transform .38s ease-in,opacity .38s ease-in}
       <rect x="31" y="14" width="5" height="18" rx="1.5" fill="#ffd166"/>
     </svg>
     <div class="grow">
-      <h1>Aufbau eines modernen PCs</h1>
-      <p>Zerlegen · Zusammenbauen · Kompetenznachweis – Fachinformatik, Einstiegsklasse</p>
+      <h1>Plug &amp; Pray</h1>
+      <p>Aufbau eines modernen PCs · Zerlegen · Zusammenbauen · Kompetenznachweis</p>
     </div>
     <span class="chip" id="scormChip">Vorschau</span>
   </header>
@@ -1795,7 +1795,7 @@ function knResult(){
   });
   var passed = score >= PASS, date = new Date().toLocaleDateString('de-DE');
   var h = '<div class="card" id="knRes" style="max-width:980px;margin:0 auto">';
-  h += '<div class="subh">Ergebnis Kompetenznachweis „Aufbau eines modernen PCs“</div>';
+  h += '<div class="subh">Ergebnis Kompetenznachweis „Plug &amp; Pray – Aufbau eines modernen PCs“</div>';
   h += '<div class="resgrid"><div class="big" style="color:' + (passed ? 'var(--ok)' : 'var(--bad)') + '">' + score + ' %</div><div><span class="chip ' + (passed ? 'ok' : 'bad') + '">' + (passed ? '✅ bestanden' : '✖ noch nicht bestanden') + ' (ab ' + PASS + ' %)</span><br>' +
     '<span class="small">Teil A Zusammenbau: ' + aOk + ' / ' + CKDEF.length + ' Prüfpunkte · Teil B Wissen: ' + bOk + ' / ' + KN.res.length + ' Fragen</span><br>' +
     '<span class="small muted">' + esc(STORE.name || 'ohne Namen') + ' · ' + date + ' · Übungen erledigt: ' + STORE.ueb.length + ' / ' + USTEPS.length + ' · bestes Ergebnis: ' + STORE.best + ' %</span></div></div>';
@@ -1824,7 +1824,7 @@ function printResult(boxSel){
   var box = $(boxSel).cloneNode(true); $$('.noprint', box).forEach(function(n){ n.remove(); });
   var w = null; try { w = window.open('', '_blank'); } catch (_){}
   if (!w){ window.print(); return; }
-  w.document.write('<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Ergebnis – Aufbau eines modernen PCs</title><style>' + css + ' body{margin:20px;background:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}</style></head><body>' + box.outerHTML + '</body></html>');
+  w.document.write('<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Ergebnis – Plug &amp; Pray</title><style>' + css + ' body{margin:20px;background:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}</style></head><body>' + box.outerHTML + '</body></html>');
   w.document.close(); setTimeout(function(){ try { w.focus(); w.print(); } catch (_){} }, 300);
 }
 

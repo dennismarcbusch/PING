@@ -79,7 +79,7 @@ details.lz summary,details.ov summary{cursor:pointer;font-weight:700}
 .part.used,.part.rej{opacity:.45;cursor:default}
 .part.used:hover,.part.rej:hover{border-color:var(--line)}
 .part.lock{opacity:.4;cursor:not-allowed}
-.part svg{width:72px;height:48px;flex:none}
+.part svg{width:56px;height:38px;flex:none}
 .part.big{flex-direction:column;align-items:stretch}
 .part.big svg{width:100%;height:auto}
 .figure{background:var(--canvas);border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin:4px 0 8px}
@@ -87,8 +87,9 @@ details.lz summary,details.ov summary{cursor:pointer;font-weight:700}
 .legend{margin:4px 0 2px;padding-left:22px;font-size:.84rem}
 .legend li{margin:2px 0}
 .legend li::marker{color:#2f6fde;font-weight:800}
-.part .pn{font-weight:700;font-size:.9rem;line-height:1.2}
-.part .ps{font-size:.76rem;color:var(--ink-soft);line-height:1.25;margin-top:2px}
+.part .pn{font-weight:700;font-size:.9rem;line-height:1.2;overflow-wrap:break-word}
+.part .ps{font-size:.76rem;color:var(--ink-soft);line-height:1.25;margin-top:2px;overflow-wrap:break-word}
+.part>div{min-width:0}
 .part .badge{position:absolute;right:6px;top:4px;font-size:.8rem}
 .ghost{position:fixed;left:0;top:0;pointer-events:none;z-index:9999;background:var(--card);border:2px solid var(--accent);border-radius:12px;padding:4px;box-shadow:var(--shadow);opacity:.92}
 .ghost svg{width:110px;height:74px;display:block}
@@ -1569,7 +1570,7 @@ function genKit(key){
   add({ id: 'plug_gpu', cat: 'plug_gpu', ok: true, icon: 'plug16', name: '12V-2x6-Stecker (16-Pin)', specs: ['vom Netzteil'], tname: 'Stecker, 16-polig (12+4)' });
   add({ id: 'plug_fp', cat: 'plug_fp', ok: true, icon: 'plugfp', name: 'Front-Panel-Kabel', specs: ['Power-SW, Reset, LEDs'], tname: 'Kabelsatz, Einzelstecker 2-polig' });
   K.sata = true;
-  add({ id: 'sata_ok', cat: 'sata', ok: true, icon: 'ssd25', name: '2,5″-SATA-SSD 1 TB (Datenlaufwerk)', specs: ['SATA III, bis 550 MB/s', 'Anschlüsse: SATA-Daten + SATA-Strom'] });
+  add({ id: 'sata_ok', cat: 'sata', ok: true, icon: 'ssd25', name: '2,5″-SATA-SSD 1 TB', specs: ['SATA III, bis 550 MB/s', 'Anschlüsse: SATA-Daten + SATA-Strom'] });
   add({ id: 'sata_bad', cat: 'sata', ok: false, icon: 'hdd', name: '3,5″-Festplatte 4 TB', specs: ['SATA, 7.200 U/min', '≈ 250 MB/s'], reason: 'Der Auftrag verlangt eine SSD. Eine 3,5″-Festplatte arbeitet mechanisch, ist langsamer und zu groß für den 2,5″-Laufwerksplatz.' });
   add({ id: 'plug_sdata', cat: 'plug_sdata', ok: true, icon: 'satadata', name: 'SATA-Datenkabel', tname: 'Kabel, 7-polig, flach', specs: ['7-polig, L-förmig codiert', 'Mainboard ↔ Laufwerk'] });
   add({ id: 'plug_spwr', cat: 'plug_spwr', ok: true, icon: 'satapwr', name: 'SATA-Stromstecker', tname: 'Stecker, 15-polig, flach', specs: ['15-polig, L-förmig codiert', 'vom Netzteil'] });

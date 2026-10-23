@@ -14,6 +14,16 @@ Alle Module folgen demselben didaktischen Muster aus Erkunden, Üben und einer L
 | [Shell Yeah!](packages/shell-yeah) | Linux im Terminal | Simuliertes Ubuntu 24.04: Dateien, Rechte, Suchen, Prozesse, nano, Archive, `ip` |
 | [Get-Going!](packages/get-going) | Windows PowerShell | Simulierter Windows Server 2025 mit PowerShell 5.1: Objekt-Pipeline, Skripte, Active Directory, Remoting |
 
+### So sehen die Module aus
+
+<table>
+<tr><td width="50%"><a href="packages/plug-and-pray"><img src="packages/plug-and-pray/screenshots/entdecken.webp" alt="Plug & Pray"></a><br><b>Plug & Pray</b></td><td width="50%"><a href="packages/netzwerktopologien"><img src="packages/netzwerktopologien/screenshots/entdecken.webp" alt="Netzwerktopologien erleben"></a><br><b>Netzwerktopologien erleben</b></td></tr>
+<tr><td width="50%"><a href="packages/strukturierte-verkabelung"><img src="packages/strukturierte-verkabelung/screenshots/planen.webp" alt="Strukturierte Verkabelung"></a><br><b>Strukturierte Verkabelung</b></td><td width="50%"><a href="packages/shell-yeah"><img src="packages/shell-yeah/screenshots/ueben.webp" alt="Shell Yeah!"></a><br><b>Shell Yeah!</b></td></tr>
+<tr><td width="50%"><a href="packages/get-going"><img src="packages/get-going/screenshots/tutorial.webp" alt="Get-Going!"></a><br><b>Get-Going!</b></td></tr>
+</table>
+
+Weitere Bilder in den Steckbriefen der Module.
+
 Die Inhalte sind auf Deutsch. Shell Yeah! und Get-Going! sind reine JavaScript-Simulationen, es wird nichts auf Deinem Rechner ausgeführt. Die Ordner `packages/<name>/` enthalten jeweils einen Steckbrief mit Lernzielen, Aufbau und didaktischen Entscheidungen (bei Netzwerktopologien und Strukturierte Verkabelung steht er noch aus).
 
 ## Benutzen
@@ -39,9 +49,13 @@ Das Skript bricht ab, wenn `imsmanifest.xml` nicht im Wurzelverzeichnis des ZIPs
 packages/<name>/
   README.md   Steckbrief des Moduls
   src/        entpackter Paketinhalt (index.html, imsmanifest.xml, js/, css/ …)
+  screenshots/  Bilder für die READMEs (nicht im ZIP)
 tools/bycs-lernmodul/   Skill zum Bauen weiterer Module im gleichen Look
+tools/screenshots/      erzeugt die Screenshots neu (Node + Edge headless)
 build.sh                baut die ZIPs
 ```
+
+Screenshots neu erzeugen (Windows, Node ≥ 22, Microsoft Edge): `node tools/screenshots/shots.mjs packages [paket …]`.
 
 Im Repo liegen die Quellen, keine ZIPs (`dist/` ist ignoriert). Namen sind klein geschrieben mit Bindestrichen, ZIPs heißen `<name>_scorm12.zip`.
 

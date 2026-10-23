@@ -2,6 +2,18 @@
 
 Stand: 22.10.2026 · SCORM 1.2 · ein Paket get-going_scorm12.zip (index.html + imsmanifest.xml + js/css/fonts, ca. 350 KB), selbstgesteuert · Zielgruppe: Fachinformatik-Einstiegsklasse, nur PC/Laptop
 
+## So sieht es aus
+
+![Startseite mit Überblick und Lernzielen](screenshots/start.webp)
+*Startseite mit Überblick und Lernzielen*
+
+![① Tutorial: Lektionen links, Windows PowerShell 5.1 rechts](screenshots/tutorial.webp)
+*① Tutorial: Lektionen links, Windows PowerShell 5.1 rechts*
+
+![② Üben: Missionen, hier die Objekt-Pipeline](screenshots/ueben.webp)
+*② Üben: Missionen, hier die Objekt-Pipeline*
+
+
 ## Leitidee
 Gegenstück zu „Shell Yeah!“ (Linux), gleiches Muster (Tutorial → Üben → Kompetenznachweis). Name „Get-Going!“ (vom Lehrer gewählt). Simuliert wird **Windows Server 2025 mit Windows PowerShell 5.1** (deutsche Oberfläche). Story geht bei „Korbwerk IT-Service“ weiter: Ausbilderin Mira Hofmann (Nachrichten im Stil von `msg`), Dateiserver KORB-SRV02 mit Kalles Altlasten (KalleSync, KalleBackup, Buchhaltung für „Jeder“, Kennwort in der Registry, Freigabe Kalle$). Nachweis beim neuen Kunden „Schreinerei Maier“ (Domäne maier.intern, MAIER-SRV01).
 

@@ -2,6 +2,21 @@
 
 Stand: 23.10.2026 · SCORM 1.2 · ein Paket `plug-and-pray_scorm12.zip` (index.html + imsmanifest.xml, ca. 60 KB), selbstgesteuert · Zielgruppe: Fachinformatik-Einstiegsklasse
 
+## So sieht es aus
+
+![① Entdecken: Bauteil anklicken, Steckbrief mit Nahansicht lesen, in sinnvoller Reihenfolge ausbauen](screenshots/entdecken.webp)
+*① Entdecken: Bauteil anklicken, Steckbrief mit Nahansicht lesen, in sinnvoller Reihenfolge ausbauen*
+
+![Mainboard-Werkbank: Steckplätze und Anschlüsse entdecken](screenshots/werkbank.webp)
+*Mainboard-Werkbank: Steckplätze und Anschlüsse entdecken*
+
+![② Üben: geführter Zusammenbau, hier Aufgabe 7 mit SATA-SSD, Daten- und Stromkabel](screenshots/ueben.webp)
+*② Üben: geführter Zusammenbau, hier Aufgabe 7 mit SATA-SSD, Daten- und Stromkabel*
+
+![③ Kompetenznachweis: anderer PC (weißes Gehäuse, AIO), Teile ohne Namen](screenshots/kompetenznachweis.webp)
+*③ Kompetenznachweis: anderer PC (weißes Gehäuse, AIO), Teile ohne Namen*
+
+
 ## Name
 „Plug & Pray“ (vom Lehrer gewählt) – Wortspiel auf „Plug & Play“, passend zum Einschalten nach dem Zusammenbau. Untertitel „Aufbau eines modernen PCs“. Manifest-Identifier `ping-plug-and-pray`.
 

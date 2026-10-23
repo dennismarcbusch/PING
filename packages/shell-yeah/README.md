@@ -2,6 +2,18 @@
 
 Stand: 21.10.2026 · SCORM 1.2 · ein Paket shell-yeah_scorm12.zip (index.html + imsmanifest.xml + js/css/fonts, ca. 300 KB), selbstgesteuert · Zielgruppe: Fachinformatik-Einstiegsklasse, nur PC/Laptop
 
+## So sieht es aus
+
+![① Tutorial: Lektionen links, simuliertes Ubuntu-Terminal rechts](screenshots/tutorial.webp)
+*① Tutorial: Lektionen links, simuliertes Ubuntu-Terminal rechts*
+
+![② Üben: Missionen mit Live-Prüfpunkten](screenshots/ueben.webp)
+*② Üben: Missionen mit Live-Prüfpunkten*
+
+![③ Kompetenznachweis: Auftragsliste am Kundenserver](screenshots/kompetenznachweis.webp)
+*③ Kompetenznachweis: Auftragsliste am Kundenserver*
+
+
 ## Leitidee
 Inhaltlicher Nachbau von linuxsurvival.com (alle Module außer Drucken) plus ip, nano und Archive. Name „Shell Yeah!“ (vom Lehrer gewählt). Story: erster Tag als Azubi bei „Korbwerk IT-Service“, Ausbilderin Mira Hofmann (Nachrichten im Stil von `write`), Server korb-srv01, Altlasten des Ex-Admins Kalle. Nachweis beim Kunden „Bäckerei Brunner“ (Server brunner-srv).
 

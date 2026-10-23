@@ -19,7 +19,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.45}
 body{background:var(--bg)}
-.app{max-width:1400px;margin:0 auto;padding:14px;background:var(--bg);min-height:100vh}
+.app{max-width:1800px;margin:0 auto;padding:14px;background:var(--bg);min-height:100vh}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px}
 .hdr{display:flex;align-items:center;gap:14px}
 .hdr h1{font-size:1.45rem;margin:0;line-height:1.2}
@@ -37,21 +37,21 @@ button:disabled{opacity:.5;cursor:not-allowed;border-color:var(--line)}
 input[type=text]{font:inherit;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--ink);width:100%}
 select{font:inherit;padding:6px 8px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--ink);max-width:100%}
 details.lz{margin-bottom:12px}
-details.lz summary{cursor:pointer;font-weight:700}
+details.lz summary,details.ov summary{cursor:pointer;font-weight:700}
 .lzgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
 .lzt{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px}
 .lzt b{display:block;margin-bottom:2px}
 .lzt span{color:var(--ink-soft);font-size:.92rem}
-.work{display:grid;grid-template-columns:220px minmax(0,1fr) 330px;gap:12px;align-items:start}
+.work{display:grid;grid-template-columns:200px minmax(0,1fr) 300px;gap:12px;align-items:start}
 @media (max-width:1150px){.work{grid-template-columns:200px minmax(0,1fr)}.work>.right{grid-column:1/-1}.part svg{width:60px;height:40px}}
 @media (max-width:760px){.work{grid-template-columns:1fr}.tabs button{flex:1}}
 @media (max-width:600px){.hdr{flex-wrap:wrap}.hdr .grow{flex:1 1 calc(100% - 64px)}.hdr h1{font-size:1.25rem}.tabs{border-radius:16px}.tabs button{flex:1 1 100%}}
-.stage{padding:10px;position:relative}
+.stage{padding:6px;position:relative}
 .pop{position:absolute;left:14px;right:14px;top:56px;background:var(--card);border:2px solid var(--accent);border-radius:14px;padding:14px;box-shadow:0 10px 40px rgba(0,0,0,.25);z-index:5;max-width:560px;margin:0 auto}
 .pop h3{margin:0 0 6px;font-size:1.05rem}
 .stagebar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
 .stagebar .sp{flex:1}
-.pcsvg{width:100%;height:auto;display:block;border-radius:12px;background-color:var(--canvas);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;touch-action:none;user-select:none;-webkit-user-select:none}
+.pcsvg{width:100%;height:auto;max-height:calc(100vh - 120px);display:block;border-radius:12px;background-color:var(--canvas);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;touch-action:none;user-select:none;-webkit-user-select:none}
 .subh{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin:12px 0 6px}
 .subh:first-child{margin-top:0}
 .msg{border-radius:12px;padding:9px 11px;background:var(--card2);border:1px solid var(--line);margin:8px 0;font-size:.95rem}
@@ -184,10 +184,10 @@ svg .fade{transition:transform .38s ease-in,opacity .38s ease-in}
       </div>
       <aside class="right card info" id="expInfo"></aside>
     </div>
-    <div class="card" style="margin-top:12px">
-      <div class="subh">Steckbrief-Übersicht – füllt sich, sobald du ein Bauteil untersuchst</div>
-      <div class="tblwrap" id="expTable"></div>
-    </div>
+    <details class="card ov" style="margin-top:12px">
+      <summary>📋 Steckbrief-Übersicht: alle untersuchten Bauteile im Vergleich</summary>
+      <div class="tblwrap" id="expTable" style="margin-top:8px"></div>
+    </details>
   </section>
 
   <section id="tab-ueb" class="tab" hidden>
@@ -366,6 +366,15 @@ var INFO = {
     chips: ['M.2 2280', 'PCIe 4.0 x4 ≈ 7 GB/s', 'PCIe 5.0 x4 ≈ 14 GB/s'],
     good: 'Zum Vergleich: SATA-SSD ≈ 0,55 GB/s, Festplatte (HDD) ≈ 0,2 GB/s. Eine NVMe-SSD ist also mehr als zehnmal so schnell wie eine SATA-SSD.',
     row: ['Nichtflüchtiger Massenspeicher (System, Programme, Daten)', 'M.2-Slot (Key M), PCIe/NVMe', 'Kapazität (TB), Lesen/Schreiben (GB/s)'] },
+  sata: { name: 'SSD (2,5″, SATA)', cat: 'speicher',
+    lead: 'Die klassische SATA-SSD speichert Daten dauerhaft wie die M.2-SSD, steckt aber nicht direkt im Mainboard, sondern hängt an zwei Kabeln.',
+    facts: ['Formfaktor 2,5″ (≈ 100 × 70 × 7 mm) – so groß wie eine Notebook-Festplatte. Innen sitzen dieselben NAND-Flash-Chips wie bei der M.2-SSD.',
+      'Zwei Anschlüsse: SATA-Daten (7-polig, Kabel zum Mainboard) und SATA-Strom (15-polig, Kabel vom Netzteil).',
+      'SATA III schafft ≈ 6 Gbit/s, nutzbar sind rund 550 MB/s – die Schnittstelle bremst, nicht der Flash-Speicher.',
+      'Typischer Einsatz heute: günstiger Zusatzspeicher, z. B. für Spiele oder Fotos, oder zum Aufrüsten älterer PCs ohne M.2-Slot.'],
+    chips: ['2,5″', 'SATA III ≈ 0,55 GB/s', 'Daten + Strom'],
+    good: 'Die Stecker sind L-förmig codiert und passen nur in einer Richtung. Beim Abziehen am Stecker ziehen, nie am Kabel – die Rastnase am Datenstecker vorher eindrücken.',
+    row: ['Nichtflüchtiger Zusatzspeicher (Daten, Spiele)', 'SATA-Datenkabel zum Mainboard + SATA-Strom vom Netzteil', 'Kapazität (TB), ≈ 550 MB/s'] },
   cooler: { name: 'CPU-Kühler', cat: 'cpu',
     lead: 'Der Kühler transportiert die Abwärme der CPU weg – ohne ihn würde sie sich in Sekunden drosseln oder abschalten.',
     facts: ['Tower-Luftkühler: Heatpipes leiten die Wärme in einen Lamellenblock, ein Lüfter bläst sie weg.',
@@ -412,8 +421,8 @@ var INFO = {
     good: 'Ausgebaut liegt das Mainboard auf der Werkbank: Klick oben auf „🔍 Mainboard erkunden“ und entdecke alle Steckplätze und Anschlüsse.',
     row: ['Verbindet alle Komponenten, stellt Steckplätze bereit', 'Formfaktor (ATX/mATX/ITX), Sockel, Chipsatz', 'Sockel, Chipsatz, Anzahl Slots'] }
 };
-var EXP_ORDER = ['power', 'panel', 'fans', 'cables', 'gpu', 'ssd', 'cooler', 'ram', 'cpu', 'psu', 'board'];
-var EXP_DEPS = { power: [], panel: ['power'], fans: ['panel'], cables: ['panel'], cooler: ['panel'], gpu: ['cables'], ssd: ['gpu'], ram: ['cooler'], cpu: ['cooler'], psu: ['cables'], board: ['gpu', 'ssd', 'ram', 'cpu', 'cables'] };
+var EXP_ORDER = ['power', 'panel', 'fans', 'cables', 'gpu', 'ssd', 'sata', 'cooler', 'ram', 'cpu', 'psu', 'board'];
+var EXP_DEPS = { power: [], panel: ['power'], fans: ['panel'], cables: ['panel'], cooler: ['panel'], gpu: ['cables'], ssd: ['gpu'], ram: ['cooler'], cpu: ['cooler'], sata: ['panel'], psu: ['cables', 'sata'], board: ['gpu', 'ssd', 'sata', 'ram', 'cpu', 'cables'] };
 var EXP_WHY = {
   panel: 'Erst den Strom trennen – das Netzkabel steckt noch!',
   fans: 'Das Seitenteil ist noch zu.', cables: 'Das Seitenteil ist noch zu.', cooler: 'Das Seitenteil ist noch zu.',
@@ -421,7 +430,7 @@ var EXP_WHY = {
   ssd: 'Der M.2-Slot liegt unter der Grafikkarte – die muss zuerst raus.',
   ram: 'Der große Tower-Kühler verdeckt den ersten RAM-Slot und die Clips.',
   cpu: 'Auf der CPU sitzt noch der Kühler.',
-  psu: 'Am Netzteil hängen noch die Stromkabel.',
+  psu: 'Am Netzteil hängen noch Stromkabel (auch das SATA-Stromkabel der SSD).',
   board: 'Auf dem Mainboard steckt noch etwas.'
 };
 
@@ -449,7 +458,7 @@ var HOT_ORDER = ['socket', 'vrm', 'dimm', 'atx', 'eps', 'cpufan', 'pcie16', 'pci
 var GEO = {
   A: {
     caseO: { x: 32, y: 28, w: 576, h: 544 }, caseI: { x: 38, y: 34, w: 564, h: 532 },
-    shroud: { x: 38, y: 452, w: 564, h: 114 }, psu: { x: 52, y: 466, w: 186, h: 88 }, pin: { x: 22, y: 494, w: 14, h: 30 },
+    shroud: { x: 38, y: 452, w: 564, h: 114 }, psu: { x: 52, y: 466, w: 186, h: 88 }, cage: { x: 460, y: 452, w: 128, h: 114 }, sata25: { x: 476, y: 476, w: 100, h: 68 }, pin: { x: 22, y: 494, w: 14, h: 30 },
     board: { x: 84, y: 50, w: 300, h: 376 }, io: { x: 86, y: 72, w: 28, h: 118 },
     eps: { x: 98, y: 53, w: 32, h: 12 }, vrmT: { x: 152, y: 76, w: 118, h: 16 }, vrmL: { x: 124, y: 96, w: 22, h: 100 },
     socket: { x: 172, y: 104, w: 68, h: 68 },
@@ -471,7 +480,7 @@ var GEO = {
   },
   B: {
     caseO: { x: 32, y: 28, w: 576, h: 544 }, caseI: { x: 38, y: 34, w: 564, h: 532 },
-    shroud: { x: 38, y: 452, w: 564, h: 114 }, psu: { x: 52, y: 466, w: 170, h: 88 }, pin: { x: 22, y: 494, w: 14, h: 30 },
+    shroud: { x: 38, y: 452, w: 564, h: 114 }, psu: { x: 52, y: 466, w: 170, h: 88 }, cage: { x: 460, y: 452, w: 128, h: 114 }, sata25: { x: 476, y: 476, w: 100, h: 68 }, pin: { x: 22, y: 494, w: 14, h: 30 },
     board: { x: 84, y: 84, w: 300, h: 300 }, io: { x: 86, y: 96, w: 28, h: 118 },
     eps: { x: 122, y: 89, w: 32, h: 12 }, vrmT: { x: 150, y: 108, w: 100, h: 16 }, vrmL: { x: 124, y: 128, w: 20, h: 80 },
     socket: { x: 160, y: 134, w: 66, h: 66 },
@@ -836,15 +845,6 @@ function drawPSU(p, K, watt){
   T(F, r.x + 22 + (r.w - 70) / 2, r.y + r.h / 2 + 13, '80 PLUS GOLD', { 'text-anchor': 'middle', 'font-size': 8, 'font-weight': 700, fill: P.psuTxt });
   for (var i = 0; i < 4; i++) R(F, { x: r.x + r.w - 30, y: r.y + 12 + i * 17, w: 18, h: 11 }, { rx: 2, fill: '#0e1013', stroke: '#555' });
 }
-function drawShroud(p, K){
-  var r = K.g.shroud, P = K.p, ps = K.g.psu;
-  var g = G(p, { 'pointer-events': 'none' });
-  box(g, r, 0, DEP, P.shroud, { noLeft: true, noFront: true, stroke: P.edge });
-  var F = fG(g, DEP), w = { x: ps.x + 4, y: ps.y + 4, w: ps.w - 6, h: ps.h - 10 };
-  S_('path', { d: 'M' + r.x + ',' + r.y + 'h' + r.w + 'v' + r.h + 'h-' + r.w + 'Z M' + w.x + ',' + w.y + 'v' + w.h + 'h' + w.w + 'v-' + w.h + 'Z', fill: P.shroud, stroke: P.edge, 'stroke-width': 1, 'fill-rule': 'evenodd' }, F);
-  R(F, w, { rx: 4, fill: 'none', stroke: P.edge, 'stroke-width': 1.5 });
-  T(F, r.x + 360, r.y + 64, K.key === 'A' ? 'NETZTEIL-ABDECKUNG' : 'PSU-SHROUD', { 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 800, fill: P.edge, opacity: 0.55, 'letter-spacing': '2' });
-}
 function drawFan(p, K, z, dir){
   var r = K.g[z], P = K.p, B = K.key === 'B';
   box(p, r, 8, 112, P.fan, { left: P.fan, stroke: B ? '#9aa4b0' : '#000' });
@@ -862,10 +862,52 @@ function drawFan(p, K, z, dir){
     });
   }
 }
-/* Stecker (Box) + Kabel; Kabel enden hinter dem Tray bzw. in der Netzteil-Abdeckung */
+/* helle Stromkabel (GPU, SATA), damit sie vor dunklem Hintergrund erkennbar sind */
+var LIGHT = '#d5dae0', LIGHT_S = '#8d96a0';
+/* 2,5″-SATA-SSD am Tray unten rechts neben dem Netzteil, mit SATA-Daten- und SATA-Stromkabel */
+var SZ0 = 56, SZ1 = 64; // Tiefe der SSD im Käfig (Abstand vom Tray)
+function sataPorts(g){ var r = g.sata25; return { data: { x: r.x - 6, y: r.y + 8, w: 6, h: 12 }, pwr: { x: r.x - 6, y: r.y + 30, w: 6, h: 24 } }; }
+/* Laufwerkskäfig auf dem Gehäuseboden vorne rechts; links offen, damit die Anschlüsse erreichbar sind */
+function drawCage(p, K, front){
+  var c = K.g.cage, B = K.key === 'B', col = B ? '#cfd5dc' : '#4a515c', st = B ? '#9aa4b0' : '#171a20', r = K.g.sata25;
+  if (!front){
+    box(p, { x: c.x, y: c.y, w: c.w, h: 7 }, 10, 104, col, { noFront: true, stroke: st });
+    box(p, { x: r.x - 4, y: r.y + r.h, w: r.w + 8, h: 4 }, 30, 90, col, { noFront: true, stroke: st });
+    return;
+  }
+  var F = fG(p, 104), i = { x: c.x + 2, y: c.y + 7, w: c.w - 9, h: c.h - 14 };
+  S_('path', { d: 'M' + c.x + ',' + c.y + 'h' + c.w + 'v' + c.h + 'h-' + c.w + 'Z M' + i.x + ',' + i.y + 'v' + i.h + 'h' + i.w + 'v-' + i.h + 'Z', fill: col, stroke: st, 'stroke-width': 1, 'fill-rule': 'evenodd' }, F);
+  S_('circle', { cx: c.x + c.w - 3.5, cy: c.y + c.h / 2, r: 2.6, fill: shade(col, 0.3), stroke: st, 'stroke-width': 0.8 }, F);
+}
+/* 2,5″-SATA-SSD hochkant im Käfig, Anschlüsse an der linken Schmalseite */
+function drawSata(p, K, S){
+  var g = K.g, r = g.sata25, B = K.key === 'B', s = g.sata, ps = g.psu, pt = sataPorts(g), pl = S.plugs || {};
+  box(p, r, SZ0, SZ1, B ? '#eef1f4' : '#2a2e35', { rx: 4, stroke: B ? '#9aa4b0' : '#0b0d10' });
+  var F = fG(p, SZ1);
+  R(F, { x: r.x + 10, y: r.y + 12, w: r.w - 20, h: r.h - 24 }, { rx: 3, fill: B ? '#14958a' : '#e8862a' });
+  T(F, r.x + r.w / 2, r.y + r.h / 2 + 1, 'SSD', { 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 900, fill: '#fff' });
+  T(F, r.x + r.w / 2, r.y + r.h / 2 + 12, '2,5″ SATA · 1 TB', { 'text-anchor': 'middle', 'font-size': 6, 'font-weight': 700, fill: '#fff' });
+  [[r.x + 5, r.y + 5], [r.x + r.w - 5, r.y + 5], [r.x + 5, r.y + r.h - 5], [r.x + r.w - 5, r.y + r.h - 5]].forEach(function(q){ S_('circle', { cx: q[0], cy: q[1], r: 2, fill: B ? '#c3cad3' : '#59626d' }, F); });
+  function cab(pts, wd, col, slv){ var d = 'M' + pts[0] + ' C' + pts[1] + ' ' + pts[2] + ' ' + pts[3]; S_('path', { d: d, stroke: col, 'stroke-width': wd, fill: 'none', 'stroke-linecap': 'round' }, p); if (slv) S_('path', { d: d, stroke: slv, 'stroke-width': wd, fill: 'none', 'stroke-dasharray': '1.5 3', opacity: 0.7 }, p); }
+  // freie Buchsen (Daten 7-polig, Strom 15-polig)
+  [pt.data, pt.pwr].forEach(function(q){ box(p, q, SZ0 + 1, SZ1 - 1, '#15171b', { rx: 1, stroke: '#000' }); });
+  // Daten: SSD -> SATA-Buchse am Mainboard
+  var dy = pt.data.y + pt.data.h / 2;
+  if (pl.sdata){
+    cab([P3(pt.data.x, dy, 60), P3(pt.data.x - 40, dy, 50), P3(s.x + s.w / 2, s.y + s.h + 50, 20), P3(s.x + s.w / 2, s.y + s.h - 4, 12)], 5, '#d64545');
+    box(p, { x: pt.data.x - 6, y: pt.data.y - 1, w: 8, h: pt.data.h + 2 }, SZ0, SZ1, '#b83232', { rx: 1 });
+  }
+  // Strom: SSD -> Netzteil
+  var py = pt.pwr.y + pt.pwr.h / 2;
+  if (pl.spwr){
+    cab([P3(pt.pwr.x, py, 60), P3(pt.pwr.x - 60, py, 60), P3(ps.x + ps.w + 20, ps.y - 10, 70), P3(ps.x + ps.w - 40, ps.y + 4, 80)], 7, LIGHT, LIGHT_S);
+    box(p, { x: pt.pwr.x - 7, y: pt.pwr.y - 1, w: 9, h: pt.pwr.h + 2 }, SZ0 - 1, SZ1 + 1, LIGHT, { rx: 1, stroke: '#7d858f' });
+  }
+}
+/* Stecker (Box) + Kabel; Kabel enden hinter dem Tray bzw. am Netzteil */
 function drawCable(p, K, w){
   var g = K.g, P = K.p, c = P.cable, B = K.key === 'B';
-  function wire(pts, wd){ var d = 'M' + pts[0] + ' C' + pts[1] + ' ' + pts[2] + ' ' + pts[3]; S_('path', { d: d, stroke: c, 'stroke-width': wd, fill: 'none', 'stroke-linecap': 'round' }, p); S_('path', { d: d, stroke: P.sleeve, 'stroke-width': wd, fill: 'none', 'stroke-dasharray': '1.5 3', opacity: 0.7 }, p); }
+  function wire(pts, wd, col, slv){ var d = 'M' + pts[0] + ' C' + pts[1] + ' ' + pts[2] + ' ' + pts[3]; S_('path', { d: d, stroke: col || c, 'stroke-width': wd, fill: 'none', 'stroke-linecap': 'round' }, p); S_('path', { d: d, stroke: slv || P.sleeve, 'stroke-width': wd, fill: 'none', 'stroke-dasharray': '1.5 3', opacity: 0.7 }, p); }
   if (w === 'atx'){
     var r = pad(g.atx, 1), cy = r.y + r.h / 2;
     wire([P3(r.x + r.w, cy, 20), P3(r.x + r.w + 26, cy, 22), P3(424, cy, 14), P3(425, cy, 0)], 13);
@@ -876,19 +918,19 @@ function drawCable(p, K, w){
     box(p, e, 12, 26, c, { rx: 2 }); pins(fG(p, 26), pad(e, -3), 4, 2, B ? '#c3cad3' : '#2a2d33');
   } else if (w === 'gpu'){
     var q = g.gpuPwr, gx = q.x + q.w / 2;
-    wire([P3(gx, q.y + 2, 104), P3(gx + 50, q.y - 10, 104), P3(480, 380, 70), P3(470, g.shroud.y + 10, 60)], 9);
-    box(p, { x: q.x - 1, y: q.y - 1, w: q.w + 2, h: q.h + 2 }, 98, 110, c, { rx: 2 });
+    wire([P3(gx, q.y + 2, 104), P3(gx + 50, q.y - 10, 104), P3(480, 380, 70), P3(g.psu.x + g.psu.w - 20, g.psu.y + 10, 60)], 9, LIGHT, LIGHT_S);
+    box(p, { x: q.x - 1, y: q.y - 1, w: q.w + 2, h: q.h + 2 }, 98, 110, LIGHT, { rx: 2, stroke: '#7d858f' });
   } else if (w === 'fp'){
     var f = g.fpanel, cols = ['#d64545', '#111', '#2f7fd6', '#e8e8e8'];
-    cols.forEach(function(col, i){ var a = P3(f.x + 6 + i * 11, f.y + f.h, 13), b = P3(f.x + 30 + i * 6, g.shroud.y + 20, 30); S_('path', { d: 'M' + a + ' Q' + P3(f.x + 10 + i * 10, f.y + 30, 20) + ' ' + b, stroke: col, 'stroke-width': 2, fill: 'none' }, p); });
+    cols.forEach(function(col, i){ var a = P3(f.x + 6 + i * 11, f.y + f.h, 13), b = P3(400 + i * 6, g.shroud.y + g.shroud.h - 10, 30); S_('path', { d: 'M' + a + ' Q' + P3(f.x + 10 + i * 10, f.y + 30, 20) + ' ' + b, stroke: col, 'stroke-width': 2, fill: 'none' }, p); });
     box(p, pad(f, 0.5), 9, 16, '#2a2d33', { rx: 1 });
   }
 }
 function drawCord(p, K){
   var r = { x: 14, y: 494, w: 18, h: 30 };
   var a = P3(14, 509, 78);
-  S_('path', { d: 'M' + a + ' C' + (a[0] - 30) + ',' + (a[1] + 10) + ' -6,520 -6,600', stroke: '#15171b', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round' }, p);
-  box(p, r, 66, 90, '#1c1f24', { rx: 3, stroke: '#000' });
+  S_('path', { d: 'M' + a + ' C' + (a[0] - 30) + ',' + (a[1] + 10) + ' -6,520 -6,600', stroke: '#b8bec6', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round' }, p);
+  box(p, r, 66, 90, '#d5dae0', { rx: 3, stroke: '#7d858f' });
 }
 function drawPanel(p, K, defId){
   var r = K.g.caseI, F = fG(p, DEP);
@@ -912,10 +954,12 @@ function renderPC(svg, key, S, opts){
   if (S.ssd) drawSSD(grp('ssd'), K);
   if (S.cooler) drawCooler(grp('cooler'), K, defId);
   if (S.gpu) drawGPU(grp('gpu'), K, S);
+  drawCage(svg, K, false);
+  if (S.sata) drawSata(grp('sata'), K, S);
+  drawCage(svg, K, true);
   var cl = ['atx', 'eps', 'fp', 'gpu'].filter(function(w){ return S.plugs && S.plugs[w]; });
   if (cl.length){ var cg = grp('cables'); cl.forEach(function(w){ drawCable(cg, K, w); }); }
   if (S.psu) drawPSU(grp('psu'), K, S.psuW);
-  drawShroud(svg, K);
   var fz = ['fan_f1', 'fan_f2', 'fan_rear'].filter(function(z){ return S.fans && S.fans[z]; });
   if (fz.length){
     if (opts.comp){ var fg = grp('fans'); fz.forEach(function(z){ drawFan(fg, K, z, S.fans[z]); }); }
@@ -936,6 +980,7 @@ function zoneBox(K, z){
   var m = {
     psu: [g.psu, 8, 112], board: [g.board, 0, 3], socket: [g.socket, 3, 10], m2: [g.m2, 3, 8], pcie16: [g.pcie16, 3, 12], pcieX: [g.pcieX, 3, 11], sata: [g.sata, 3, 12],
     fan_rear: [g.fan_rear, 8, 112], fan_f1: [g.fan_f1, 8, 112], fan_f2: [g.fan_f2, 8, 112],
+    bay: [g.sata25, SZ0, SZ1], p_spwr: [sataPorts(g).pwr, SZ0, SZ1],
     p_atx: [g.atx, 3, 14], p_eps: [g.eps, 3, 12], p_gpu: [g.gpuPwr, 98, 100], p_fp: [g.fpanel, 3, 9], p_cpufan: [g.cpufan, 3, 8]
   }[z];
   return m ? { r: m[0], z0: m[1], z1: m[2] } : null;
@@ -1177,6 +1222,24 @@ var PARTS = {
   plug24: function(g, C){ plug(g, C, 12, 2, 128, '24-PIN ATX'); },
   plug8: function(g, C){ plug(g, C, 4, 2, 44, 'EPS 4+4', true); },
   plug16: function(g, C){ plug(g, C, 6, 2, 96, '12V-2x6', false, true); },
+  satadata: function(g, C){
+    S_('path', { d: 'M120,6 C120,50 120,70 120,92', stroke: '#d64545', 'stroke-width': 12, fill: 'none' }, g);
+    rr_(g, 94, 90, 52, 32, { rx: 3, fill: '#c0392b', stroke: '#7d1f16', 'stroke-width': 1.2 });
+    S_('path', { d: 'M102,100 h36 v8 h-30 v8 h-6 Z', fill: '#4a140d' }, g);
+    tx_(g, 120, 140, 'SATA-Daten · 7-polig', 8, '#4a5568', { 'text-anchor': 'middle', 'font-weight': 700 });
+  },
+  satapwr: function(g, C){
+    ['#e8c22a', '#15171b', '#d64545', '#15171b', '#e8c22a'].forEach(function(col, i){ S_('path', { d: 'M' + (104 + i * 8) + ',6 C' + (104 + i * 8) + ',50 ' + (96 + i * 12) + ',70 ' + (96 + i * 12) + ',92', stroke: col, 'stroke-width': 4, fill: 'none' }, g); });
+    rr_(g, 78, 90, 84, 32, { rx: 3, fill: C.B ? '#f4f6f8' : '#15171b', stroke: C.B ? '#9aa4b0' : '#3a3f47', 'stroke-width': 1.2 });
+    S_('path', { d: 'M86,100 h68 v8 h-62 v8 h-6 Z', fill: C.B ? '#c3cad3' : '#2e3239' }, g);
+    tx_(g, 120, 140, 'SATA-Strom · 15-polig', 8, '#4a5568', { 'text-anchor': 'middle', 'font-weight': 700 });
+  },
+  molex: function(g, C){
+    ['#e8c22a', '#15171b', '#15171b', '#d64545'].forEach(function(col, i){ S_('path', { d: 'M' + (102 + i * 12) + ',6 C' + (102 + i * 12) + ',50 ' + (96 + i * 16) + ',70 ' + (96 + i * 16) + ',88', stroke: col, 'stroke-width': 4, fill: 'none' }, g); });
+    rr_(g, 82, 86, 76, 38, { rx: 4, fill: '#f2efe6', stroke: '#b8b2a0', 'stroke-width': 1.2 });
+    for (var i = 0; i < 4; i++) S_('circle', { cx: 96 + i * 16, cy: 105, r: 5, fill: '#8a8577' }, g);
+    tx_(g, 120, 140, 'Molex · 4-polig', 8, '#4a5568', { 'text-anchor': 'middle', 'font-weight': 700 });
+  },
   plugfp: function(g, C){
     var labels = [['POWER SW', '#d64545'], ['RESET SW', '#2f7fd6'], ['POWER LED', '#2f9e5b'], ['HDD LED', '#e8862a']];
     labels.forEach(function(l, i){
@@ -1310,6 +1373,7 @@ var CALLOUTS = {
   cooler: [[122, 82, 'Lüfter', 'Drückt Luft durch die Lamellen.'], [196, 70, 'Lamellen', 'Viele dünne Bleche – große Oberfläche zur Wärmeabgabe.'], [130, 22, 'Heatpipes', 'Kupferrohre transportieren die Wärme von der CPU nach oben.'], [120, 146, 'Bodenplatte', 'Liegt auf der CPU – mit Wärmeleitpaste dazwischen.']],
   fan: [[120, 76, 'Rotor', 'Sieben Blätter, angetrieben von einem kleinen Motor.'], [73, 29, 'Schraublöcher', '120 mm Lochabstand 105 mm – passt in jedes Gehäuse.'], [207, 136, '4-Pin-PWM-Stecker', 'Das Mainboard regelt darüber die Drehzahl.']],
   cables: [[54, 84, '24-Pin-ATX-Stecker', 'Hauptversorgung des Mainboards.'], [124, 84, '8-Pin-EPS (4+4)', 'Versorgung der CPU.'], [180, 82, '12V-2x6 (16-Pin)', 'Versorgung der Grafikkarte, mit 4 kleinen Signal-Pins.']],
+  ssd25: [[81, 132, 'SATA-Datenanschluss', '7-polig, Kabel zur SATA-Buchse am Mainboard.'], [124, 132, 'SATA-Stromanschluss', '15-polig, Kabel vom Netzteil.'], [120, 62, 'Gehäuse', 'Innen sitzen Controller und NAND-Flash-Chips.'], [56, 24, 'Gewindebohrungen', 'Zum Festschrauben im Laufwerksplatz.']],
   cord: [[56, 84, 'Schutzkontaktstecker', 'Geht in die Steckdose (230 V).'], [193, 76, 'Kaltgerätestecker C13', 'Kommt in die Buchse am Netzteil.']],
   panel: [[120, 80, 'Glasscheibe', 'Gehärtetes Glas – schwer und zerbrechlich.'], [48, 38, 'Rändelschrauben', 'Lassen sich ohne Werkzeug lösen.']]
 };
@@ -1317,12 +1381,13 @@ var CALLOUTS = {
 /* ================== ① Entdecken: PC zerlegen ================== */
 var EXP = { S: null, removed: [], sel: null, view: 'case', hotSel: null, busy: false };
 function fullState(){
-  return { power: 1, panel: 1, psu: 1, psuW: 750, board: 1, cpu: 1, paste: 0, ram: [0, 1, 0, 1], cooler: 1, ssd: 1, gpu: 1,
-    fans: { fan_rear: 'out', fan_f1: 'in', fan_f2: 'in' }, plugs: { atx: 1, eps: 1, gpu: 1, fp: 1 } };
+  return { power: 1, panel: 1, psu: 1, psuW: 750, board: 1, cpu: 1, paste: 0, ram: [0, 1, 0, 1], cooler: 1, ssd: 1, sata: 1, gpu: 1,
+    fans: { fan_rear: 'out', fan_f1: 'in', fan_f2: 'in' }, plugs: { atx: 1, eps: 1, gpu: 1, fp: 1, sdata: 1, spwr: 1 } };
 }
 function expRemove(S, id){
   if (id === 'fans') S.fans = { fan_rear: null, fan_f1: null, fan_f2: null };
-  else if (id === 'cables') S.plugs = { atx: 0, eps: 0, gpu: 0, fp: 0 };
+  else if (id === 'cables') ['atx', 'eps', 'gpu', 'fp'].forEach(function(k){ S.plugs[k] = 0; });
+  else if (id === 'sata'){ S.sata = 0; S.plugs.sdata = 0; S.plugs.spwr = 0; }
   else if (id === 'ram') S.ram = [0, 0, 0, 0];
   else S[id] = 0;
 }
@@ -1398,7 +1463,7 @@ function benchRender0(svg){
     T(g, lx, ly, HOT[id].n.split(' (')[0], { 'class': 'lbl', 'text-anchor': 'middle', style: 'font-size:7.5px;stroke-width:2.5px' });
   });
 }
-var EXP_KIND = { power: 'cord', panel: 'panel', fans: 'fan', cables: 'cables', gpu: 'gpu', ssd: 'ssd', cooler: 'cooler', ram: 'ram', cpu: 'cpu', psu: 'psu', board: 'board' };
+var EXP_KIND = { power: 'cord', panel: 'panel', fans: 'fan', cables: 'cables', gpu: 'gpu', ssd: 'ssd', sata: 'ssd25', cooler: 'cooler', ram: 'ram', cpu: 'cpu', psu: 'psu', board: 'board' };
 function infoCard(box, I, extra, mid){
   var h = '<h3><span class="dot" style="background:' + CAT[I.cat] + '"></span>' + esc(I.name) + '</h3>';
   h += '<p class="lead">' + esc(I.lead) + '</p>' + (mid ? extra : '') + '<div class="subh">🔍 Nahansicht</div><div class="figslot"></div><ul>' + I.facts.map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>';
@@ -1501,6 +1566,12 @@ function genKit(key){
   add({ id: 'plug_eps', cat: 'plug_eps', ok: true, icon: 'plug8', name: 'EPS12V-Stecker (8-Pin, 4+4)', specs: ['vom Netzteil'], tname: 'Stecker, 8-polig (4+4)' });
   add({ id: 'plug_gpu', cat: 'plug_gpu', ok: true, icon: 'plug16', name: '12V-2x6-Stecker (16-Pin)', specs: ['vom Netzteil'], tname: 'Stecker, 16-polig (12+4)' });
   add({ id: 'plug_fp', cat: 'plug_fp', ok: true, icon: 'plugfp', name: 'Front-Panel-Kabel', specs: ['Power-SW, Reset, LEDs'], tname: 'Kabelsatz, Einzelstecker 2-polig' });
+  K.sata = true;
+  add({ id: 'sata_ok', cat: 'sata', ok: true, icon: 'ssd25', name: '2,5″-SATA-SSD 1 TB (Datenlaufwerk)', specs: ['SATA III, bis 550 MB/s', 'Anschlüsse: SATA-Daten + SATA-Strom'] });
+  add({ id: 'sata_bad', cat: 'sata', ok: false, icon: 'hdd', name: '3,5″-Festplatte 4 TB', specs: ['SATA, 7.200 U/min', '≈ 250 MB/s'], reason: 'Der Auftrag verlangt eine SSD. Eine 3,5″-Festplatte arbeitet mechanisch, ist langsamer und zu groß für den 2,5″-Laufwerksplatz.' });
+  add({ id: 'plug_sdata', cat: 'plug_sdata', ok: true, icon: 'satadata', name: 'SATA-Datenkabel', tname: 'Kabel, 7-polig, flach', specs: ['7-polig, L-förmig codiert', 'Mainboard ↔ Laufwerk'] });
+  add({ id: 'plug_spwr', cat: 'plug_spwr', ok: true, icon: 'satapwr', name: 'SATA-Stromstecker', tname: 'Stecker, 15-polig, flach', specs: ['15-polig, L-förmig codiert', 'vom Netzteil'] });
+  add({ id: 'plug_molex', cat: 'plug_molex', ok: false, icon: 'molex', name: 'Molex-Stecker (4-Pin)', tname: 'Stecker, 4-polig, rund', specs: ['vom Netzteil, ältere Bauart'], reason: 'Molex ist ein veralteter Stromstecker für alte Laufwerke und Lüfter. Die SSD hat einen 15-poligen SATA-Stromanschluss.' });
   return K;
 }
 function auftragHTML(kit){
@@ -1508,22 +1579,25 @@ function auftragHTML(kit){
     '<li>Mainboard: ' + (kit.key === 'A' ? 'ATX' : 'Micro-ATX') + ', Chipsatz ' + kit.chip + ', <b style="display:inline">Sockel ' + kit.sock + '</b>, 4 × DDR5-DIMM</li>' +
     '<li>Gehäuse: ' + (kit.key === 'A' ? 'Midi-Tower' : 'kompakt') + ', Grafikkarten bis <b style="display:inline">' + kit.maxLen + ' mm</b></li>' +
     '<li>Netzteil: ' + kit.W + ' W, muss die Grafikkarte versorgen</li>' +
-    '<li>RAM: 32 GB DDR5, Dual-Channel</li><li>Systemlaufwerk: NVMe-SSD im M.2-Slot</li></ul></div>';
+    '<li>RAM: 32 GB DDR5, Dual-Channel</li><li>Systemlaufwerk: NVMe-SSD im M.2-Slot</li>' + (kit.sata ? '<li>Datenlaufwerk: 2,5″-SATA-SSD</li>' : '') + '</ul></div>';
 }
 function emptyState(W){
-  return { power: 0, panel: 0, psu: 0, psuW: W, board: 0, cpu: 0, paste: 0, ram: [0, 0, 0, 0], cooler: 0, ssd: 0, gpu: 0,
-    fans: { fan_rear: null, fan_f1: null, fan_f2: null }, plugs: { atx: 0, eps: 0, gpu: 0, fp: 0 } };
+  return { power: 0, panel: 0, psu: 0, psuW: W, board: 0, cpu: 0, paste: 0, ram: [0, 0, 0, 0], cooler: 0, ssd: 0, sata: 0, gpu: 0,
+    fans: { fan_rear: null, fan_f1: null, fan_f2: null }, plugs: { atx: 0, eps: 0, gpu: 0, fp: 0, sdata: 0, spwr: 0 } };
 }
-var PLK = { psu: 'pl_psu', board: 'pl_board', cpu: 'pl_cpu', ram: 'pl_ram', cooler: 'pl_cooler', ssd: 'pl_ssd', gpu: 'pl_gpu', fan: 'pl_fans', plug_atx: 'pl_atx', plug_eps: 'pl_eps', plug_gpu: 'pl_pgpu', plug_fp: 'pl_fp' };
-var WZ = { psu: 'Das Netzteil gehört in den Netzteilschacht unten links unter der Abdeckung.', board: 'Das Mainboard kommt auf die Abstandshalter (goldene Punkte).',
+var PLK = { psu: 'pl_psu', board: 'pl_board', cpu: 'pl_cpu', ram: 'pl_ram', cooler: 'pl_cooler', ssd: 'pl_ssd', gpu: 'pl_gpu', fan: 'pl_fans', plug_atx: 'pl_atx', plug_eps: 'pl_eps', plug_gpu: 'pl_pgpu', plug_fp: 'pl_fp', sata: 'pl_sata', plug_sdata: 'pl_sdata', plug_spwr: 'pl_spwr' };
+var WZ = { psu: 'Das Netzteil gehört in den Netzteilschacht unten links.', board: 'Das Mainboard kommt auf die Abstandshalter (goldene Punkte).',
   cpu: 'Die CPU gehört in den quadratischen Sockel.', ram: 'RAM-Module gehören in die langen, schmalen DIMM-Slots rechts neben dem Sockel.', cooler: 'Der Kühler sitzt direkt auf der CPU im Sockel.',
   ssd: 'Die NVMe-SSD gehört in den M.2-Steckplatz.', gpu: 'Die Grafikkarte gehört in den langen, obersten PCIe-x16-Slot – nicht in den kurzen PCIe-Slot darunter.',
   fan: 'Gehäuselüfter kommen an die Lüfterplätze vorne und hinten.', plug_atx: 'Der 24-polige Stecker gehört an den langen Anschluss am rechten Mainboard-Rand.',
   plug_eps: 'Der 8-Pin-EPS-Stecker versorgt die CPU – Anschluss oben links am Mainboard.', plug_gpu: 'Der 16-polige 12V-2x6-Stecker gehört an die Grafikkarte.',
-  plug_fp: 'Die Front-Panel-Kabel gehören an den Header F_PANEL unten rechts.' };
+  plug_fp: 'Die Front-Panel-Kabel gehören an den Header F_PANEL unten rechts.',
+  sata: 'Die 2,5″-SSD kommt in den Laufwerkskäfig unten rechts im Gehäuse.', plug_sdata: 'Das SATA-Datenkabel gehört an eine SATA-Buchse am rechten Mainboard-Rand.',
+  plug_spwr: 'Der 15-polige SATA-Stromstecker gehört an den Stromanschluss links an der SSD (die breitere Buchse).' };
 var TARGETS = { psu: ['psu'], board: ['board'], cpu: ['socket'], cooler: ['socket'], ssd: ['m2'], gpu: ['pcie16'], ram: ['dimm0', 'dimm1', 'dimm2', 'dimm3'],
-  fan: ['fan_rear', 'fan_f1', 'fan_f2'], plug_atx: ['p_atx'], plug_eps: ['p_eps'], plug_gpu: ['p_gpu'], plug_fp: ['p_fp'] };
-var CANDS = { ssd: ['m2', 'pcieX', 'sata'], gpu: ['pcie16', 'pcieX'], plug: ['p_atx', 'p_eps', 'p_gpu', 'p_fp', 'p_cpufan', 'sata'] };
+  fan: ['fan_rear', 'fan_f1', 'fan_f2'], plug_atx: ['p_atx'], plug_eps: ['p_eps'], plug_gpu: ['p_gpu'], plug_fp: ['p_fp'],
+  sata: ['bay'], plug_sdata: ['sata'], plug_spwr: ['p_spwr'] };
+var CANDS = { ssd: ['m2', 'pcieX', 'sata'], gpu: ['pcie16', 'pcieX'], sata: ['bay', 'm2', 'sata'], plug: ['p_atx', 'p_eps', 'p_gpu', 'p_fp', 'p_cpufan', 'sata', 'p_spwr'] };
 var PASTE = [
   { id: 'ok', t: 'Einen erbsengroßen Klecks in die Mitte der CPU', fb: 'Genau: Der Anpressdruck des Kühlers verteilt den Klecks zu einem dünnen Film.' },
   { id: 'much', t: 'Die ganze Spritze – viel hilft viel', fb: 'Zu viel Paste quillt über den Rand und verschmutzt Sockel und Board. Ein dünner Film reicht – ein erbsengroßer Klecks genügt.' },
@@ -1535,7 +1609,7 @@ function newCtx(mode, key, svg){
   var kit = genKit(key);
   var ctx = { mode: mode, key: key, kit: kit, S: emptyState(kit.W), svg: svg, sel: null, used: {}, rej: {}, CK: {}, ram: 0, fans: 0, locked: false, msg: null, onChange: null, near: null };
   if (mode === 'kn'){
-    var n = 0, c = 0, letters = 'ABCD';
+    var n = 0, c = 0, letters = 'ABCDEFGH';
     kit.items = shuffle(kit.items);
     kit.items.forEach(function(it){ if (/^plug_/.test(it.cat)) it.disp = 'Kabel ' + letters[c++] + ': ' + it.tname; else it.disp = 'Bauteil ' + (++n); });
   } else kit.items.forEach(function(it){ it.disp = it.name; });
@@ -1559,6 +1633,8 @@ function availZones(ctx){
     if (!S.plugs.fp) z.push('p_fp');
   }
   if (S.gpu && !S.plugs.gpu) z.push('p_gpu');
+  if (!S.sata) z.push('bay');
+  if (S.sata && !S.plugs.spwr) z.push('p_spwr');
   ['fan_rear', 'fan_f1', 'fan_f2'].forEach(function(f){ if (!S.fans[f]) z.push(f); });
   return z;
 }
@@ -1665,14 +1741,15 @@ function prereq(ctx, it){
     if (A && S.ram.filter(Boolean).length < 2) return 'Erst den RAM einsetzen: Der große Tower-Kühler verdeckt sonst den ersten RAM-Slot und die Clips.';
   }
   if (c === 'ssd' && A && S.gpu) return 'Der M.2-Slot liegt unter der Grafikkarte. Die SSD muss vor der Grafikkarte hinein.';
-  if ((c === 'plug_atx' || c === 'plug_eps' || c === 'plug_gpu') && !S.psu) return 'Das Kabel kommt vom Netzteil – das ist noch nicht eingebaut.';
+  if ((c === 'plug_atx' || c === 'plug_eps' || c === 'plug_gpu' || c === 'plug_spwr') && !S.psu) return 'Das Kabel kommt vom Netzteil – das ist noch nicht eingebaut.';
+  if ((c === 'plug_sdata' || c === 'plug_spwr') && !S.sata) return 'Zuerst die SSD in den Laufwerksplatz einbauen – dann die Kabel anstecken.';
   return null;
 }
 function tryPlace(ctx, it, z){
   if (ctx.locked || !it) return;
   var test = ctx.mode === 'kn', c = it.cat;
   if (!it.ok){
-    ctx.rej[it.id] = 1; ck(ctx, 'sel_' + c, false); ctx.sel = null;
+    ctx.rej[it.id] = 1; ck(ctx, c === 'plug_molex' ? 'pl_spwr' : 'sel_' + c, false); ctx.sel = null;
     say(ctx, 'bad', test ? '⛔ Dieses Teil passt nicht zum Auftrag. Wähle ein anderes.' : '⛔ <b>Passt nicht:</b> ' + esc(it.reason));
     renderBuild(ctx); return;
   }
@@ -1680,6 +1757,10 @@ function tryPlace(ctx, it, z){
     ck(ctx, PLK[c], false);
     var m = WZ[c];
     if (c === 'ssd' && z === 'sata') m = 'Die SATA-Buchsen sind für 2,5″/3,5″-Laufwerke mit Kabel – eine M.2-SSD steckt direkt im M.2-Slot.';
+    if (c === 'sata' && z === 'sata') m = 'An die SATA-Buchse am Mainboard kommt nur das Datenkabel. Die SSD selbst sitzt im Laufwerkskäfig unten rechts.';
+    if (c === 'sata' && z === 'm2') m = 'Eine 2,5″-SATA-SSD passt nicht in den M.2-Steckplatz. Sie sitzt im Laufwerksplatz und wird über Kabel angeschlossen.';
+    if (c === 'plug_sdata' && z === 'p_spwr') m = 'Das ist der breitere Stromanschluss. Das Datenkabel kommt an die SATA-Buchse am Mainboard – das andere Ende steckt automatisch an der SSD.';
+    if (c === 'plug_spwr' && z === 'sata') m = 'Die SATA-Buchse am Mainboard ist ein Datenanschluss. Strom kommt vom Netzteil direkt an die SSD.';
     if (z === 'p_cpufan') m = 'CPU_FAN ist ein 4-Pin-Lüfteranschluss, kein Stromanschluss vom Netzteil. ' + (WZ[c] || '');
     say(ctx, 'bad', test ? '⛔ Das gehört nicht dorthin.' : '⛔ ' + esc(m));
     renderBuild(ctx); return;
@@ -1697,12 +1778,13 @@ function tryPlace(ctx, it, z){
 }
 function place(ctx, it, z){
   var S = ctx.S, c = it.cat, test = ctx.mode === 'kn', note = '';
-  if (['psu', 'cpu', 'ram', 'ssd', 'gpu'].indexOf(c) >= 0) ck(ctx, 'sel_' + c, true);
+  if (['psu', 'cpu', 'ram', 'ssd', 'sata', 'gpu'].indexOf(c) >= 0) ck(ctx, 'sel_' + c, true);
   if (c === 'psu') S.psu = 1;
   else if (c === 'board') S.board = 1;
   else if (c === 'cpu') S.cpu = 1;
   else if (c === 'cooler') S.cooler = 1;
   else if (c === 'ssd') S.ssd = 1;
+  else if (c === 'sata') S.sata = 1;
   else if (c === 'gpu') S.gpu = 1;
   else if (c === 'ram'){ S.ram[+z.slice(4)] = 1; ctx.ram++; }
   else if (c === 'fan'){ S.fans[z] = test ? pick(['in', 'out']) : 'in'; ctx.fans++; }
@@ -1747,6 +1829,7 @@ function missing(ctx){
   var S = ctx.S, m = [];
   if (!S.psu) m.push('Netzteil'); if (!S.board) m.push('Mainboard'); if (!S.cpu) m.push('CPU');
   if (S.ram.filter(Boolean).length < 2) m.push('RAM'); if (!S.cooler) m.push('Kühler'); if (!S.ssd) m.push('SSD'); if (!S.gpu) m.push('Grafikkarte');
+  if (ctx.kit.sata){ if (!S.sata) m.push('SATA-SSD'); if (!S.plugs.sdata) m.push('SATA-Datenkabel'); if (!S.plugs.spwr) m.push('SATA-Stromstecker'); }
   if (ctx.fans < 3) m.push('Gehäuselüfter');
   ['atx', 'eps', 'gpu', 'fp'].forEach(function(k){ if (!S.plugs[k]) m.push({ atx: '24-Pin-Stecker', eps: 'EPS-Stecker', gpu: '12V-2x6-Stecker', fp: 'Front-Panel-Kabel' }[k]); });
   return m;
@@ -1768,14 +1851,15 @@ function powerOn(ctx, done){
     ['CPU:  ' + cpu.name + '  ……  OK', '#d5e6ff'],
     ['RAM:  32 GB DDR5-6000  –  ' + (ctx.ramMode === 'dual' ? 'Dual-Channel ✓' : ctx.ramMode === 'single' ? 'Single-Channel ⚠' : 'Dual-Channel (Slots A1/B1 …) ⚠'), ctx.ramMode === 'dual' ? '#7fe0a6' : '#ffd166'],
     ['M.2_1: NVMe-SSD 1 TB  ……  erkannt ✓', '#7fe0a6'],
+    ctx.kit.sata ? ['SATA 1: 2,5″-SSD 1 TB  ……  erkannt ✓', '#7fe0a6'] : null,
     ['PCIe x16: ' + gpu.name.replace('Grafikkarte', 'Grafik') + '  ✓', '#7fe0a6'],
     ['CPU-Temperatur: ' + (S.paste === 'ok' ? '38 °C ✓' : S.paste === 'none' ? '97 °C ⚠ Überhitzung – keine Wärmeleitpaste!' : S.paste === 'much' ? '44 °C – aber Paste quillt über ⚠' : '?? °C – Kontaktproblem am Sockel ⚠'), S.paste === 'ok' ? '#7fe0a6' : '#ffd166'],
     ['CPU_FAN ✓   SYS_FAN 1–3 ✓', '#7fe0a6'],
     ['Luftstrom: ' + (airOK(S) ? 'vorne hinein, hinten hinaus ✓' : 'ungünstig – Wärmestau im Gehäuse ⚠'), airOK(S) ? '#7fe0a6' : '#ffd166'],
     ['▶ Starte Betriebssystem von NVMe …', '#9cc2ff']
-  ];
+  ].filter(Boolean);
   var g = G(ctx.svg, {});
-  R(g, { x: 70, y: 130, w: 500, h: 290 }, { rx: 12, fill: '#0b0f14', stroke: '#2f6fde', 'stroke-width': 3, opacity: 0.96 });
+  R(g, { x: 70, y: 130, w: 500, h: 18 + lines.length * 30 }, { rx: 12, fill: '#0b0f14', stroke: '#2f6fde', 'stroke-width': 3, opacity: 0.96 });
   var i = 0;
   (function next(){
     if (i >= lines.length){ if (done) setTimeout(done, 500); return; }
@@ -1818,6 +1902,11 @@ var USTEPS = [
     done: function(c){ return c.S.ssd && c.S.gpu; },
     ref: { q: 'Warum gehört die Grafikkarte in den obersten PCIe-x16-Slot?', o: ['Er ist direkt mit der CPU verbunden und bietet alle 16 Lanes.', 'Weil sie dort am kühlsten bleibt.', 'Die unteren Slots liefern gar keinen Strom.'], a: 0,
       ex: 'Der oberste x16-Slot hängt direkt an der CPU. Untere Slots sind oft nur mit 4 oder 1 Lane über den Chipsatz angebunden – zu wenig Bandbreite für eine Grafikkarte.' } },
+  { id: 'u6s', t: 'SATA-SSD (Datenlaufwerk)', cats: ['sata', 'plug_sdata', 'plug_spwr', 'plug_molex'], goal: 'Baue zusätzlich eine 2,5″-SATA-SSD als Datenlaufwerk in den Laufwerksplatz ein und schließe Daten- und Stromkabel an.',
+    tips: ['Eine SATA-SSD steckt nicht im Mainboard – sie sitzt in einem Laufwerksplatz und braucht zwei Kabel.', 'Das schmale SATA-Datenkabel (7-polig) führt zum Mainboard, der breitere SATA-Stromstecker (15-polig) kommt vom Netzteil.', 'Erst die SSD in den Laufwerkskäfig unten rechts, dann das Datenkabel an die SATA-Buchse am rechten Mainboard-Rand, dann den Stromstecker an die breite Buchse links an der SSD.'],
+    done: function(c){ return c.S.sata && c.S.plugs.sdata && c.S.plugs.spwr; },
+    ref: { q: 'In beiden SSDs stecken Flash-Chips. Warum ist die SATA-SSD trotzdem viel langsamer als die NVMe-SSD?', o: ['Die SATA-Schnittstelle begrenzt auf ≈ 550 MB/s, NVMe nutzt mehrere PCIe-Lanes.', 'In der SATA-SSD dreht sich eine Scheibe.', 'Das lange Datenkabel bremst die Daten aus.'], a: 0,
+      ex: 'Die Flash-Chips könnten schneller. Der Flaschenhals ist SATA III mit 6 Gbit/s. NVMe über vier PCIe-Lanes schafft ein Vielfaches.' } },
   { id: 'u7', t: 'Verkabeln, Lüfter & Start', cats: ['plug_atx', 'plug_eps', 'plug_gpu', 'plug_fp', 'fan'], goal: 'Schließe alle Stromkabel und das Front-Panel an, setze die drei Gehäuselüfter mit sinnvoller Luftrichtung ein, schließe das Gehäuse und starte den PC.',
     tips: ['Jeder Stecker passt nur an eine Stelle – zähl die Pins!', 'Vorne soll Luft hinein (blau), hinten hinaus (rot). Klicke einen eingebauten Lüfter an, um seine Richtung zu ändern.', '24-Pin → rechter Mainboard-Rand · 8-Pin EPS → oben links · 16-Pin 12V-2x6 → Grafikkarte · F_PANEL → unten rechts.'],
     done: function(c){ return c.posted; },
@@ -1975,11 +2064,12 @@ var QS = [
 var QPLAN = { LZ1: 2, LZ2: 4, LZ3: 2, LZ4: 2, LZ5: 2 };
 var CKDEF = [
   ['prep', 'LZ4', 'Arbeitsplatz vorbereitet (ESD-Schutz)'], ['sel_psu', 'LZ5', 'Netzteil passend gewählt'], ['sel_cpu', 'LZ5', 'CPU passend zum Sockel gewählt'],
-  ['sel_ram', 'LZ5', 'RAM-Kit passend gewählt (DDR5-DIMM)'], ['sel_ssd', 'LZ5', 'SSD passend gewählt (NVMe, M.2)'], ['sel_gpu', 'LZ5', 'Grafikkarte passend gewählt (Länge, Netzteil)'],
+  ['sel_ram', 'LZ5', 'RAM-Kit passend gewählt (DDR5-DIMM)'], ['sel_ssd', 'LZ5', 'SSD passend gewählt (NVMe, M.2)'], ['sel_sata', 'LZ5', 'Datenlaufwerk passend gewählt (2,5″-SATA-SSD)'], ['sel_gpu', 'LZ5', 'Grafikkarte passend gewählt (Länge, Netzteil)'],
   ['pl_psu', 'LZ1', 'Netzteil erkannt und richtig platziert'], ['pl_board', 'LZ1', 'Mainboard erkannt und richtig platziert'], ['pl_cooler', 'LZ1', 'Kühler (AIO) erkannt und richtig platziert'],
   ['pl_fans', 'LZ1', 'Gehäuselüfter erkannt und richtig platziert'], ['pl_cpu', 'LZ3', 'CPU in den Sockel gesetzt'], ['pl_ram', 'LZ3', 'RAM in A2/B2 (Dual-Channel) gesetzt'],
   ['pl_ssd', 'LZ3', 'SSD in den M.2-Slot gesetzt'], ['pl_gpu', 'LZ3', 'Grafikkarte in den PCIe-x16-Slot gesetzt'], ['pl_atx', 'LZ3', '24-Pin-Stecker an den ATX-Anschluss'],
   ['pl_eps', 'LZ3', '8-Pin-Stecker an den EPS-Anschluss'], ['pl_pgpu', 'LZ3', '16-Pin-Stecker an die Grafikkarte'], ['pl_fp', 'LZ3', 'Front-Panel-Kabel an F_PANEL'],
+  ['pl_sata', 'LZ1', 'SATA-SSD erkannt und in den Laufwerkskäfig gesetzt'], ['pl_sdata', 'LZ3', 'SATA-Datenkabel an die SATA-Buchse'], ['pl_spwr', 'LZ3', 'SATA-Stromstecker an die SSD'],
   ['paste', 'LZ4', 'Wärmeleitpaste richtig dosiert'], ['airflow', 'LZ4', 'Luftstrom: vorne hinein, hinten hinaus'], ['order', 'LZ4', 'Sinnvolle Reihenfolge eingehalten']
 ];
 var KN = { phase: 'intro', ctx: null, qs: [], qi: 0, res: [], result: null };
@@ -1990,7 +2080,7 @@ function knIntro(){
   var root = $('#knRoot');
   root.innerHTML = '<div class="card kn-intro"><h3 style="margin-top:0">③ Kompetenznachweis</h3>' +
     '<p>Jetzt zeigst du, was du kannst – <b>ohne Tipps</b> und an einem <b>anderen PC</b>: kompaktes Gehäuse, Micro-ATX-Mainboard mit anderem Layout, AIO-Wasserkühlung statt Tower-Kühler. Die Bauteile tragen keine Namen – du musst sie erkennen.</p>' +
-    '<div class="subh">Ablauf</div><ul><li><b>Teil A – Zusammenbau nach Kundenauftrag:</b> Wähle die passenden Teile, baue sie in sinnvoller Reihenfolge ein, verkable alles und starte den PC. Bewertet werden 21 Prüfpunkte.</li>' +
+    '<div class="subh">Ablauf</div><ul><li><b>Teil A – Zusammenbau nach Kundenauftrag:</b> Wähle die passenden Teile, baue sie in sinnvoller Reihenfolge ein, verkable alles und starte den PC. Bewertet werden ' + CKDEF.length + ' Prüfpunkte.</li>' +
     '<li><b>Teil B – 12 Wissensfragen</b> (Bild erkennen, Stelle anklicken, Zuordnen, Zahl, Multiple Choice).</li>' +
     '<li>Beide Teile zählen je 50 %. <b>Bestanden ab ' + PASS + ' %.</b> Gemeldet wird dein bestes Ergebnis.</li></ul>' +
     '<div class="subh">Dein Name (für das Ergebnisblatt)</div><input type="text" id="knName" value="' + esc(STORE.name || '') + '" placeholder="Vorname Nachname">' +
@@ -2018,8 +2108,8 @@ function knBuild(){
 }
 function knRight(){
   var c = KN.ctx, S = c.S, box = $('#knRight'); if (!box) return;
-  var n = (S.psu ? 1 : 0) + (S.board ? 1 : 0) + (S.cpu ? 1 : 0) + c.ram + (S.cooler ? 1 : 0) + (S.ssd ? 1 : 0) + (S.gpu ? 1 : 0) + c.fans + ['atx', 'eps', 'gpu', 'fp'].filter(function(k){ return S.plugs[k]; }).length + (S.panel ? 1 : 0) + (S.power ? 1 : 0);
-  var h = auftragHTML(c.kit) + '<div class="subh">Fortschritt</div><div class="bar"><i style="width:' + Math.round(n / 17 * 100) + '%"></i></div><div class="small muted" style="margin-top:4px">' + n + ' von 17 Arbeitsschritten</div>';
+  var n = (S.psu ? 1 : 0) + (S.board ? 1 : 0) + (S.cpu ? 1 : 0) + c.ram + (S.cooler ? 1 : 0) + (S.ssd ? 1 : 0) + (S.gpu ? 1 : 0) + c.fans + (S.sata ? 1 : 0) + ['atx', 'eps', 'gpu', 'fp', 'sdata', 'spwr'].filter(function(k){ return S.plugs[k]; }).length + (S.panel ? 1 : 0) + (S.power ? 1 : 0);
+  var h = auftragHTML(c.kit) + '<div class="subh">Fortschritt</div><div class="bar"><i style="width:' + Math.round(n / 20 * 100) + '%"></i></div><div class="small muted" style="margin-top:4px">' + n + ' von 20 Arbeitsschritten</div>';
   h += '<div id="knMsg"></div>';
   if (!c.posted) h += '<div class="btnrow"><button id="knPanel"' + (S.panel || c.locked ? ' disabled' : '') + '>🪟 Seitenteil schließen</button><button class="primary" id="knPower"' + (S.panel && !S.power ? '' : ' disabled') + '>🔌 Einstecken & ⏻ Einschalten</button></div>';
   else h += '<div class="msg ok">✅ Teil A abgeschlossen.</div><div class="btnrow"><button class="primary" id="knToB">Weiter zu Teil B: Wissensfragen →</button></div>';

@@ -340,16 +340,39 @@ var INFO = {
     chips: ['120 / 140 mm', '4-Pin PWM', 'vorne Einlass'],
     good: 'Die Blasrichtung erkennst du am Rahmen: Auf der Seite mit den Streben (Halterung des Motors) bläst die Luft heraus. Viele Lüfter haben zusätzlich Pfeile am Rahmen.',
     row: ['Luftaustausch: kühle Luft rein, Abwärme raus', '4-Pin-Lüfteranschluss (SYS_FAN)', '120/140 mm, U/min, Luftdurchsatz'] },
-  cables: { name: 'Stromkabel vom Netzteil', cat: 'strom',
-    lead: 'Über diese Stecker verteilt das Netzteil die Gleichspannungen an die Komponenten.',
+  cables: { name: 'Mainboard-Kabel (ATX, EPS, Front-Panel)', cat: 'strom',
+    lead: 'Über diese Stecker bekommen Mainboard und CPU ihren Strom vom Netzteil, dazu kommen die Kabel der Gehäusetasten.',
     facts: ['24-Pin ATX: Hauptversorgung des Mainboards (12 V, 5 V, 3,3 V).',
       '8-Pin EPS12V (oft 4+4): Versorgung der CPU – sitzt oben links am Mainboard, nahe den Spannungswandlern.',
-      '12V-2x6 (16-polig, ATX 3.1): versorgt moderne Grafikkarten mit bis zu 600 W. Ältere Karten nutzen 6+2-Pin-PCIe-Stecker (je bis 150 W).',
-      'SATA-Strom (15-polig) versorgt 2,5″-SSDs und Festplatten. Dazu gehört ein SATA-Datenkabel (7-polig) zum Mainboard.',
-      'Die Front-Panel-Kabel verbinden Power-Taste, Reset und LEDs des Gehäuses mit dem Header F_PANEL.'],
-    chips: ['24-Pin ATX', '8-Pin EPS', '12V-2x6', 'F_PANEL'],
-    good: 'Stecker immer gerade und vollständig einstecken, bis die Rastnase einrastet. Ein halb steckender 12V-2x6-Stecker kann wegen der hohen Ströme überhitzen.',
-    row: ['Verteilen den Strom an Board, CPU und GPU', '24-Pin ATX, 8-Pin EPS, 12V-2x6, SATA-Strom', 'bis 600 W über 12V-2x6'] },
+      'Die Front-Panel-Kabel verbinden Power-Taste, Reset und LEDs des Gehäuses mit dem Header F_PANEL.',
+      'Grafikkarte und SATA-SSD haben eigene Kabel – die steckst du einzeln ab.'],
+    chips: ['24-Pin ATX', '8-Pin EPS', 'F_PANEL'],
+    good: 'Stecker immer gerade und vollständig einstecken, bis die Rastnase einrastet. Beim Abziehen die Rastnase eindrücken und am Stecker ziehen, nie am Kabel.',
+    row: ['Strom für Mainboard und CPU, Gehäusetasten', '24-Pin ATX, 8-Pin EPS, F_PANEL', '24 + 8 Pins'] },
+  gpucable: { name: 'Grafikkarten-Stromkabel (12V-2x6)', cat: 'strom',
+    lead: 'Dieses Kabel versorgt die Grafikkarte direkt vom Netzteil – der PCIe-Slot allein liefert zu wenig Strom.',
+    facts: ['12V-2x6 (16-polig, ATX 3.1): 12 Strom-Pins plus 4 kleine Signal-Pins, bis 600 W.',
+      'Über die Signal-Pins erfährt die Grafikkarte, wie viel Leistung das Netzteil liefern darf.',
+      'Ältere Karten nutzen einen oder mehrere 6+2-Pin-PCIe-Stecker (je bis 150 W).'],
+    chips: ['12V-2x6', '16-polig', 'bis 600 W'],
+    good: 'Ein halb steckender 12V-2x6-Stecker kann wegen der hohen Ströme überhitzen. Immer ganz einstecken, bis er einrastet.',
+    row: ['Strom für die Grafikkarte', '12V-2x6 an der Grafikkarte', 'bis 600 W'] },
+  sdata: { name: 'SATA-Datenkabel', cat: 'speicher',
+    lead: 'Das SATA-Datenkabel verbindet die 2,5″-SSD mit einer SATA-Buchse am Mainboard. Darüber laufen die Daten, kein Strom.',
+    facts: ['7-polig, flach, L-förmig codiert: passt nur in einer Richtung.',
+      'Viele Kabel haben eine Metall-Rastnase. Vor dem Abziehen eindrücken!',
+      'SATA III überträgt ≈ 6 Gbit/s, nutzbar sind rund 550 MB/s.'],
+    chips: ['7-polig', 'SATA III', 'Mainboard ↔ SSD'],
+    good: 'Gewinkelte Stecker (90°) helfen, wenn neben der Buchse am Mainboard wenig Platz ist, etwa unter einer langen Grafikkarte.',
+    row: ['Datenverbindung SSD ↔ Mainboard', 'SATA-Buchse am Mainboard + SSD', '≈ 6 Gbit/s'] },
+  spwr: { name: 'SATA-Stromkabel', cat: 'strom',
+    lead: 'Das SATA-Stromkabel kommt vom Netzteil und versorgt die 2,5″-SSD mit Strom.',
+    facts: ['15-polig, breiter als der Datenstecker, ebenfalls L-förmig codiert.',
+      'Es liefert 12 V, 5 V und 3,3 V. Eine 2,5″-SSD braucht davon nur 5 V.',
+      'An einem Strang des Netzteils hängen meist mehrere SATA-Stecker hintereinander.'],
+    chips: ['15-polig', '5 V / 12 V', 'vom Netzteil'],
+    good: 'Ältere 4-polige Molex-Stecker passen nicht an SATA-Laufwerke. Dafür gibt es Adapter, die aber als Brandrisiko gelten.',
+    row: ['Strom für SATA-Laufwerke', 'SATA-Stromanschluss an der SSD', '15 Pins, 5 V für SSDs'] },
   gpu: { name: 'Grafikkarte (GPU)', cat: 'gpu',
     lead: 'Die Grafikkarte berechnet die Bilder für den Monitor – sie ist Spezialistin für sehr viele gleichartige Rechnungen gleichzeitig.',
     facts: ['Tausende kleine Rechenkerne arbeiten parallel – ideal für 3D-Grafik, Videobearbeitung und KI.',
@@ -423,11 +446,14 @@ var INFO = {
     good: 'Ausgebaut liegt das Mainboard auf der Werkbank: Klick oben auf „🔍 Mainboard erkunden“ und entdecke alle Steckplätze und Anschlüsse.',
     row: ['Verbindet alle Komponenten, stellt Steckplätze bereit', 'Formfaktor (ATX/mATX/ITX), Sockel, Chipsatz', 'Sockel, Chipsatz, Anzahl Slots'] }
 };
-var EXP_ORDER = ['power', 'panel', 'fans', 'cables', 'gpu', 'ssd', 'sata', 'cooler', 'ram', 'cpu', 'psu', 'board'];
-var EXP_DEPS = { power: [], panel: ['power'], fans: ['panel'], cables: ['panel'], cooler: ['panel'], gpu: ['cables'], ssd: ['gpu'], ram: ['cooler'], cpu: ['cooler'], sata: ['cables'], psu: ['cables'], board: ['gpu', 'ssd', 'ram', 'cpu', 'cables'] };
+var EXP_ORDER = ['power', 'panel', 'fans', 'gpucable', 'sdata', 'spwr', 'cables', 'gpu', 'ssd', 'sata', 'cooler', 'ram', 'cpu', 'psu', 'board'];
+var EXP_DEPS = { power: [], panel: ['power'], fans: ['panel'], cables: ['panel'], gpucable: ['panel'], sdata: ['panel'], spwr: ['panel'], cooler: ['panel'], gpu: ['gpucable'], ssd: ['gpu'], ram: ['cooler'], cpu: ['cooler'],
+  sata: ['sdata', 'spwr'], psu: ['cables', 'gpucable', 'spwr'], board: ['gpu', 'ssd', 'ram', 'cpu', 'cables', 'sdata'] };
+var EXP_CABLE = { cables: 1, gpucable: 1, sdata: 1, spwr: 1 };
 var EXP_WHY = {
   panel: 'Erst den Strom trennen – das Netzkabel steckt noch!',
   fans: 'Das Seitenteil ist noch zu.', cables: 'Das Seitenteil ist noch zu.', cooler: 'Das Seitenteil ist noch zu.',
+  gpucable: 'Das Seitenteil ist noch zu.', sdata: 'Das Seitenteil ist noch zu.', spwr: 'Das Seitenteil ist noch zu.',
   gpu: 'An der Grafikkarte steckt noch das 12V-2x6-Stromkabel.',
   ssd: 'Der M.2-Slot liegt unter der Grafikkarte – die muss zuerst raus.',
   ram: 'Der große Tower-Kühler verdeckt den ersten RAM-Slot und die Clips.',
@@ -894,19 +920,19 @@ function drawSata(p, K, S){
   // freie Buchsen (Daten 7-polig, Strom 15-polig)
   [pt.data, pt.pwr].forEach(function(q){ box(p, q, SZ0 + 1, SZ1 - 1, '#15171b', { rx: 1, stroke: '#000' }); });
 }
-/* SATA-Daten- und Stromkabel; eigene Gruppe, damit sie in Entdecken zu den Kabeln gehören */
-function drawSataCables(p, K, S){
+/* SATA-Daten- und Stromkabel; w = 'sdata' oder 'spwr' zeichnet nur eines (eigene Gruppe in Entdecken) */
+function drawSataCables(p, K, S, w){
   var g = K.g, s = g.sata, ps = g.psu, pt = sataPorts(g), pl = S.plugs || {};
   function cab(pts, wd, col, slv){ var d = 'M' + pts[0] + ' C' + pts[1] + ' ' + pts[2] + ' ' + pts[3]; S_('path', { d: d, stroke: col, 'stroke-width': wd, fill: 'none', 'stroke-linecap': 'round' }, p); if (slv) S_('path', { d: d, stroke: slv, 'stroke-width': wd, fill: 'none', 'stroke-dasharray': '1.5 3', opacity: 0.7 }, p); }
   // Daten: SSD -> SATA-Buchse am Mainboard
   var dy = pt.data.y + pt.data.h / 2;
-  if (pl.sdata){
+  if (pl.sdata && w !== 'spwr'){
     cab([P3(pt.data.x, dy, 60), P3(pt.data.x - 40, dy, 50), P3(s.x + s.w / 2, s.y + s.h + 50, 20), P3(s.x + s.w / 2, s.y + s.h - 4, 12)], 5, '#d64545');
     box(p, { x: pt.data.x - 6, y: pt.data.y - 1, w: 8, h: pt.data.h + 2 }, SZ0, SZ1, '#b83232', { rx: 1 });
   }
   // Strom: SSD -> Netzteil
   var py = pt.pwr.y + pt.pwr.h / 2;
-  if (pl.spwr){
+  if (pl.spwr && w !== 'sdata'){
     cab([P3(pt.pwr.x, py, 60), P3(pt.pwr.x - 60, py, 60), P3(ps.x + ps.w + 20, ps.y - 10, 70), P3(ps.x + ps.w - 40, ps.y + 4, 80)], 7, LIGHT, LIGHT_S);
     box(p, { x: pt.pwr.x - 7, y: pt.pwr.y - 1, w: 9, h: pt.pwr.h + 2 }, SZ0 - 1, SZ1 + 1, LIGHT, { rx: 1, stroke: '#7d858f' });
   }
@@ -964,9 +990,11 @@ function renderPC(svg, key, S, opts){
   drawCage(svg, K, false);
   if (S.sata) drawSata(grp('sata'), K, S);
   drawCage(svg, K, true);
-  var cl = ['atx', 'eps', 'fp', 'gpu'].filter(function(w){ return S.plugs && S.plugs[w]; });
-  var sc = S.sata && S.plugs && (S.plugs.sdata || S.plugs.spwr);
-  if (cl.length || sc){ var cg = grp('cables'); cl.forEach(function(w){ drawCable(cg, K, w); }); if (sc) drawSataCables(cg, K, S); }
+  var pl = S.plugs || {};
+  var cl = ['atx', 'eps', 'fp'].filter(function(w){ return pl[w]; });
+  if (cl.length){ var cg = grp('cables'); cl.forEach(function(w){ drawCable(cg, K, w); }); }
+  if (pl.gpu) drawCable(grp('gpucable'), K, 'gpu');
+  if (S.sata) ['sdata', 'spwr'].forEach(function(w){ if (pl[w]) drawSataCables(grp(w), K, S, w); });
   if (S.psu) drawPSU(grp('psu'), K, S.psuW);
   var fz = ['fan_f1', 'fan_f2', 'fan_rear'].filter(function(z){ return S.fans && S.fans[z]; });
   if (fz.length){
@@ -1261,9 +1289,8 @@ var PARTS = {
     });
   },
   cables: function(g, C){
-    var a = G(g, { transform: 'translate(-8,24) scale(0.52)' }); PARTS.plug24(a, C);
-    var b = G(g, { transform: 'translate(62,24) scale(0.52)' }); PARTS.plug8(b, C);
-    var c = G(g, { transform: 'translate(118,24) scale(0.52)' }); PARTS.plug16(c, C);
+    var a = G(g, { transform: 'translate(20,24) scale(0.52)' }); PARTS.plug24(a, C);
+    var b = G(g, { transform: 'translate(110,24) scale(0.52)' }); PARTS.plug8(b, C);
   },
   cord: function(g, C){
     S_('path', { d: 'M74,104 C110,150 150,40 172,80', stroke: '#15171b', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round' }, g);
@@ -1380,7 +1407,7 @@ var CALLOUTS = {
   psu: [[96, 37, 'Lüfter', 'Saugt Luft an – im Gehäuse meist nach unten zum Staubfilter.'], [70, 112, 'Typenschild', 'Leistung (W), Norm (ATX 3.1), Effizienz (80 PLUS).'], [180, 108, 'Kaltgerätebuchse', 'Hier kommt das 230-V-Netzkabel rein.'], [196, 98, 'Netzschalter', 'Trennt das Netzteil vom Netz (I/0).'], [195, 58, 'Lüftungsgitter', 'Warme Luft geht hinten aus dem Gehäuse.']],
   cooler: [[122, 82, 'Lüfter', 'Drückt Luft durch die Lamellen.'], [196, 70, 'Lamellen', 'Viele dünne Bleche – große Oberfläche zur Wärmeabgabe.'], [130, 22, 'Heatpipes', 'Kupferrohre transportieren die Wärme von der CPU nach oben.'], [120, 146, 'Bodenplatte', 'Liegt auf der CPU – mit Wärmeleitpaste dazwischen.']],
   fan: [[120, 76, 'Rotor', 'Sieben Blätter, angetrieben von einem kleinen Motor.'], [73, 29, 'Schraublöcher', '120 mm Lochabstand 105 mm – passt in jedes Gehäuse.'], [207, 136, '4-Pin-PWM-Stecker', 'Das Mainboard regelt darüber die Drehzahl.']],
-  cables: [[54, 84, '24-Pin-ATX-Stecker', 'Hauptversorgung des Mainboards.'], [124, 84, '8-Pin-EPS (4+4)', 'Versorgung der CPU.'], [180, 82, '12V-2x6 (16-Pin)', 'Versorgung der Grafikkarte, mit 4 kleinen Signal-Pins.']],
+  cables: [[82, 84, '24-Pin-ATX-Stecker', 'Hauptversorgung des Mainboards.'], [172, 84, '8-Pin-EPS (4+4)', 'Versorgung der CPU.']],
   ssd25: [[81, 132, 'SATA-Datenanschluss', '7-polig, Kabel zur SATA-Buchse am Mainboard.'], [124, 132, 'SATA-Stromanschluss', '15-polig, Kabel vom Netzteil.'], [120, 62, 'Gehäuse', 'Innen sitzen Controller und NAND-Flash-Chips.'], [56, 24, 'Gewindebohrungen', 'Zum Festschrauben im Laufwerksplatz.']],
   cord: [[56, 84, 'Schutzkontaktstecker', 'Geht in die Steckdose (230 V).'], [193, 76, 'Kaltgerätestecker C13', 'Kommt in die Buchse am Netzteil.']],
   panel: [[120, 80, 'Glasscheibe', 'Gehärtetes Glas – schwer und zerbrechlich.'], [48, 38, 'Rändelschrauben', 'Lassen sich ohne Werkzeug lösen.']]
@@ -1394,7 +1421,9 @@ function fullState(){
 }
 function expRemove(S, id){
   if (id === 'fans') S.fans = { fan_rear: null, fan_f1: null, fan_f2: null };
-  else if (id === 'cables') ['atx', 'eps', 'gpu', 'fp', 'sdata', 'spwr'].forEach(function(k){ S.plugs[k] = 0; });
+  else if (id === 'cables') ['atx', 'eps', 'fp'].forEach(function(k){ S.plugs[k] = 0; });
+  else if (id === 'gpucable') S.plugs.gpu = 0;
+  else if (id === 'sdata' || id === 'spwr') S.plugs[id] = 0;
   else if (id === 'sata'){ S.sata = 0; S.plugs.sdata = 0; S.plugs.spwr = 0; }
   else if (id === 'ram') S.ram = [0, 0, 0, 0];
   else S[id] = 0;
@@ -1471,7 +1500,7 @@ function benchRender0(svg){
     T(g, lx, ly, HOT[id].n.split(' (')[0], { 'class': 'lbl', 'text-anchor': 'middle', style: 'font-size:7.5px;stroke-width:2.5px' });
   });
 }
-var EXP_KIND = { power: 'cord', panel: 'panel', fans: 'fan', cables: 'cables', gpu: 'gpu', ssd: 'ssd', sata: 'ssd25', cooler: 'cooler', ram: 'ram', cpu: 'cpu', psu: 'psu', board: 'board' };
+var EXP_KIND = { power: 'cord', panel: 'panel', fans: 'fan', cables: 'cables', gpucable: 'plug16', sdata: 'satadata', spwr: 'satapwr', gpu: 'gpu', ssd: 'ssd', sata: 'ssd25', cooler: 'cooler', ram: 'ram', cpu: 'cpu', psu: 'psu', board: 'board' };
 function infoCard(box, I, extra, mid){
   var h = '<h3><span class="dot" style="background:' + CAT[I.cat] + '"></span>' + esc(I.name) + '</h3>';
   h += '<p class="lead">' + esc(I.lead) + '</p>' + (mid ? extra : '') + '<div class="subh">🔍 Nahansicht</div><div class="figslot"></div><ul>' + I.facts.map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>';
@@ -1500,7 +1529,7 @@ function expInfo(justRemoved){
   var id = EXP.sel, I = INFO[id], bl = expBlockers(id);
   var top = '';
   if (bl.length) top = '<div class="msg warn">⛔ Noch nicht ausbaubar: ' + esc(EXP_WHY[id] || '') + '<br><span class="small">Zuerst: ' + bl.map(function(b){ return esc(INFO[b].name); }).join(', ') + '</span></div>';
-  var verb = id === 'power' ? '🔌 Netzkabel ziehen' : id === 'panel' ? '🪟 Seitenteil abnehmen' : id === 'cables' ? '🔧 Stecker abziehen' : '🔧 Ausbauen';
+  var verb = id === 'power' ? '🔌 Netzkabel ziehen' : id === 'panel' ? '🪟 Seitenteil abnehmen' : EXP_CABLE[id] ? '🔧 Stecker abziehen' : '🔧 Ausbauen';
   top += '<div class="btnrow" style="margin:0 0 10px"><button class="primary" id="expTake"' + (bl.length ? ' disabled' : '') + '>' + verb + '</button></div>';
   infoCard(box, I, top, true);
   var b = $('#expTake'); if (b) b.onclick = function(){ expTake(id); };

@@ -891,9 +891,13 @@ function drawSata(p, K, S){
   T(F, r.x + r.w / 2, r.y + r.h / 2 + 1, 'SSD', { 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 900, fill: '#fff' });
   T(F, r.x + r.w / 2, r.y + r.h / 2 + 12, '2,5″ SATA · 1 TB', { 'text-anchor': 'middle', 'font-size': 6, 'font-weight': 700, fill: '#fff' });
   [[r.x + 5, r.y + 5], [r.x + r.w - 5, r.y + 5], [r.x + 5, r.y + r.h - 5], [r.x + r.w - 5, r.y + r.h - 5]].forEach(function(q){ S_('circle', { cx: q[0], cy: q[1], r: 2, fill: B ? '#c3cad3' : '#59626d' }, F); });
-  function cab(pts, wd, col, slv){ var d = 'M' + pts[0] + ' C' + pts[1] + ' ' + pts[2] + ' ' + pts[3]; S_('path', { d: d, stroke: col, 'stroke-width': wd, fill: 'none', 'stroke-linecap': 'round' }, p); if (slv) S_('path', { d: d, stroke: slv, 'stroke-width': wd, fill: 'none', 'stroke-dasharray': '1.5 3', opacity: 0.7 }, p); }
   // freie Buchsen (Daten 7-polig, Strom 15-polig)
   [pt.data, pt.pwr].forEach(function(q){ box(p, q, SZ0 + 1, SZ1 - 1, '#15171b', { rx: 1, stroke: '#000' }); });
+}
+/* SATA-Daten- und Stromkabel; eigene Gruppe, damit sie in Entdecken zu den Kabeln gehören */
+function drawSataCables(p, K, S){
+  var g = K.g, s = g.sata, ps = g.psu, pt = sataPorts(g), pl = S.plugs || {};
+  function cab(pts, wd, col, slv){ var d = 'M' + pts[0] + ' C' + pts[1] + ' ' + pts[2] + ' ' + pts[3]; S_('path', { d: d, stroke: col, 'stroke-width': wd, fill: 'none', 'stroke-linecap': 'round' }, p); if (slv) S_('path', { d: d, stroke: slv, 'stroke-width': wd, fill: 'none', 'stroke-dasharray': '1.5 3', opacity: 0.7 }, p); }
   // Daten: SSD -> SATA-Buchse am Mainboard
   var dy = pt.data.y + pt.data.h / 2;
   if (pl.sdata){
@@ -961,7 +965,8 @@ function renderPC(svg, key, S, opts){
   if (S.sata) drawSata(grp('sata'), K, S);
   drawCage(svg, K, true);
   var cl = ['atx', 'eps', 'fp', 'gpu'].filter(function(w){ return S.plugs && S.plugs[w]; });
-  if (cl.length){ var cg = grp('cables'); cl.forEach(function(w){ drawCable(cg, K, w); }); }
+  var sc = S.sata && S.plugs && (S.plugs.sdata || S.plugs.spwr);
+  if (cl.length || sc){ var cg = grp('cables'); cl.forEach(function(w){ drawCable(cg, K, w); }); if (sc) drawSataCables(cg, K, S); }
   if (S.psu) drawPSU(grp('psu'), K, S.psuW);
   var fz = ['fan_f1', 'fan_f2', 'fan_rear'].filter(function(z){ return S.fans && S.fans[z]; });
   if (fz.length){

@@ -1,6 +1,6 @@
 # SCORM-Paket „Plug & Pray“ (Aufbau eines modernen PCs)
 
-Stand: 22.10.2026 · SCORM 1.2 · ein Paket `plug-and-pray_scorm12.zip` (index.html + imsmanifest.xml, ca. 50 KB), selbstgesteuert · Zielgruppe: Fachinformatik-Einstiegsklasse
+Stand: 23.10.2026 · SCORM 1.2 · ein Paket `plug-and-pray_scorm12.zip` (index.html + imsmanifest.xml, ca. 60 KB), selbstgesteuert · Zielgruppe: Fachinformatik-Einstiegsklasse
 
 ## Name
 „Plug & Pray“ (vom Lehrer gewählt) – Wortspiel auf „Plug & Play“, passend zum Einschalten nach dem Zusammenbau. Untertitel „Aufbau eines modernen PCs“. Manifest-Identifier `ping-plug-and-pray`.
@@ -9,7 +9,11 @@ Stand: 22.10.2026 · SCORM 1.2 · ein Paket `plug-and-pray_scorm12.zip` (index.h
 PC zerlegen → wieder zusammenbauen → anderen PC nach Kundenauftrag bauen. Teile per Drag & Drop oder per Antippen (erst Teil, dann Platz – tablettauglich).
 
 ## Darstellung
-3D-Schrägbild ins offene Gehäuse (Blick schräg von vorne-links-unten): Bauteile als Körper mit Tiefe. Sichtbar sind RAM-Module von der Seite, die Lüfter an der Unterseite der Grafikkarte, Kühlerlüfter, Frontlüfter und die Rückwand mit I/O, Slotblechen und Netzteilbuchse. Werkbank und Hotspot-Fragen zeigen das Mainboard stärker geneigt, damit Slots, Kühlkörper und Stecker plastisch wirken.
+- 3D-Schrägbild ins offene Gehäuse (Blick schräg von vorne-links-unten): Bauteile als Körper mit Tiefe. Sichtbar sind RAM-Module von der Seite, die Lüfter an der Unterseite der Grafikkarte, Kühlerlüfter, Frontlüfter und die Rückwand mit I/O, Slotblechen und Netzteilbuchse. Werkbank und Hotspot-Fragen zeigen das Mainboard stärker geneigt.
+- Realismus-Stufe 1 (23.10.): M.2-SSD in echten Proportionen (2280) mit Controller, NAND-Chips bzw. Etikett; Mainboard mit Spulen am VRM, Kondensatoren, PCIe-Metallverstärkung, CMOS „CR2032“.
+- Produktansichten aller Bauteile (nah am Original, je Variante A dunkel/orange und B weiß/türkis) für Teilekiste, Bildfragen und die „Nahansicht“ im Steckbrief mit nummerierten Hinweisen (z. B. NVMe: Kontaktleiste mit Key M, Controller, DRAM-Cache, NAND-Flash, Schraubenkerbe). Ausgewähltes Teil in der Teilekiste wird groß angezeigt.
+- CPU-Bilder je Sockel: AM5 (Heatspreader mit Aussparungen), LGA (rechteckig), AM4 als Unterseite mit Pins.
+- Besprochene weitere Stufen (noch nicht umgesetzt): echtes 3D mit three.js; eigene Fotos eines zerlegten Schul-PCs (Stativ, Ebenen); Mischform mit Fotos in Steckbrief/Teilekiste.
 
 ## Lernziele
 - LZ1 Komponenten erkennen (auch in anderer Bauform)
@@ -19,7 +23,7 @@ PC zerlegen → wieder zusammenbauen → anderen PC nach Kundenauftrag bauen. Te
 - LZ5 Kompatibilität nach Kundenauftrag (Sockel, DDR/DIMM, Formfaktor, GPU-Länge, Netzteil)
 
 ## Aufbau
-- ① Entdecken: Midi-Tower (ATX, Tower-Luftkühler). 11 Bauteile mit Steckbrief untersuchen und ausbauen, Abhängigkeiten (Netzkabel → Seitenteil → Kabel → GPU → M.2 darunter; Kühler → RAM/CPU …). Danach Mainboard-Werkbank mit 15 Details. Steckbrief-Tabelle füllt sich.
+- ① Entdecken: Midi-Tower (ATX, Tower-Luftkühler). 11 Bauteile mit Steckbrief und Nahansicht untersuchen und ausbauen, Abhängigkeiten (Netzkabel → Seitenteil → Kabel → GPU → M.2 darunter; Kühler → RAM/CPU …). Danach Mainboard-Werkbank mit 15 Details. Steckbrief-Tabelle füllt sich.
 - ② Üben: geführter Zusammenbau in 7 Aufgaben (Netzteil, Mainboard, CPU, RAM Dual-Channel A2/B2, Kühler + Wärmeleitpaste, SSD & GPU, Verkabelung/Lüfter/Start mit POST). Kundenauftrag zufällig (AM5/LGA1851, GPU-Länge, Netzteil-W), je Kategorie Fehlteile mit Begründung, 3 gestufte Tipps, Reflexionsfrage.
 - ③ Kompetenznachweis: weißes Kompaktgehäuse, Micro-ATX mit anderem Layout (M.2 über der GPU), AIO-Wasserkühlung mit Radiator unter der Decke, Blower-Grafikkarte, RGB-RAM, Bauteile ohne Namen. Teil A: 21 Prüfpunkte, freie Reihenfolge, keine Tipps. Teil B: 12 Fragen aus Pool von 41 (2/4/2/2/2 je LZ; MC, Bild, Hotspot, Zuordnen, Zahl). A und B je 50 %, bestanden ab 70 %.
 

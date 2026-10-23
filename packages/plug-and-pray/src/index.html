@@ -43,7 +43,7 @@ details.lz summary{cursor:pointer;font-weight:700}
 .lzt b{display:block;margin-bottom:2px}
 .lzt span{color:var(--ink-soft);font-size:.92rem}
 .work{display:grid;grid-template-columns:220px minmax(0,1fr) 330px;gap:12px;align-items:start}
-@media (max-width:1150px){.work{grid-template-columns:200px minmax(0,1fr)}.work>.right{grid-column:1/-1}.part svg{width:44px;height:33px}}
+@media (max-width:1150px){.work{grid-template-columns:200px minmax(0,1fr)}.work>.right{grid-column:1/-1}.part svg{width:60px;height:40px}}
 @media (max-width:760px){.work{grid-template-columns:1fr}.tabs button{flex:1}}
 @media (max-width:600px){.hdr{flex-wrap:wrap}.hdr .grow{flex:1 1 calc(100% - 64px)}.hdr h1{font-size:1.25rem}.tabs{border-radius:16px}.tabs button{flex:1 1 100%}}
 .stage{padding:10px;position:relative}
@@ -79,12 +79,19 @@ details.lz summary{cursor:pointer;font-weight:700}
 .part.used,.part.rej{opacity:.45;cursor:default}
 .part.used:hover,.part.rej:hover{border-color:var(--line)}
 .part.lock{opacity:.4;cursor:not-allowed}
-.part svg{width:56px;height:42px;flex:none}
+.part svg{width:72px;height:48px;flex:none}
+.part.big{flex-direction:column;align-items:stretch}
+.part.big svg{width:100%;height:auto}
+.figure{background:var(--canvas);border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin:4px 0 8px}
+.figure svg{width:100%;height:auto;display:block}
+.legend{margin:4px 0 2px;padding-left:22px;font-size:.84rem}
+.legend li{margin:2px 0}
+.legend li::marker{color:#2f6fde;font-weight:800}
 .part .pn{font-weight:700;font-size:.9rem;line-height:1.2}
 .part .ps{font-size:.76rem;color:var(--ink-soft);line-height:1.25;margin-top:2px}
 .part .badge{position:absolute;right:6px;top:4px;font-size:.8rem}
 .ghost{position:fixed;left:0;top:0;pointer-events:none;z-index:9999;background:var(--card);border:2px solid var(--accent);border-radius:12px;padding:4px;box-shadow:var(--shadow);opacity:.92}
-.ghost svg{width:70px;height:52px;display:block}
+.ghost svg{width:110px;height:74px;display:block}
 .steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding:8px}
 .steps button{border-radius:999px;font-weight:600;font-size:.9rem}
 .steps button.cur{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -448,7 +455,7 @@ var GEO = {
     socket: { x: 172, y: 104, w: 68, h: 68 },
     dimm: [{ x: 276, y: 76, w: 8, h: 158 }, { x: 289, y: 76, w: 8, h: 158 }, { x: 302, y: 76, w: 8, h: 158 }, { x: 315, y: 76, w: 8, h: 158 }],
     cpufan: { x: 250, y: 58, w: 18, h: 8 }, atx: { x: 364, y: 150, w: 14, h: 66 },
-    pcie16: { x: 104, y: 262, w: 240, h: 10 }, m2: { x: 150, y: 296, w: 150, h: 12 }, pcieX: { x: 104, y: 344, w: 160, h: 9 }, pcieXName: 'PCIe x4',
+    pcie16: { x: 104, y: 262, w: 240, h: 10 }, m2: { x: 150, y: 292, w: 92, h: 22 }, pcieX: { x: 104, y: 344, w: 160, h: 9 }, pcieXName: 'PCIe x4',
     chipset: { x: 290, y: 332, w: 62, h: 48 }, cmos: { x: 188, y: 374, w: 24, h: 24 }, bios: { x: 236, y: 388, w: 18, h: 12 },
     sata: { x: 364, y: 330, w: 14, h: 52 }, fpanel: { x: 300, y: 390, w: 46, h: 12 },
     holes: [[92, 58], [220, 58], [376, 58], [92, 250], [220, 250], [376, 250], [92, 418], [220, 418], [376, 418]],
@@ -470,7 +477,7 @@ var GEO = {
     socket: { x: 160, y: 134, w: 66, h: 66 },
     dimm: [{ x: 262, y: 106, w: 8, h: 150 }, { x: 275, y: 106, w: 8, h: 150 }, { x: 288, y: 106, w: 8, h: 150 }, { x: 301, y: 106, w: 8, h: 150 }],
     cpufan: { x: 238, y: 92, w: 18, h: 8 }, atx: { x: 364, y: 196, w: 14, h: 66 },
-    m2: { x: 126, y: 216, w: 130, h: 14 }, pcie16: { x: 104, y: 296, w: 240, h: 10 }, pcieX: { x: 104, y: 340, w: 62, h: 9 }, pcieXName: 'PCIe x1',
+    m2: { x: 126, y: 212, w: 92, h: 22 }, pcie16: { x: 104, y: 296, w: 240, h: 10 }, pcieX: { x: 104, y: 340, w: 62, h: 9 }, pcieXName: 'PCIe x1',
     chipset: { x: 296, y: 314, w: 56, h: 44 }, cmos: { x: 178, y: 338, w: 24, h: 24 }, bios: { x: 222, y: 350, w: 18, h: 12 },
     sata: { x: 364, y: 300, w: 14, h: 44 }, fpanel: { x: 290, y: 366, w: 46, h: 12 },
     holes: [[92, 92], [220, 92], [376, 92], [92, 300], [376, 300], [92, 376], [220, 376], [376, 376]],
@@ -679,7 +686,7 @@ function drawBoard(p, K, extra, noSilk){
       for (var a = 0; a < 9; a++) S_('line', { x1: s.x + 8, y1: s.y + 8 + a * 6.5, x2: s.x + s.w - 8, y2: s.y + 8 + a * 6.5, stroke: '#a88a3a', 'stroke-width': 0.8, 'stroke-dasharray': '1 2' }, f);
       S_('path', { d: 'M' + (s.x - 2) + ',' + (s.y + s.h + 2) + ' l10,0 l-10,-10 Z', fill: '#ffd166' }, f);
       S_('line', { x1: s.x + s.w + 7, y1: s.y - 2, x2: s.x + s.w + 7, y2: s.y + s.h + 8, stroke: P.heat2, 'stroke-width': 2.5, 'stroke-linecap': 'round' }, f); } },
-    { r: g.pcie16, z: 12, col: P.slot, deco: function(f, r){ S_('line', { x1: r.x + 4, y1: r.y + r.h / 2, x2: r.x + r.w - 4, y2: r.y + r.h / 2, stroke: '#3a3f47', 'stroke-width': 1.2 }, f); R(f, { x: r.x + r.w - 2, y: r.y - 2, w: 9, h: r.h + 4 }, { rx: 2, fill: P.slotEdge }); } },
+    { r: g.pcie16, z: 12, col: P.slot, deco: function(f, r){ S_('line', { x1: r.x + 4, y1: r.y + r.h / 2, x2: r.x + r.w - 4, y2: r.y + r.h / 2, stroke: '#3a3f47', 'stroke-width': 1.2 }, f); R(f, { x: r.x + r.w - 2, y: r.y - 2, w: 9, h: r.h + 4 }, { rx: 2, fill: P.slotEdge }); R(f, { x: r.x - 1, y: r.y - 1, w: r.w - 1, h: r.h + 2 }, { rx: 1.5, fill: 'none', stroke: '#c9ced5', 'stroke-width': 1.6 }); } },
     { r: g.pcieX, z: 11, col: P.slot, deco: function(f, r){ S_('line', { x1: r.x + 4, y1: r.y + r.h / 2, x2: r.x + r.w - 4, y2: r.y + r.h / 2, stroke: '#3a3f47', 'stroke-width': 1.2 }, f); } },
     { r: { x: m.x, y: m.y - 1, w: 9, h: m.h + 2 }, z: 7, col: P.slot },
     { r: g.chipset, z: 9, col: P.heat, deco: function(f, r){ S_('path', { d: 'M' + (r.x + 10) + ',' + (r.y + 12) + ' l' + (r.w - 20) + ',' + (r.h - 24), stroke: P.heat2, 'stroke-width': 3, 'stroke-linecap': 'round' }, f); } },
@@ -691,10 +698,15 @@ function drawBoard(p, K, extra, noSilk){
     { r: g.cpufan, z: 8, col: '#e9edf1', deco: function(f, r){ pins(f, pad(r, -1), 4, 1, gold); } },
     { r: g.cmos, z: 6, cmos: true }
   ];
+  var vt = g.vrmT, vl = g.vrmL;
+  for (var cx = vt.x + 4; cx < vt.x + vt.w - 8; cx += 11) els.push({ r: { x: cx, y: vt.y + vt.h + 2, w: 8, h: 6 }, z: 8, col: '#5d646d', deco: function(f, r){ R(f, { x: r.x + 2, y: r.y + 1.5, w: r.w - 4, h: r.h - 3 }, { fill: '#7b838c' }); } });
+  for (var cy = vl.y + 4; cy < vl.y + vl.h - 8; cy += 11) els.push({ r: { x: vl.x + vl.w + 2, y: cy, w: 6, h: 8 }, z: 8, col: '#5d646d', deco: function(f, r){ R(f, { x: r.x + 1.5, y: r.y + 2, w: r.w - 3, h: r.h - 4 }, { fill: '#7b838c' }); } });
+  [[g.io.x + 6, g.io.y + g.io.h + 12], [g.io.x + 16, g.io.y + g.io.h + 12], [g.io.x + 11, g.io.y + g.io.h + 21]].forEach(function(q){ els.push({ r: { x: q[0] - 3.5, y: q[1] - 3.5, w: 7, h: 7 }, cap: true }); });
   g.dimm.forEach(function(d){ els.push({ r: d, z: 11, col: P.slot, deco: function(f, r){ R(f, { x: r.x - 1, y: r.y - 6, w: r.w + 2, h: 6 }, { rx: 1, fill: P.slotEdge }); R(f, { x: r.x - 1, y: r.y + r.h, w: r.w + 2, h: 6 }, { rx: 1, fill: P.slotEdge }); } }); });
   els.sort(function(a, c){ return (c.r.x - c.r.y) - (a.r.x - a.r.y); });
   els.forEach(function(e){
-    if (e.cmos){ cyl(grp, e.r.x + 12, e.r.y + 12, 12, 3, 6, '#c9ced5'); var t = P3(e.r.x + 12, e.r.y + 12, 6); T(grp, t[0], t[1] + 3, '+', { 'text-anchor': 'middle', 'font-size': 9, fill: '#5d646d', 'font-weight': 700 }); return; }
+    if (e.cmos){ cyl(grp, e.r.x + 12, e.r.y + 12, 12, 3, 6, '#c9ced5'); var t = P3(e.r.x + 12, e.r.y + 12, 6); T(grp, t[0], t[1] - 1, '+', { 'text-anchor': 'middle', 'font-size': 8, fill: '#5d646d', 'font-weight': 700 }); T(grp, t[0], t[1] + 6, 'CR2032', { 'text-anchor': 'middle', 'font-size': 4.4, fill: '#5d646d', 'font-weight': 700 }); return; }
+    if (e.cap){ var cc = cyl(grp, e.r.x + 3.5, e.r.y + 3.5, 3.5, 3, 11, '#2a2e35'); S_('path', { d: 'M' + (+cc.getAttribute('cx') - 2) + ',' + cc.getAttribute('cy') + ' h4 M' + cc.getAttribute('cx') + ',' + (+cc.getAttribute('cy') - 2) + ' v4', stroke: '#8d96a0', 'stroke-width': 0.8 }, grp); return; }
     box(grp, e.r, 3, e.z, e.col, { rx: 1.5 });
     if (e.deco) e.deco(fG(grp, e.z), e.r);
   });
@@ -735,20 +747,27 @@ function drawRAM(p, K, i, defId){
   }
 }
 function drawSSD(p, K){
-  var m = K.g.m2, P = K.p, r = { x: m.x + 3, y: m.y - 1, w: m.w - 2, h: m.h + 2 };
-  box(p, r, 7, 10, P.ssd, { stroke: '#000' });
-  var f = fG(p, 10);
+  var m = K.g.m2, r = { x: m.x + 5, y: m.y + 1, w: m.w - 6, h: m.h - 2 };
+  box(p, r, 6, 8, '#1b1e23', { stroke: '#000', bottom: '#0b0d10' });
   if (K.key === 'A'){
-    R(f, { x: r.x + 22, y: r.y + 2, w: 26, h: r.h - 4 }, { rx: 1, fill: '#2b2f36' });
-    R(f, { x: r.x + 56, y: r.y + 2, w: 26, h: r.h - 4 }, { rx: 1, fill: '#2b2f36' });
-    R(f, { x: r.x + 90, y: r.y + 2, w: 40, h: r.h - 4 }, { rx: 1, fill: P.acc });
-    T(f, r.x + 110, r.y + r.h - 3.5, 'NVMe', { 'text-anchor': 'middle', 'font-size': 7, 'font-weight': 800, fill: '#fff' });
+    box(p, { x: r.x + 8, y: r.y + 3, w: 14, h: 14 }, 8, 9.5, '#30343b', { stroke: '#4a5058' });
+    box(p, { x: r.x + 26, y: r.y + 4, w: 7, h: 12 }, 8, 9.2, '#30343b', { stroke: '#4a5058' });
+    box(p, { x: r.x + 37, y: r.y + 2, w: 19, h: 16 }, 8, 9.5, '#2a2e35', { stroke: '#4a5058' });
+    box(p, { x: r.x + 59, y: r.y + 2, w: 19, h: 16 }, 8, 9.5, '#2a2e35', { stroke: '#4a5058' });
+    var f = fG(p, 9.5);
+    T(f, r.x + 15, r.y + 11.5, 'CTRL', { 'text-anchor': 'middle', 'font-size': 3.6, fill: '#8a919a', 'font-weight': 700 });
+    T(f, r.x + 46.5, r.y + 11.5, 'NAND', { 'text-anchor': 'middle', 'font-size': 4.2, fill: '#8a919a', 'font-weight': 700 });
+    T(f, r.x + 68.5, r.y + 11.5, 'NAND', { 'text-anchor': 'middle', 'font-size': 4.2, fill: '#8a919a', 'font-weight': 700 });
   } else {
-    var hs = { x: r.x + 10, y: r.y - 1, w: r.w - 16, h: r.h + 2 };
-    box(p, hs, 10, 17, '#9aa3ad', { stroke: '#6f7882', rx: 2 });
-    var f2 = fG(p, 17); for (var x = hs.x + 6; x < hs.x + hs.w - 4; x += 7) S_('line', { x1: x, y1: hs.y + 2, x2: x, y2: hs.y + hs.h - 2, stroke: '#c9d0d8', 'stroke-width': 2 }, f2);
+    var f2 = fG(p, 8.4);
+    R(f2, { x: r.x + 4, y: r.y + 1.5, w: r.w - 12, h: r.h - 3 }, { rx: 1, fill: '#f6f8fa', stroke: '#c3cad3', 'stroke-width': 0.5 });
+    R(f2, { x: r.x + 4, y: r.y + 1.5, w: 10, h: r.h - 3 }, { rx: 1, fill: '#14958a' });
+    T(f2, r.x + 17, r.y + 10, 'NVMe SSD', { 'font-size': 6.5, 'font-weight': 900, fill: '#14958a' });
+    T(f2, r.x + 17, r.y + 16, '1 TB · M.2 2280', { 'font-size': 3.8, fill: '#3a3f48' });
   }
-  cyl(p, m.x + m.w - 3, m.y + m.h / 2, 3, 7, 11, '#cfd4da');
+  cyl(p, m.x + m.w - 3, m.y + m.h / 2, 3.2, 6, 10, '#cfd4da');
+  var sc = P3(m.x + m.w - 3, m.y + m.h / 2, 10);
+  S_('line', { x1: sc[0] - 2, y1: sc[1], x2: sc[0] + 2, y2: sc[1], stroke: '#6c737c', 'stroke-width': 0.9 }, p);
 }
 function drawCooler(p, K, defId){
   var P = K.p, g = K.g;
@@ -933,84 +952,367 @@ function hotRects(K){
   ];
 }
 
-/* Helfer für Symbolbilder */
-/* ---------- Kleine Symbolbilder für Teilekarten und Bildfragen ---------- */
-function icon(kind, key){
-  var P = PAL[key || 'A'];
-  var svg = S_('svg', { viewBox: '0 0 120 90', 'aria-hidden': 'true' });
-  var id = makeDefs(svg), B = key === 'B';
-  function rr(x, y, w, h, a){ return R(svg, { x: x, y: y, w: w, h: h }, a); }
-  switch (kind){
-    case 'psu': case 'psuWeak':
-      rr(12, 18, 96, 58, { rx: 6, fill: P.psu, stroke: B ? '#9aa4b0' : '#000', 'stroke-width': 2 });
-      S_('circle', { cx: 48, cy: 47, r: 22, fill: 'none', stroke: P.psuTxt, 'stroke-width': 2 }, svg);
-      for (var i = -2; i <= 2; i++) S_('line', { x1: 28, y1: 47 + i * 8, x2: 68, y2: 47 + i * 8, stroke: P.psuTxt, 'stroke-width': 1.5 }, svg);
-      for (var j = 0; j < 3; j++) rr(84, 26 + j * 15, 16, 10, { rx: 2, fill: '#0e1013' });
-      if (kind === 'psuWeak') T(svg, 92, 82, '400W', { 'text-anchor': 'middle', 'font-size': 9, 'font-weight': 800, fill: '#d64545' });
-      break;
-    case 'board':
-      rr(14, 6, 92, 80, { rx: 4, fill: P.pcb, stroke: P.pcbLine, 'stroke-width': 2 });
-      rr(44, 18, 22, 22, { fill: '#3b3220', stroke: P.heat2 }); for (var d = 0; d < 4; d++) rr(74 + d * 6, 12, 4, 44, { fill: P.slot, stroke: P.slotEdge, 'stroke-width': .6 });
-      rr(24, 62, 64, 4, { fill: P.slot, stroke: P.slotEdge, 'stroke-width': .6 }); rr(80, 70, 18, 12, { rx: 2, fill: P.heat }); rr(16, 12, 10, 34, { fill: P.heat });
-      break;
-    case 'cpu':
-      rr(30, 15, 60, 60, { rx: 4, fill: '#2e6b3a' }); rr(34, 19, 52, 52, { rx: 5, fill: '#c5cad1', stroke: '#8d949d', 'stroke-width': 1.5 });
-      T(svg, 60, 50, 'CPU', { 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: '#5a6270' }); S_('path', { d: 'M36,69 l9,0 l-9,-9 Z', fill: '#c9a943' }, svg);
-      break;
-    case 'ram': case 'ram4': case 'sodimm':
-      var w = kind === 'sodimm' ? 70 : 104, x0 = (120 - w) / 2;
-      rr(x0, 28, w, 30, { rx: 2, fill: '#2e6b3a' });
-      if (kind === 'ram' && B) rr(x0, 22, w, 32, { rx: 3, fill: P.ram, stroke: '#aeb6c1' }), rr(x0, 20, w, 4, { fill: 'url(#' + id + 'rgb)' });
-      else if (kind === 'ram') rr(x0, 22, w, 32, { rx: 3, fill: P.acc, stroke: '#111' });
-      else for (var c = 0; c < (kind === 'sodimm' ? 4 : 8); c++) rr(x0 + 5 + c * 12, 33, 9, 14, { fill: '#15171b' });
-      for (var k = 0; k < w - 6; k += 3) rr(x0 + 3 + k, 58, 1.6, 6, { fill: '#c9a943' });
-      var notch = kind === 'ram4' ? x0 + w * 0.42 : kind === 'sodimm' ? x0 + w * 0.42 : x0 + w * 0.5;
-      S_('rect', { x: notch - 2, y: 58, width: 4, height: 7, style: 'fill:var(--card2)' }, svg);
-      T(svg, 60, 80, kind === 'ram4' ? 'DDR4' : kind === 'sodimm' ? 'SO-DIMM' : 'DDR5', { 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 800, style: 'fill:var(--muted)' });
-      break;
-    case 'cooler':
-      rr(26, 14, 56, 64, { rx: 3, fill: P.cooler, stroke: '#6f7882' }); for (var y = 18; y < 76; y += 4) S_('line', { x1: 28, y1: y, x2: 80, y2: y, stroke: P.fin }, svg);
-      rr(82, 18, 14, 56, { rx: 3, fill: P.fan, stroke: '#000' }); for (var h2 = 0; h2 < 3; h2++) S_('path', { d: 'M' + (38 + h2 * 14) + ',76 V10', stroke: '#c48a4a', 'stroke-width': 3, 'stroke-linecap': 'round' }, svg);
-      break;
-    case 'aio':
-      S_('path', { d: 'M48,52 C48,30 60,20 70,16 M64,52 C66,34 80,24 90,16', stroke: '#16181c', 'stroke-width': 6, fill: 'none', 'stroke-linecap': 'round' }, svg);
-      rr(20, 6, 92, 14, { rx: 3, fill: P.cooler || '#1e2026' }); for (var x = 24; x < 108; x += 4) S_('line', { x1: x, y1: 10, x2: x, y2: 18, stroke: '#3a3d45' }, svg);
-      rr(36, 48, 40, 36, { rx: 10, fill: '#1e2026' }); S_('circle', { cx: 56, cy: 66, r: 12, fill: 'none', stroke: 'url(#' + id + 'rgb)', 'stroke-width': 3.5 }, svg);
-      break;
-    case 'ssd': case 'm2sata':
-      rr(6, 34, 108, 22, { rx: 2, fill: P.ssd }); rr(8, 36, 6, 18, { fill: '#c9a943' }); rr(24, 38, 22, 14, { fill: '#2b2f36' }); rr(52, 38, 22, 14, { fill: '#2b2f36' }); rr(80, 37, 28, 16, { rx: 2, fill: B ? '#14958a' : '#e8862a' });
-      S_('circle', { cx: 110, cy: 45, r: 3, fill: '#cfd4da' }, svg);
-      T(svg, 60, 76, 'M.2 2280', { 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 800, style: 'fill:var(--muted)' });
-      break;
-    case 'ssd25':
-      rr(26, 12, 68, 66, { rx: 5, fill: B ? '#dfe4ea' : '#3a3f48', stroke: '#6c737c', 'stroke-width': 1.5 }); rr(36, 26, 48, 22, { rx: 3, fill: B ? '#14958a' : '#e8862a' });
-      T(svg, 60, 66, '2,5″ SATA', { 'text-anchor': 'middle', 'font-size': 9, 'font-weight': 800, fill: B ? '#3a3f48' : '#e6ebf2' }); rr(30, 76, 26, 6, { fill: '#c9a943' });
-      break;
-    case 'hdd':
-      rr(18, 10, 84, 72, { rx: 5, fill: '#8f98a3', stroke: '#5d646d', 'stroke-width': 1.5 }); S_('circle', { cx: 56, cy: 42, r: 24, fill: '#b9c0c8', stroke: '#6c737c' }, svg); S_('circle', { cx: 56, cy: 42, r: 5, fill: '#6c737c' }, svg);
-      S_('path', { d: 'M92,70 L64,46', stroke: '#2a2d33', 'stroke-width': 4, 'stroke-linecap': 'round' }, svg); T(svg, 60, 88, '3,5″ HDD', { 'text-anchor': 'middle', 'font-size': 9, 'font-weight': 800, style: 'fill:var(--muted)' });
-      break;
-    case 'gpu': case 'gpuLong': case 'gpuHungry':
-      rr(8, 26, 8, 48, { fill: '#c3c9d0' }); rr(16, 70, 60, 6, { fill: '#c9a943' });
-      if (B){ rr(16, 22, 98, 48, { rx: 6, fill: P.gpu, stroke: P.gpuEdge, 'stroke-width': 1.5 }); for (var s2 = 0; s2 < 4; s2++) S_('line', { x1: 24 + s2 * 14, y1: 62, x2: 34 + s2 * 14, y2: 30, stroke: '#d5dbe2', 'stroke-width': 4 }, svg); S_('circle', { cx: 92, cy: 46, r: 17, fill: '#c7ced6' }, svg); fanBlades(svg, 92, 46, 15, '#8f98a4', '#e9edf1'); }
-      else { rr(16, 22, 98, 48, { rx: 7, fill: P.gpu, stroke: P.gpuEdge, 'stroke-width': 1.5 }); for (var f = 0; f < 3; f++){ S_('circle', { cx: 34 + f * 31, cy: 46, r: 14, fill: '#1a1d22' }, svg); fanBlades(svg, 34 + f * 31, 46, 12, '#4c5460', '#2b3039'); } }
-      break;
-    case 'fan':
-      rr(22, 8, 76, 76, { rx: 8, fill: P.fan, stroke: B ? '#9aa4b0' : '#000', 'stroke-width': 2 }); S_('circle', { cx: 60, cy: 46, r: 34, fill: B ? '#dfe4ea' : '#111' }, svg); fanBlades(svg, 60, 46, 31, P.fanBlade, P.fanHub);
-      break;
-    case 'plug24': case 'plug8': case 'plug16': case 'plugfp':
-      var cfg = { plug24: [12, 2, 58], plug8: [4, 2, 26], plug16: [8, 2, 40], plugfp: [5, 2, 30] }[kind];
-      var pw = cfg[2], px = (120 - pw) / 2;
-      for (var wv = 0; wv < 4; wv++) S_('path', { d: 'M' + (px + 6 + wv * (pw - 12) / 3) + ',90 C' + (px + 6 + wv * (pw - 12) / 3) + ',70 ' + (60) + ',70 ' + (px + 6 + wv * (pw - 12) / 3) + ',52', stroke: kind === 'plugfp' ? ['#d64545', '#111', '#2f7fd6', '#e8e8e8'][wv] : (B ? '#d7dce2' : '#15171b'), 'stroke-width': kind === 'plugfp' ? 2 : 5, fill: 'none' }, svg);
-      rr(px, 20, pw, 32, { rx: 3, fill: B ? '#f4f6f8' : '#0e1013', stroke: B ? '#9aa4b0' : '#555', 'stroke-width': 1.5 });
-      var cw = (pw - 6) / cfg[0];
-      for (var a = 0; a < cfg[0]; a++) for (var b = 0; b < cfg[1]; b++) rr(px + 3 + a * cw + 1, 24 + b * 13, cw - 2, 10, { rx: 1, fill: B ? '#c3cad3' : '#2a2d33' });
-      if (kind === 'plug16') for (var q = 0; q < 4; q++) rr(px + 6 + q * 8, 12, 5, 6, { fill: B ? '#c3cad3' : '#2a2d33' });
-      rr(px + pw / 2 - 6, 14, 12, 6, { rx: 1, fill: B ? '#c3cad3' : '#2a2d33' });
-      break;
+/* ================== Produktansichten der Bauteile (nah am Original) ==================
+   partSVG(kind, key, callouts) zeichnet ein Bauteil in viewBox 0 0 240 160.
+   Wird für Teilekiste, Ziehbild, Bildfragen und die Nahansicht (mit nummerierten Hinweisen) genutzt. */
+var PART_UID = 0;
+function partSVG(kind, key, withCallouts){
+  key = key || 'A';
+  var B = key === 'B', P = PAL[key];
+  var svg = S_('svg', { viewBox: '0 0 240 160', 'aria-hidden': 'true', 'class': 'partsvg' });
+  var id = 'pp' + (++PART_UID), defs = S_('defs', {}, svg);
+  function grad(name, stops, x2, y2){
+    var g = S_('linearGradient', { id: id + name, x1: 0, y1: 0, x2: x2 == null ? 0 : x2, y2: y2 == null ? 1 : y2 }, defs);
+    stops.forEach(function(s, i){ S_('stop', { offset: (i / (stops.length - 1)).toFixed(2), 'stop-color': s }, g); });
+  }
+  grad('alu', ['#eef1f4', '#c3cad2', '#9ea7b1']);
+  grad('aluH', ['#e3e7eb', '#aab2bb'], 1, 0);
+  grad('metD', ['#5a626c', '#2f343b']);
+  grad('gold', ['#f6dc8c', '#c99a2e']);
+  grad('pcbG', ['#2f7a4c', '#1d5233']);
+  grad('pcbK', ['#2c3036', '#15171b']);
+  grad('plK', ['#3d424a', '#1b1e23']);
+  grad('plW', ['#ffffff', '#dfe4ea']);
+  grad('cu', ['#f0b27a', '#b56a2c'], 1, 0);
+  grad('rgb', ['#ff5fa2', '#8e5bd6', '#2f9ee0', '#2fd0a0', '#ffd166'], 1, 0);
+  grad('glass', ['rgba(190,215,255,.55)', 'rgba(190,215,255,.18)', 'rgba(190,215,255,.45)'], 1, 1);
+  function u(n){ return 'url(#' + id + n + ')'; }
+  var C = { u: u, B: B, P: P, key: key };
+  S_('ellipse', { cx: 120, cy: 152, rx: 92, ry: 5, fill: 'rgba(20,30,50,.12)' }, svg);
+  var g = G(svg, {});
+  (PARTS[kind] || PARTS.ssd)(g, C);
+  if (withCallouts && CALLOUTS[kind]){
+    CALLOUTS[kind].forEach(function(c, i){
+      var m = G(svg, { 'class': 'callout' });
+      S_('circle', { cx: c[0], cy: c[1], r: 7.5, fill: '#2f6fde', stroke: '#fff', 'stroke-width': 1.8 }, m);
+      T(m, c[0], c[1] + 3, String(i + 1), { 'text-anchor': 'middle', 'font-size': 8.5, 'font-weight': 800, fill: '#fff' });
+    });
   }
   return svg;
 }
+function icon(kind, key){ return partSVG(kind, key, false); }
+function partFigure(kind, key){
+  var wrap = H('div', 'figure');
+  wrap.appendChild(partSVG(kind, key, true));
+  var cl = CALLOUTS[kind] || [];
+  if (cl.length) wrap.appendChild(H('ol', 'legend', cl.map(function(c){ return '<li><b>' + esc(c[2]) + '</b> – ' + esc(c[3]) + '</li>'; }).join('')));
+  return wrap;
+}
+
+/* ---------- kleine Zeichenhelfer ---------- */
+function rr_(p, x, y, w, h, a){ return R(p, { x: x, y: y, w: w, h: h }, a || {}); }
+function ln_(p, x1, y1, x2, y2, col, w, a){ a = a || {}; a.x1 = x1; a.y1 = y1; a.x2 = x2; a.y2 = y2; a.stroke = col; a['stroke-width'] = w || 1; return S_('line', a, p); }
+function tx_(p, x, y, s, size, col, a){ a = a || {}; a['font-size'] = size; a.fill = col; return T(p, x, y, s, a); }
+function goldFingers(p, x0, x1, y, h, step, skip, C){
+  for (var x = x0; x < x1; x += step){ if (skip && x > skip[0] - 1.5 && x < skip[1]) continue; rr_(p, x, y, step * 0.62, h, { fill: C.u('gold') }); }
+}
+function smd(p, pts, col){ pts.forEach(function(q){ rr_(p, q[0], q[1], q[2] || 3, q[3] || 1.8, { fill: col || '#b98c5a' }); }); }
+function fanFace(p, cx, cy, r, frame, blade, hub, C, sticker){
+  S_('circle', { cx: cx, cy: cy, r: r, fill: frame }, p);
+  S_('circle', { cx: cx, cy: cy, r: r * 0.93, fill: C.B ? '#c9d0d8' : '#0b0d10' }, p);
+  for (var i = 0; i < 7; i++){
+    var a = i * Math.PI * 2 / 7, b = a + 0.95;
+    var p0 = [cx + Math.cos(a) * r * 0.3, cy + Math.sin(a) * r * 0.3];
+    var p1 = [cx + Math.cos(b) * r * 0.9, cy + Math.sin(b) * r * 0.9];
+    var p2 = [cx + Math.cos(a + 0.42) * r * 0.9, cy + Math.sin(a + 0.42) * r * 0.9];
+    var c1 = [cx + Math.cos(a + 0.25) * r * 0.75, cy + Math.sin(a + 0.25) * r * 0.75];
+    S_('path', { d: 'M' + p0 + ' Q' + c1 + ' ' + p1 + ' A' + (r * 0.9) + ',' + (r * 0.9) + ' 0 0 0 ' + p2 + ' Q' + [cx + Math.cos(a + 0.1) * r * 0.55, cy + Math.sin(a + 0.1) * r * 0.55] + ' ' + p0 + 'Z', fill: blade, stroke: shade(blade, -0.25), 'stroke-width': 0.5 }, p);
+  }
+  S_('circle', { cx: cx, cy: cy, r: r * 0.3, fill: hub, stroke: shade(hub, -0.3), 'stroke-width': 0.6 }, p);
+  if (sticker) S_('circle', { cx: cx, cy: cy, r: r * 0.18, fill: sticker }, p);
+}
+function wires(p, x0, x1, yTop, yBot, n, col, conv){
+  for (var i = 0; i < n; i++){
+    var x = x0 + (x1 - x0) * (i + 0.5) / n, tx = conv[0] + (i - n / 2) * conv[2];
+    S_('path', { d: 'M' + x + ',' + yBot + ' C' + x + ',' + (yBot - 22) + ' ' + tx + ',' + (yTop + 26) + ' ' + tx + ',' + yTop, stroke: Array.isArray(col) ? col[i % col.length] : col, 'stroke-width': 2.6, fill: 'none', 'stroke-linecap': 'round' }, p);
+  }
+}
+
+/* ---------- Bauteile ---------- */
+var PARTS = {
+  ssd: function(g, C){
+    var pcb = 'M18,54 H222 V74 A6,6 0 0 0 222,86 V106 H18 V97 H26 V92 H18 Z';
+    S_('path', { d: pcb, fill: C.u('pcbK'), stroke: '#0a0b0d', 'stroke-width': 1 }, g);
+    for (var y = 57; y < 104; y += 3.1){ if (y > 89.5 && y < 98) continue; rr_(g, 18, y, 10, 1.9, { fill: C.u('gold') }); }
+    if (!C.B){
+      rr_(g, 40, 63, 32, 32, { rx: 1.5, fill: '#30343b', stroke: '#4a5058' }); rr_(g, 43, 66, 26, 26, { fill: 'none', stroke: '#3c4148', 'stroke-width': 0.6 });
+      tx_(g, 56, 80, 'CTRL', 5, '#8a919a', { 'text-anchor': 'middle', 'font-weight': 700 });
+      rr_(g, 78, 66, 16, 24, { rx: 1, fill: '#30343b', stroke: '#4a5058' }); tx_(g, 86, 80, 'DRAM', 3.6, '#8a919a', { 'text-anchor': 'middle' });
+      [102, 154].forEach(function(x){ rr_(g, x, 61, 46, 38, { rx: 1.5, fill: '#2a2e35', stroke: '#4a5058' }); tx_(g, x + 23, 82, 'NAND-FLASH', 4.5, '#8a919a', { 'text-anchor': 'middle', 'font-weight': 700 }); S_('circle', { cx: x + 4, cy: 65, r: 1.2, fill: '#5b626b' }, g); });
+      smd(g, [[34, 58], [34, 98], [74, 58], [74, 98], [96, 58], [98, 98], [148, 70, 2, 3], [148, 80, 2, 3], [148, 90, 2, 3], [202, 60, 2, 3], [206, 96]]);
+      tx_(g, 40, 104, 'M.2 2280 · NVMe · PCIe 4.0 x4 · 1 TB', 4.3, '#7b838c', { 'font-weight': 700 });
+    } else {
+      rr_(g, 34, 58, 180, 44, { rx: 2, fill: '#f6f8fa', stroke: '#c3cad3' });
+      rr_(g, 34, 58, 26, 44, { rx: 2, fill: '#14958a' });
+      tx_(g, 68, 76, 'NVMe SSD', 13, '#14958a', { 'font-weight': 900 });
+      tx_(g, 68, 88, '1 TB · PCIe 4.0 x4', 6.5, '#3a3f48', { 'font-weight': 700 });
+      tx_(g, 68, 97, 'M.2 2280', 6.5, '#3a3f48');
+      for (var b = 0; b < 22; b++) rr_(g, 168 + b * 1.7, 66, b % 3 ? 0.8 : 1.3, 24, { fill: '#2a2e35' });
+    }
+  },
+  ssd25: function(g, C){
+    rr_(g, 50, 18, 140, 112, { rx: 7, fill: C.B ? C.u('plW') : C.u('plK'), stroke: C.B ? '#b8c0c9' : '#0b0d10', 'stroke-width': 1.5 });
+    [[56, 24], [184, 24], [56, 124], [184, 124]].forEach(function(q){ S_('circle', { cx: q[0], cy: q[1], r: 2.4, fill: C.B ? '#c3cad3' : '#4a5058' }, g); });
+    rr_(g, 64, 32, 112, 64, { rx: 3, fill: C.B ? '#14958a' : '#e8862a' });
+    tx_(g, 120, 62, 'SSD', 20, '#fff', { 'text-anchor': 'middle', 'font-weight': 900 });
+    tx_(g, 120, 80, '2,5″ SATA · 1 TB', 8, '#fff', { 'text-anchor': 'middle', 'font-weight': 700 });
+    rr_(g, 70, 128, 22, 8, { rx: 1, fill: '#15171b' }); rr_(g, 98, 128, 52, 8, { rx: 1, fill: '#15171b' });
+    for (var x = 72; x < 90; x += 2.5) rr_(g, x, 130, 1.4, 4, { fill: C.u('gold') });
+    for (var x2 = 100; x2 < 148; x2 += 2.5) rr_(g, x2, 130, 1.4, 4, { fill: C.u('gold') });
+    tx_(g, 81, 146, 'Daten', 6, '#6b7588', { 'text-anchor': 'middle' }); tx_(g, 124, 146, 'Strom', 6, '#6b7588', { 'text-anchor': 'middle' });
+  },
+  hdd: function(g, C){
+    rr_(g, 44, 8, 152, 132, { rx: 8, fill: C.u('alu'), stroke: '#7c858f', 'stroke-width': 1.5 });
+    S_('circle', { cx: 120, cy: 58, r: 44, fill: 'none', stroke: '#9aa3ad', 'stroke-width': 2 }, g);
+    S_('circle', { cx: 120, cy: 58, r: 12, fill: '#c9d0d8', stroke: '#8d96a0' }, g);
+    S_('path', { d: 'M170,108 Q176,84 150,72', stroke: '#9aa3ad', 'stroke-width': 3, fill: 'none' }, g);
+    [[52, 16], [188, 16], [52, 132], [188, 132], [120, 16], [52, 74], [188, 74]].forEach(function(q){ S_('circle', { cx: q[0], cy: q[1], r: 2.6, fill: '#6c747d' }, g); });
+    rr_(g, 60, 106, 120, 28, { rx: 2, fill: '#fff', stroke: '#c3cad3' });
+    tx_(g, 66, 118, 'HDD 3,5″ · 4 TB', 8, '#1b2333', { 'font-weight': 800 });
+    tx_(g, 66, 128, '7.200 U/min · SATA 6 Gb/s', 6, '#4a5568');
+    rr_(g, 66, 142, 26, 6, { fill: '#15171b' }); rr_(g, 98, 142, 54, 6, { fill: '#15171b' });
+  },
+  ram: function(g, C){ ramStick(g, C, { notch: 116, kind: 'ddr5' }); },
+  ram4: function(g, C){ ramStick(g, C, { notch: 132, kind: 'ddr4' }); },
+  sodimm: function(g, C){ ramStick(g, C, { notch: 108, kind: 'so' }); },
+  cpu: function(g, C){ PARTS.cpuAM5(g, C); },
+  cpuAM5: function(g, C){
+    rr_(g, 70, 18, 100, 100, { rx: 3, fill: '#2e6b3a', stroke: '#1d4a27' });
+    rr_(g, 79, 27, 82, 82, { rx: 4, fill: C.u('alu'), stroke: '#8d96a0', 'stroke-width': 1.2 });
+    [[79, 40], [79, 78], [149, 40], [149, 78]].forEach(function(q){
+      rr_(g, q[0], q[1], 12, 18, { fill: '#2e6b3a' });
+      for (var k = 0; k < 3; k++) rr_(g, q[0] + 3 + (k % 2) * 4, q[1] + 3 + k * 5, 3, 2, { fill: '#c9a26a' });
+    });
+    tx_(g, 120, 62, 'CPU', 15, '#6d7580', { 'text-anchor': 'middle', 'font-weight': 900, 'letter-spacing': 2 });
+    tx_(g, 120, 74, '8 Kerne · 16 Threads', 5.5, '#6d7580', { 'text-anchor': 'middle' });
+    tx_(g, 120, 82, 'Sockel AM5', 5.5, '#6d7580', { 'text-anchor': 'middle' });
+    S_('path', { d: 'M72,116 l11,0 l-11,-11 Z', fill: C.u('gold') }, g);
+  },
+  cpuLGA: function(g, C){
+    rr_(g, 76, 12, 88, 112, { rx: 3, fill: '#2e6b3a', stroke: '#1d4a27' });
+    S_('circle', { cx: 76, cy: 40, r: 3, fill: '#eef2f8' }, g); S_('circle', { cx: 164, cy: 40, r: 3, fill: '#eef2f8' }, g);
+    rr_(g, 86, 24, 68, 88, { rx: 3, fill: C.u('alu'), stroke: '#8d96a0', 'stroke-width': 1.2 });
+    rr_(g, 82, 52, 4, 16, { fill: C.u('alu') }); rr_(g, 154, 52, 4, 16, { fill: C.u('alu') });
+    tx_(g, 120, 66, 'CPU', 15, '#6d7580', { 'text-anchor': 'middle', 'font-weight': 900, 'letter-spacing': 2 });
+    tx_(g, 120, 78, 'Sockel LGA', 5.5, '#6d7580', { 'text-anchor': 'middle' });
+    smd(g, [[90, 116], [100, 116], [134, 116], [144, 116]]);
+    S_('path', { d: 'M78,122 l11,0 l-11,-11 Z', fill: C.u('gold') }, g);
+  },
+  cpuPGA: function(g, C){
+    rr_(g, 70, 18, 100, 100, { rx: 3, fill: '#2e6b3a', stroke: '#1d4a27' });
+    for (var x = 75; x < 167; x += 3.6) for (var y = 23; y < 115; y += 3.6){ if (x > 104 && x < 136 && y > 52 && y < 84) continue; S_('circle', { cx: x, cy: y, r: 0.95, fill: '#d9b24a' }, g); }
+    smd(g, [[110, 58], [118, 58], [126, 58], [110, 66], [126, 66], [110, 74], [118, 74], [126, 74]]);
+    tx_(g, 120, 140, 'Unterseite: Pins an der CPU', 7, '#6b7588', { 'text-anchor': 'middle', 'font-weight': 700 });
+    S_('path', { d: 'M72,116 l11,0 l-11,-11 Z', fill: C.u('gold') }, g);
+  },
+  board: function(g, C){
+    var P = C.P, x0 = 25, y0 = 4;
+    rr_(g, x0, y0, 190, 152, { rx: 3, fill: P.pcb, stroke: shade(P.pcb, -0.5), 'stroke-width': 1.2 });
+    S_('path', { d: 'M40,150 h40 l10,-10 h30 M150,30 v40 l-6,6 v30 M60,90 h70', stroke: P.pcbLine, 'stroke-width': 1, fill: 'none' }, g);
+    [[29, 8], [118, 8], [211, 8], [29, 88], [118, 88], [211, 88], [29, 152], [118, 152], [211, 152]].forEach(function(q){ S_('circle', { cx: q[0], cy: q[1], r: 2.6, fill: '#cfb262', stroke: '#7b6626', 'stroke-width': 0.6 }, g); });
+    rr_(g, 27, 12, 26, 60, { rx: 2, fill: C.u('metD'), stroke: '#15171b' }); ln_(g, 31, 22, 49, 58, C.B ? '#14958a' : '#e8862a', 2);
+    rr_(g, 56, 6, 14, 7, { fill: '#111317' }); for (var e = 0; e < 4; e++) rr_(g, 57.5 + e * 3.2, 7.5, 2, 1.6, { fill: '#c9b26b' }), rr_(g, 57.5 + e * 3.2, 10.2, 2, 1.6, { fill: '#c9b26b' });
+    rr_(g, 72, 8, 66, 14, { rx: 2, fill: C.u('alu'), stroke: '#7c858f' }); for (var f = 76; f < 136; f += 4) ln_(g, f, 10, f, 20, '#9aa3ad', 1.2);
+    rr_(g, 56, 24, 13, 54, { rx: 2, fill: C.u('alu'), stroke: '#7c858f' }); for (var f2 = 28; f2 < 76; f2 += 4) ln_(g, 58, f2, 67, f2, '#9aa3ad', 1.2);
+    for (var c = 0; c < 8; c++) rr_(g, 74 + c * 8, 24, 6, 5, { rx: 0.8, fill: '#5d646d' });
+    rr_(g, 76, 32, 50, 50, { rx: 2, fill: C.u('alu'), stroke: '#7c858f' });
+    rr_(g, 82, 38, 38, 38, { fill: '#3b3220' });
+    for (var px = 84; px < 119; px += 2.4) for (var py = 40; py < 75; py += 2.4) S_('circle', { cx: px, cy: py, r: 0.5, fill: '#b8943e' }, g);
+    S_('path', { d: 'M82,76 l7,0 l-7,-7 Z', fill: '#ffd166' }, g);
+    ln_(g, 130, 32, 130, 84, '#c9ced5', 2.4, { 'stroke-linecap': 'round' }); ln_(g, 130, 84, 124, 84, '#c9ced5', 2.4, { 'stroke-linecap': 'round' });
+    [[70, 28], [132, 28], [70, 86], [132, 86]].forEach(function(q){ S_('circle', { cx: q[0], cy: q[1], r: 2.2, fill: '#0b0d10', stroke: '#8d96a0', 'stroke-width': 0.6 }, g); });
+    rr_(g, 134, 6, 9, 4, { fill: '#eef1f4' });
+    [0, 1, 2, 3].forEach(function(i){ var x = 147 + i * 7; rr_(g, x, 18, 4.5, 86, { fill: i % 2 ? '#8d96a0' : '#15171b', stroke: '#0b0d10', 'stroke-width': 0.5 }); rr_(g, x - 0.5, 14, 5.5, 4, { fill: '#c9ced5' }); rr_(g, x - 0.5, 104, 5.5, 4, { fill: '#c9ced5' }); });
+    rr_(g, 204, 40, 8, 34, { fill: '#111317' }); for (var k = 0; k < 12; k++){ rr_(g, 205.3, 41.5 + k * 2.75, 2.2, 1.7, { fill: '#c9b26b' }); rr_(g, 208.6, 41.5 + k * 2.75, 2.2, 1.7, { fill: '#c9b26b' }); }
+    rr_(g, 34, 92, 136, 7, { rx: 1, fill: '#15171b', stroke: '#c9ced5', 'stroke-width': 1.2 }); rr_(g, 170, 90, 5, 11, { rx: 1, fill: '#8d96a0' });
+    rr_(g, 60, 106, 6, 10, { fill: '#15171b' }); rr_(g, 66, 107, 78, 8, { fill: 'none', stroke: '#9aa1ad', 'stroke-width': 0.6, 'stroke-dasharray': '2 1.5' }); S_('circle', { cx: 144, cy: 111, r: 2, fill: '#cfb262' }, g);
+    rr_(g, 34, 124, 92, 6, { rx: 1, fill: '#15171b' });
+    rr_(g, 150, 114, 44, 30, { rx: 4, fill: C.u('alu'), stroke: '#7c858f' }); ln_(g, 156, 120, 188, 138, C.B ? '#14958a' : '#e8862a', 2.2);
+    rr_(g, 202, 112, 9, 10, { fill: '#1d2a4a' }); rr_(g, 202, 124, 9, 10, { fill: '#1d2a4a' });
+    S_('circle', { cx: 80, cy: 142, r: 7, fill: C.u('alu'), stroke: '#8d96a0' }, g); tx_(g, 80, 144.5, '+', 7, '#5d646d', { 'text-anchor': 'middle', 'font-weight': 800 });
+    rr_(g, 98, 138, 10, 7, { fill: '#15171b' });
+    [[34, 138], [40, 144], [46, 138], [34, 148]].forEach(function(q){ S_('circle', { cx: q[0], cy: q[1], r: 2.4, fill: '#d9b24a', stroke: '#8a6d1d', 'stroke-width': 0.5 }, g); });
+    rr_(g, 170, 146, 20, 6, { fill: '#111317' });
+  },
+  gpu: function(g, C){ gpuCard(g, C, 222, 1, 0); },
+  gpuLong: function(g, C){ gpuCard(g, C, 236, 1, 0); },
+  gpuHungry: function(g, C){ gpuCard(g, C, 226, 2, 10); },
+  psu: function(g, C){ psuBox(g, C, false); },
+  psuWeak: function(g, C){ psuBox(g, C, true); },
+  cooler: function(g, C){
+    var top = G(g, { transform: 'matrix(1,0,0.55,-0.35,92,30)' });
+    rr_(top, 0, 0, 80, 60, { fill: C.u('aluH'), stroke: '#7c858f', 'stroke-width': 1 });
+    [12, 30, 48, 66].forEach(function(x){ S_('circle', { cx: x, cy: 30, r: 5, fill: C.u('cu'), stroke: '#8a5a2a' }, top); S_('circle', { cx: x, cy: 30, r: 2.4, fill: '#7a4a1f' }, top); });
+    var side = G(g, { transform: 'matrix(0.55,-0.35,0,1,172,30)' });
+    rr_(side, 0, 0, 60, 106, { fill: '#a7b0ba', stroke: '#7c858f' });
+    for (var y = 3; y < 106; y += 2.6) ln_(side, 0, y, 60, y, '#7e8892', 0.8);
+    rr_(g, 92, 30, 80, 106, { fill: '#b9c0c8', stroke: '#7c858f' });
+    for (var y2 = 33; y2 < 136; y2 += 2.6) ln_(g, 92, y2, 172, y2, '#8f98a2', 0.7);
+    rr_(g, 70, 30, 104, 104, { rx: 9, fill: C.u('plK'), stroke: '#0b0d10' });
+    [[76, 36], [168, 36], [76, 128], [168, 128]].forEach(function(q){ S_('circle', { cx: q[0], cy: q[1], r: 2.6, fill: '#5b626b' }, g); });
+    fanFace(g, 122, 82, 48, '#1b1e23', '#5b636e', '#2b3039', C, '#e8862a');
+    [102, 114, 126, 138].forEach(function(x){ ln_(g, x, 136, x, 144, C.u('cu'), 4.5, { 'stroke-linecap': 'round' }); });
+    rr_(g, 96, 142, 48, 9, { rx: 2, fill: C.u('cu'), stroke: '#8a5a2a' });
+    rr_(g, 72, 144, 96, 4, { rx: 2, fill: '#8d96a0' }); S_('circle', { cx: 76, cy: 146, r: 3, fill: '#c9ced5' }, g); S_('circle', { cx: 164, cy: 146, r: 3, fill: '#c9ced5' }, g);
+  },
+  aio: function(g, C){
+    var fr = C.B ? '#e9edf1' : '#1b1e23', bl = C.B ? '#b4bcc6' : '#5b636e', hb = C.B ? '#f4f6f8' : '#2b3039';
+    rr_(g, 16, 10, 208, 54, { rx: 4, fill: '#24272d', stroke: '#0b0d10' });
+    for (var x = 20; x < 220; x += 3) ln_(g, x, 13, x, 61, '#3a3e45', 1);
+    rr_(g, 14, 8, 10, 58, { rx: 2, fill: '#2f333a' }); rr_(g, 216, 8, 10, 58, { rx: 2, fill: '#2f333a' });
+    [70, 170].forEach(function(cx){ rr_(g, cx - 28, 9, 56, 56, { rx: 6, fill: fr }); fanFace(g, cx, 37, 25, fr, bl, hb, C); });
+    ['M206,64 C206,96 172,104 150,112', 'M196,64 C196,88 168,94 148,100'].forEach(function(d){ S_('path', { d: d, stroke: '#121418', 'stroke-width': 8, fill: 'none', 'stroke-linecap': 'round' }, g); S_('path', { d: d, stroke: '#3a3d45', 'stroke-width': 2, fill: 'none', 'stroke-dasharray': '3 3' }, g); });
+    rr_(g, 94, 92, 58, 58, { rx: 14, fill: C.u('plK'), stroke: '#0b0d10' });
+    S_('circle', { cx: 123, cy: 121, r: 20, fill: 'none', stroke: C.u('rgb'), 'stroke-width': 5 }, g);
+    tx_(g, 123, 125, 'AIO', 10, '#e6ebf2', { 'text-anchor': 'middle', 'font-weight': 900 });
+  },
+  fan: function(g, C){
+    var fr = C.B ? '#e9edf1' : '#1b1e23';
+    rr_(g, 62, 18, 116, 116, { rx: 14, fill: fr, stroke: C.B ? '#aeb6c1' : '#0b0d10', 'stroke-width': 1.5 });
+    [[73, 29], [167, 29], [73, 123], [167, 123]].forEach(function(q){ S_('circle', { cx: q[0], cy: q[1], r: 4.5, fill: C.B ? '#c3cad3' : '#3a3f47' }, g); });
+    fanFace(g, 120, 76, 54, fr, C.B ? '#b4bcc6' : '#5b636e', C.B ? '#f4f6f8' : '#2b3039', C, C.B ? '#14958a' : '#e8862a');
+    S_('path', { d: 'M170,128 C186,140 196,136 204,146', stroke: '#15171b', 'stroke-width': 2.5, fill: 'none' }, g);
+    rr_(g, 198, 142, 18, 9, { rx: 1.5, fill: '#15171b' }); for (var i = 0; i < 4; i++) rr_(g, 200.5 + i * 3.6, 145, 2, 3, { fill: '#c9b26b' });
+  },
+  plug24: function(g, C){ plug(g, C, 12, 2, 128, '24-PIN ATX'); },
+  plug8: function(g, C){ plug(g, C, 4, 2, 44, 'EPS 4+4', true); },
+  plug16: function(g, C){ plug(g, C, 6, 2, 96, '12V-2x6', false, true); },
+  plugfp: function(g, C){
+    var labels = [['POWER SW', '#d64545'], ['RESET SW', '#2f7fd6'], ['POWER LED', '#2f9e5b'], ['HDD LED', '#e8862a']];
+    labels.forEach(function(l, i){
+      var x = 34 + i * 46;
+      S_('path', { d: 'M' + (x + 8) + ',96 C' + (x + 8) + ',60 120,40 ' + (112 + i * 4) + ',6', stroke: l[1], 'stroke-width': 2.4, fill: 'none' }, g);
+      S_('path', { d: 'M' + (x + 16) + ',96 C' + (x + 16) + ',62 124,44 ' + (116 + i * 4) + ',6', stroke: i < 2 ? '#e8e8e8' : '#15171b', 'stroke-width': 2.4, fill: 'none' }, g);
+      rr_(g, x, 96, 24, 26, { rx: 2, fill: '#15171b', stroke: '#3a3f47' });
+      rr_(g, x + 4, 112, 6, 6, { fill: '#0b0d10' }); rr_(g, x + 14, 112, 6, 6, { fill: '#0b0d10' });
+      tx_(g, x + 12, 106, l[0].split(' ')[0], 5, '#e6ebf2', { 'text-anchor': 'middle', 'font-weight': 800 });
+      tx_(g, x + 12, 134, l[0], 6, '#4a5568', { 'text-anchor': 'middle', 'font-weight': 700 });
+    });
+  },
+  cables: function(g, C){
+    var a = G(g, { transform: 'translate(-8,24) scale(0.52)' }); PARTS.plug24(a, C);
+    var b = G(g, { transform: 'translate(62,24) scale(0.52)' }); PARTS.plug8(b, C);
+    var c = G(g, { transform: 'translate(118,24) scale(0.52)' }); PARTS.plug16(c, C);
+  },
+  cord: function(g, C){
+    S_('path', { d: 'M74,104 C110,150 150,40 172,80', stroke: '#15171b', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round' }, g);
+    S_('circle', { cx: 56, cy: 84, r: 30, fill: C.u('plK'), stroke: '#0b0d10' }, g);
+    S_('circle', { cx: 56, cy: 84, r: 23, fill: '#2a2e35' }, g);
+    S_('circle', { cx: 46, cy: 84, r: 3.2, fill: C.u('alu') }, g); S_('circle', { cx: 66, cy: 84, r: 3.2, fill: C.u('alu') }, g);
+    rr_(g, 52, 59, 8, 5, { fill: C.u('alu') }); rr_(g, 52, 104, 8, 5, { fill: C.u('alu') });
+    S_('path', { d: 'M166,56 h54 v34 l-10,12 h-34 l-10,-12 Z', fill: C.u('plK'), stroke: '#0b0d10' }, g);
+    rr_(g, 176, 70, 4, 12, { fill: '#0b0d10' }); rr_(g, 206, 70, 4, 12, { fill: '#0b0d10' }); rr_(g, 191, 84, 4, 10, { fill: '#0b0d10' });
+    tx_(g, 56, 134, 'Schuko', 7, '#6b7588', { 'text-anchor': 'middle', 'font-weight': 700 });
+    tx_(g, 193, 118, 'C13', 7, '#6b7588', { 'text-anchor': 'middle', 'font-weight': 700 });
+  },
+  panel: function(g, C){
+    S_('path', { d: 'M40,30 L200,14 L200,146 L40,134 Z', fill: C.u('glass'), stroke: 'rgba(120,150,190,.9)', 'stroke-width': 3, 'stroke-linejoin': 'round' }, g);
+    S_('path', { d: 'M70,32 L50,80 M96,30 L60,120 M186,96 L160,140', stroke: 'rgba(255,255,255,.7)', 'stroke-width': 5, 'stroke-linecap': 'round' }, g);
+    [[48, 38], [192, 22], [48, 126], [192, 138]].forEach(function(q){ S_('circle', { cx: q[0], cy: q[1], r: 5.5, fill: C.u('alu'), stroke: '#6c737c' }, g); S_('circle', { cx: q[0], cy: q[1], r: 2, fill: '#8d96a0' }, g); });
+  }
+};
+function ramStick(g, C, o){
+  var so = o.kind === 'so', x0 = so ? 64 : 14, x1 = so ? 176 : 226, top = so ? 58 : 66, bot = 112;
+  var n = o.notch;
+  S_('path', { d: 'M' + x0 + ',' + top + ' H' + x1 + ' V' + (bot - 22) + ' A5,5 0 0 0 ' + x1 + ',' + (bot - 12) + ' V' + bot + ' H' + (n + 6) + ' V' + (bot - 8) + ' H' + n + ' V' + bot + ' H' + x0 + ' V' + (bot - 12) + ' A5,5 0 0 0 ' + x0 + ',' + (bot - 22) + ' Z', fill: C.u('pcbG'), stroke: '#164024', 'stroke-width': 0.8 }, g);
+  goldFingers(g, x0 + 4, x1 - 3, bot - 7, 7, 2.6, [n, n + 6], C);
+  if (o.kind === 'ddr5'){
+    var hs = 'M12,40 L30,30 H118 L126,24 H210 L228,34 V94 H12 Z';
+    S_('path', { d: hs, fill: C.B ? C.u('plW') : C.u('metD'), stroke: C.B ? '#b8c0c9' : '#15171b', 'stroke-width': 1 }, g);
+    if (!C.B){ S_('path', { d: 'M12,64 L228,50 V60 L12,74 Z', fill: '#e8862a' }, g); S_('path', { d: 'M12,40 L30,30 H118 L126,24 H210 L228,34', stroke: '#8a939e', 'stroke-width': 1.5, fill: 'none' }, g); }
+    else { S_('path', { d: 'M12,40 L30,30 H118 L126,24 H210 L228,34 V42 H12 Z', fill: C.u('rgb') }, g); }
+    rr_(g, 148, 66, 64, 20, { rx: 1.5, fill: '#fff', stroke: '#c3cad3', 'stroke-width': 0.6 });
+    tx_(g, 152, 75, 'DDR5-6000 · 16 GB', 6, '#1b2333', { 'font-weight': 800 }); tx_(g, 152, 82.5, 'CL30 · 1,35 V', 5, '#4a5568');
+  } else {
+    var nC = so ? 4 : 8, w = so ? 20 : 20;
+    for (var i = 0; i < nC; i++) rr_(g, x0 + 8 + i * (so ? 26 : 26), top + 8, w, 22, { rx: 1, fill: '#1d2026', stroke: '#33373e' });
+    rr_(g, x0 + 8, top + 34, so ? 70 : 90, 10, { rx: 1, fill: '#fff' });
+    tx_(g, x0 + 11, top + 41, so ? 'SO-DIMM DDR5-5600 16GB' : 'DDR4-3200 16GB 1,2 V', 5, '#1b2333', { 'font-weight': 800 });
+  }
+}
+function gpuCard(g, C, xe, nPow, thick){
+  var B = C.B, yT = 50 - thick, yB = 126;
+  rr_(g, 40, yB, 90, 9, { fill: C.u('pcbG') }); goldFingers(g, 42, 128, yB + 2, 7, 2.4, [58, 62], C);
+  S_('path', { d: 'M30,' + yT + ' L44,' + (yT - 16) + ' L' + (xe + 10) + ',' + (yT - 16) + ' L' + xe + ',' + yT + ' Z', fill: B ? '#dfe4ea' : '#2a2e35', stroke: B ? '#9aa4b0' : '#0b0d10' }, g);
+  S_('path', { d: 'M' + xe + ',' + yT + ' L' + (xe + 10) + ',' + (yT - 16) + ' L' + (xe + 10) + ',' + (yB - 16) + ' L' + xe + ',' + yB + ' Z', fill: '#4a5058', stroke: '#0b0d10' }, g);
+  for (var y = yT - 10; y < yB - 4; y += 3) ln_(g, xe + 2, y + 6, xe + 8, y, '#8d96a0', 0.8);
+  rr_(g, 30, yT, xe - 30, yB - yT, { rx: 3, fill: B ? C.u('plW') : C.u('plK'), stroke: B ? '#9aa4b0' : '#0b0d10' });
+  if (!B){
+    var span = xe - 30, r = Math.min((yB - yT) / 2 - 5, span / 6 - 4);
+    for (var i = 0; i < 3; i++) fanFace(g, 30 + span * (i + 0.5) / 3, (yT + yB) / 2, r, '#15171b', '#59626d', '#2b3039', C, '#e8862a');
+    ln_(g, 34, yB - 4, xe - 4, yB - 4, '#e8862a', 2.2);
+  } else {
+    for (var k = 0; k < 8; k++) ln_(g, 40 + k * 16, yB - 8, 52 + k * 16, yT + 8, '#cfd6de', 4);
+    rr_(g, 36, (yT + yB) / 2 - 2, 100, 4, { fill: '#14958a' });
+    fanFace(g, xe - 42, (yT + yB) / 2, (yB - yT) / 2 - 6, '#c7ced6', '#8f98a4', '#e9edf1', C, '#14958a');
+  }
+  tx_(g, 70, yT - 4, 'GPU', 9, B ? '#5a6270' : '#e8edf3', { 'font-weight': 900, 'letter-spacing': 2 });
+  for (var p = 0; p < nPow; p++){
+    var px = xe - 52 - p * 30;
+    S_('path', { d: 'M' + px + ',' + (yT - 3) + ' l6,-9 h22 l-6,9 Z', fill: '#111317', stroke: '#3a3f47' }, g);
+    for (var q = 0; q < 6; q++) rr_(g, px + 5 + q * 3.4, yT - 8, 1.8, 2.4, { fill: '#c9b26b' });
+  }
+  rr_(g, 16, yT - 14, 14, yB - yT + 22, { fill: C.u('alu'), stroke: '#7c858f' });
+  rr_(g, 12, yT - 16, 20, 5, { rx: 1, fill: C.u('alu'), stroke: '#7c858f' });
+  for (var d = 0; d < 4; d++) rr_(g, 19, yT - 4 + d * 15, 8, 10, { rx: 1.5, fill: '#15171b' });
+  for (var v = 0; v < 4; v++) rr_(g, 19, yT + 58 + v * 5, 8, 2.5, { rx: 1, fill: '#5b636d' });
+}
+function psuBox(g, C, weak){
+  var B = C.B, body = B ? '#eceff3' : '#24272d', dark = B ? '#cfd5dc' : '#15171b';
+  var top = G(g, { transform: 'matrix(1,0,0.5,-0.375,26,62)' });
+  rr_(top, 0, 0, 140, 80, { fill: shade(body, B ? -0.05 : 0.12), stroke: B ? '#9aa4b0' : '#0b0d10' });
+  S_('circle', { cx: 70, cy: 40, r: 36, fill: dark }, top);
+  for (var k = -32; k <= 32; k += 6.5) ln_(top, 70 - Math.sqrt(1296 - k * k), 40 + k, 70 + Math.sqrt(1296 - k * k), 40 + k, B ? '#aab3bd' : '#4a5058', 1.4);
+  ln_(top, 34, 40, 106, 40, B ? '#aab3bd' : '#4a5058', 1.4); ln_(top, 70, 4, 70, 76, B ? '#aab3bd' : '#4a5058', 1.4);
+  S_('circle', { cx: 70, cy: 40, r: 9, fill: B ? '#f4f6f8' : '#2b3039' }, top);
+  var side = G(g, { transform: 'matrix(0.5,-0.375,0,1,166,62)' });
+  rr_(side, 0, 0, 80, 80, { fill: shade(body, -0.15), stroke: B ? '#9aa4b0' : '#0b0d10' });
+  for (var hx = 6; hx < 74; hx += 7) for (var hy = 6; hy < 34; hy += 6) S_('circle', { cx: hx + ((hy / 6) % 2 ? 3.5 : 0), cy: hy, r: 2.3, fill: '#0b0d10' }, side);
+  rr_(side, 14, 44, 26, 26, { rx: 2, fill: '#0e1013' }); rr_(side, 18, 50, 18, 14, { fill: '#2a2e35' });
+  for (var pi = 0; pi < 3; pi++) rr_(side, 20 + pi * 6, 55, 2.4, 6, { fill: '#9aa1aa' });
+  rr_(side, 50, 46, 14, 22, { rx: 2, fill: '#0e1013' }); rr_(side, 53, 49, 8, 9, { fill: '#c0392b' });
+  rr_(g, 26, 62, 140, 80, { fill: body, stroke: B ? '#9aa4b0' : '#0b0d10' });
+  rr_(g, 36, 72, 104, 60, { rx: 2, fill: '#fff', stroke: '#c3cad3' });
+  tx_(g, 44, 92, (weak ? '400' : '750') + ' W', 16, '#1b2333', { 'font-weight': 900 });
+  tx_(g, 44, 102, 'ATX ' + (weak ? '2.2' : '3.1') + ' · ' + (weak ? 'nicht modular' : 'vollmodular'), 5.5, '#4a5568', { 'font-weight': 700 });
+  for (var r = 0; r < 3; r++) ln_(g, 44, 110 + r * 6, 100, 110 + r * 6, '#c3cad3', 0.8);
+  S_('circle', { cx: 120, cy: 106, r: 14, fill: weak ? '#b07a45' : C.u('gold'), stroke: weak ? '#7a4f26' : '#8a6d1d' }, g);
+  tx_(g, 120, 104, '80 PLUS', 4.6, '#fff', { 'text-anchor': 'middle', 'font-weight': 900 }); tx_(g, 120, 111, weak ? 'BRONZE' : 'GOLD', 4.6, '#fff', { 'text-anchor': 'middle', 'font-weight': 900 });
+  if (weak) for (var w = 0; w < 5; w++) S_('path', { d: 'M28,' + (80 + w * 8) + ' C10,' + (88 + w * 8) + ' 8,' + (120 + w * 6) + ' 2,' + (140 + w * 3), stroke: ['#15171b', '#e8c22a', '#d64545', '#15171b', '#2f7fd6'][w], 'stroke-width': 2.6, fill: 'none' }, g);
+}
+function plug(g, C, cols, rows, w, label, split, sense){
+  var B = C.B, body = B ? '#f4f6f8' : '#15171b', hole = B ? '#c3cad3' : '#2e3239', x0 = 120 - w / 2, y0 = 96, h = rows * 15 + 8;
+  wires(g, x0 + 4, x0 + w - 4, 6, y0, cols * rows > 16 ? 12 : cols * rows, B ? '#e1e5ea' : ['#15171b', '#e8c22a', '#15171b', '#d64545'], [120, 0, 2.2]);
+  if (!B) wires(g, x0 + 4, x0 + w - 4, 6, y0, cols * rows > 16 ? 12 : cols * rows, 'rgba(255,255,255,.07)', [120, 0, 2.2]);
+  if (sense){ rr_(g, x0 + w / 2 - 22, y0 - 10, 44, 10, { rx: 1.5, fill: body, stroke: B ? '#9aa4b0' : '#3a3f47' }); for (var s = 0; s < 4; s++) rr_(g, x0 + w / 2 - 18 + s * 10, y0 - 7, 6, 4, { fill: hole }); }
+  var parts = split ? [[x0 - 4, w / 2], [x0 + w / 2 + 4, w / 2]] : [[x0, w]];
+  parts.forEach(function(pt){
+    rr_(g, pt[0], y0, pt[1], h, { rx: 2.5, fill: body, stroke: B ? '#9aa4b0' : '#3a3f47', 'stroke-width': 1.2 });
+    var c = split ? cols / 2 : cols, cw = (pt[1] - 6) / c;
+    for (var i = 0; i < c; i++) for (var j = 0; j < rows; j++){
+      var hx = pt[0] + 3 + i * cw + 1, hy = y0 + 5 + j * 15, hw = cw - 2;
+      if ((i + j) % 2) S_('path', { d: 'M' + hx + ',' + (hy + 11) + ' v-7 a' + (hw / 2) + ',' + (hw / 2.6) + ' 0 0 1 ' + hw + ',0 v7 Z', fill: hole }, g);
+      else rr_(g, hx, hy, hw, 11, { rx: 1, fill: hole });
+    }
+    rr_(g, pt[0] + pt[1] / 2 - 6, y0 + h, 12, 7, { rx: 1.5, fill: body, stroke: B ? '#9aa4b0' : '#3a3f47' });
+  });
+  tx_(g, 120, y0 + h + 22, label, 8, '#6b7588', { 'text-anchor': 'middle', 'font-weight': 800 });
+}
+
+/* Nummerierte Hinweise: [x, y, Name, Erklärung] */
+var CALLOUTS = {
+  ssd: [[23, 66, 'Kontaktleiste mit Kerbe (Key M)', 'Steckt im M.2-Slot – die Kerbe verhindert falsches Einstecken.'], [44, 92, 'Controller', 'Steuert die SSD und „spricht“ per NVMe über PCIe mit der CPU.'], [86, 100, 'DRAM-Cache', 'Kleiner Zwischenspeicher für die Verwaltungsdaten.'], [150, 64, 'NAND-Flash', 'Die eigentlichen Speicherchips – Daten bleiben ohne Strom erhalten.'], [218, 80, 'Schraubenkerbe', 'Hier hält eine Schraube oder ein Clip die SSD am Mainboard.']],
+  ram: [[60, 50, 'Heatspreader', 'Kühlblech über den Speicherchips.'], [214, 64, 'Aufkleber', 'Typ, Takt (MT/s), Kapazität und Latenz (CL).'], [60, 108, 'Kontaktleiste', '288 Kontakte (DDR5-DIMM) – steckt im DIMM-Slot.'], [119, 99, 'Kerbe', 'Mechanische Codierung: DDR4 und DDR5 haben sie an anderer Stelle.'], [19, 95, 'Haltekerbe', 'Hier rasten die Clips des Slots ein.']],
+  cpu: [[120, 52, 'Heatspreader (IHS)', 'Metalldeckel – verteilt die Wärme der Chips, hier kommt die Wärmeleitpaste drauf.'], [85, 49, 'Trägerplatine', 'Verbindet die Chips mit den Kontakten an der Unterseite (Sockel AM5: LGA, Kontakte statt Pins).'], [76, 112, 'Dreieck-Markierung', 'Zeigt die Einbaulage im Sockel.']],
+  board: [[99, 57, 'CPU-Sockel', 'Hier sitzt der Prozessor.'], [158, 60, 'DIMM-Slots', 'Für die RAM-Module (A1, A2, B1, B2).'], [100, 95, 'PCIe-x16-Slot', 'Für die Grafikkarte, mit Metallverstärkung.'], [104, 111, 'M.2-Steckplatz', 'Für die NVMe-SSD.'], [172, 129, 'Chipsatz', 'Stellt zusätzliche Anschlüsse bereit (USB, SATA …).'], [104, 15, 'Spannungswandler (VRM)', 'Erzeugen die CPU-Spannung, unter Kühlkörpern.'], [208, 57, '24-Pin-ATX', 'Hauptstromanschluss vom Netzteil.'], [40, 42, 'Rear-I/O', 'Anschlüsse nach außen (USB, LAN, Audio).'], [80, 142, 'CMOS-Batterie', 'Hält Uhrzeit und Einstellungen.'], [206, 123, 'SATA', 'Für 2,5″/3,5″-Laufwerke.']],
+  gpu: [[126, 88, 'Lüfter', 'Blasen Luft durch den Kühlkörper – sie zeigen im PC nach unten.'], [23, 70, 'Slotblech mit Bildausgängen', 'Hier wird der Monitor angeschlossen (DisplayPort/HDMI).'], [86, 131, 'PCIe-Kontaktleiste', 'Steckt im PCIe-x16-Slot.'], [183, 40, '12V-2x6-Stromanschluss', 'Zusätzliche Stromversorgung vom Netzteil.'], [227, 80, 'Kühlkörper', 'Lamellen führen die Wärme der GPU ab.']],
+  psu: [[96, 37, 'Lüfter', 'Saugt Luft an – im Gehäuse meist nach unten zum Staubfilter.'], [70, 112, 'Typenschild', 'Leistung (W), Norm (ATX 3.1), Effizienz (80 PLUS).'], [180, 108, 'Kaltgerätebuchse', 'Hier kommt das 230-V-Netzkabel rein.'], [196, 98, 'Netzschalter', 'Trennt das Netzteil vom Netz (I/0).'], [195, 58, 'Lüftungsgitter', 'Warme Luft geht hinten aus dem Gehäuse.']],
+  cooler: [[122, 82, 'Lüfter', 'Drückt Luft durch die Lamellen.'], [196, 70, 'Lamellen', 'Viele dünne Bleche – große Oberfläche zur Wärmeabgabe.'], [130, 22, 'Heatpipes', 'Kupferrohre transportieren die Wärme von der CPU nach oben.'], [120, 146, 'Bodenplatte', 'Liegt auf der CPU – mit Wärmeleitpaste dazwischen.']],
+  fan: [[120, 76, 'Rotor', 'Sieben Blätter, angetrieben von einem kleinen Motor.'], [73, 29, 'Schraublöcher', '120 mm Lochabstand 105 mm – passt in jedes Gehäuse.'], [207, 136, '4-Pin-PWM-Stecker', 'Das Mainboard regelt darüber die Drehzahl.']],
+  cables: [[54, 84, '24-Pin-ATX-Stecker', 'Hauptversorgung des Mainboards.'], [124, 84, '8-Pin-EPS (4+4)', 'Versorgung der CPU.'], [180, 82, '12V-2x6 (16-Pin)', 'Versorgung der Grafikkarte, mit 4 kleinen Signal-Pins.']],
+  cord: [[56, 84, 'Schutzkontaktstecker', 'Geht in die Steckdose (230 V).'], [193, 76, 'Kaltgerätestecker C13', 'Kommt in die Buchse am Netzteil.']],
+  panel: [[120, 80, 'Glasscheibe', 'Gehärtetes Glas – schwer und zerbrechlich.'], [48, 38, 'Rändelschrauben', 'Lassen sich ohne Werkzeug lösen.']]
+};
 
 /* ================== ① Entdecken: PC zerlegen ================== */
 var EXP = { S: null, removed: [], sel: null, view: 'case', hotSel: null, busy: false };
@@ -1096,12 +1398,15 @@ function benchRender0(svg){
     T(g, lx, ly, HOT[id].n.split(' (')[0], { 'class': 'lbl', 'text-anchor': 'middle', style: 'font-size:7.5px;stroke-width:2.5px' });
   });
 }
+var EXP_KIND = { power: 'cord', panel: 'panel', fans: 'fan', cables: 'cables', gpu: 'gpu', ssd: 'ssd', cooler: 'cooler', ram: 'ram', cpu: 'cpu', psu: 'psu', board: 'board' };
 function infoCard(box, I, extra, mid){
   var h = '<h3><span class="dot" style="background:' + CAT[I.cat] + '"></span>' + esc(I.name) + '</h3>';
-  h += '<p class="lead">' + esc(I.lead) + '</p>' + (mid ? extra : '') + '<ul>' + I.facts.map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>';
+  h += '<p class="lead">' + esc(I.lead) + '</p>' + (mid ? extra : '') + '<div class="subh">🔍 Nahansicht</div><div class="figslot"></div><ul>' + I.facts.map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>';
   h += '<div>' + I.chips.map(function(c){ return '<span class="chip">' + esc(c) + '</span>'; }).join('') + '</div>';
   h += '<div class="good"><b>💡 Gut zu wissen</b>' + esc(I.good) + '</div>';
   box.innerHTML = (mid ? '' : (extra || '')) + h;
+  var k = Object.keys(INFO).filter(function(x){ return INFO[x] === I; })[0];
+  if (k && EXP_KIND[k]) $('.figslot', box).appendChild(partFigure(EXP_KIND[k], 'A'));
 }
 function expInfo(justRemoved){
   var box = $('#expInfo');
@@ -1155,6 +1460,7 @@ var CPUS = {
   LGA1851: { name: 'Intel Core Ultra 7 265K', specs: ['Sockel LGA1851', '20 Kerne (8P + 12E), bis 5,5 GHz', '125 W Basisleistung'] },
   LGA1700: { name: 'Intel Core i5-14600K', specs: ['Sockel LGA1700', '14 Kerne (6P + 8E), bis 5,3 GHz', '125 W Basisleistung'] }
 };
+var CPU_ICON = { AM5: 'cpuAM5', AM4: 'cpuPGA', LGA1851: 'cpuLGA', LGA1700: 'cpuLGA' };
 var REC2POW = { 550: 200, 650: 250, 750: 300, 850: 360, 1000: 450, 1200: 575 };
 function genKit(key){
   var sock = pick(['AM5', 'LGA1851']), chip = sock === 'AM5' ? 'B850' : 'B860';
@@ -1167,12 +1473,12 @@ function genKit(key){
     reason: 'Mit 400 W und ohne Grafikkarten-Stromstecker kann dieses Netzteil die Grafikkarte aus dem Auftrag nicht versorgen.' });
   add({ id: 'board', cat: 'board', ok: true, icon: 'board', name: (key === 'A' ? 'ATX' : 'Micro-ATX') + '-Mainboard ' + chip, specs: ['Sockel ' + sock, '4 × DDR5-DIMM, M.2, PCIe 5.0 x16'] });
   var wrong = sock === 'AM5' ? ['AM4', 'LGA1851'] : ['LGA1700', 'AM5'];
-  add({ id: 'cpu_ok', cat: 'cpu', ok: true, icon: 'cpu', name: CPUS[sock].name, specs: CPUS[sock].specs });
+  add({ id: 'cpu_ok', cat: 'cpu', ok: true, icon: CPU_ICON[sock], name: CPUS[sock].name, specs: CPUS[sock].specs });
   wrong.forEach(function(w, i){
     var why = (w === 'AM4') ? 'Sockel AM4 passt nicht in AM5 – AM4-CPUs haben sogar die Pins an der CPU, AM5 nutzt LGA.'
       : (w === 'LGA1700') ? 'LGA1700 ist der Vorgänger-Sockel: ähnlich groß, aber anders belegt und codiert – passt nicht in LGA1851.'
       : 'Sockel ' + w + ' gehört zu einem anderen Hersteller – passt nicht in ' + sock + '.';
-    add({ id: 'cpu_b' + i, cat: 'cpu', ok: false, icon: 'cpu', name: CPUS[w].name, specs: CPUS[w].specs, reason: why });
+    add({ id: 'cpu_b' + i, cat: 'cpu', ok: false, icon: CPU_ICON[w], name: CPUS[w].name, specs: CPUS[w].specs, reason: why });
   });
   add({ id: 'ram_ok', cat: 'ram', ok: true, icon: 'ram', n: 2, name: '2 × 16 GB DDR5-6000', specs: ['DIMM, 288-polig', 'Kit für Dual-Channel'] });
   add({ id: 'ram_b1', cat: 'ram', ok: false, icon: 'ram4', name: '2 × 16 GB DDR4-3200', specs: ['DIMM, 288-polig'], reason: 'DDR4 passt nicht in DDR5-Slots – die Kerbe sitzt an anderer Stelle (mechanische Codierung).' });
@@ -1291,7 +1597,7 @@ function renderParts(ctx){
   ctx.kit.items.forEach(function(it){
     if (ctx.stepCats && ctx.stepCats.indexOf(it.cat) < 0) return;
     var st = cardState(ctx, it);
-    var el = H('div', 'part' + (st === 'used' ? ' used' : st === 'rej' ? ' rej' : st === 'lock' ? ' lock' : '') + (ctx.sel === it.id ? ' sel' : ''));
+    var el = H('div', 'part' + (ctx.sel === it.id && st === 'free' ? ' big' : '') + (st === 'used' ? ' used' : st === 'rej' ? ' rej' : st === 'lock' ? ' lock' : '') + (ctx.sel === it.id ? ' sel' : ''));
     el.setAttribute('data-id', it.id);
     el.appendChild(icon(it.icon, ctx.key));
     var left = it.n ? (it.n - (it.cat === 'ram' ? ctx.ram : ctx.fans)) : 0;

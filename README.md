@@ -20,6 +20,8 @@ Die Inhalte sind auf Deutsch. Shell Yeah! und Get-Going! sind reine JavaScript-S
 
 **Fertiges ZIP laden:** Unter [Releases](../../releases) liegen die gebauten Pakete (`<name>_scorm12.zip`). Das ZIP in der Lernplattform als SCORM-1.2-Aktivität hochladen, fertig.
 
+**Immer aktuell einbinden:** Die Pakete der neuesten Version liegen zusätzlich unter festen Adressen ohne Weiterleitung, z. B. `https://dennismarcbusch.github.io/PING/plug-and-pray_scorm12.zip` (Übersicht: [dennismarcbusch.github.io/PING](https://dennismarcbusch.github.io/PING/)). In Moodle bzw. ByCS den Typ „Heruntergeladenes Paket“ wählen, diese Adresse eintragen und die automatische Aktualisierung einschalten.
+
 **Selbst bauen:** Voraussetzung sind `bash` und `zip`.
 
 ```bash
@@ -53,8 +55,8 @@ Fehler, Wünsche und Ideen gern als [Issue](../../issues). Ein neues Modul legst
 
 ## Veröffentlichen (Maintainer)
 
-- Tag `v1.0` setzen und pushen: Die GitHub Action baut alle Pakete und hängt die ZIPs an ein Release.
-- Tag `plug-and-pray-v1.1`: baut nur dieses Paket.
+- Tag `v1.0` setzen und pushen: Die GitHub Action baut alle Pakete, hängt die ZIPs an ein Release und stellt sie auf GitHub Pages (Voraussetzung: *Settings → Pages → Source: GitHub Actions*).
+- Tag `plug-and-pray-v1.1`: baut nur dieses Paket, nur als Release. Pages bleibt auf dem Stand des letzten `v*`-Tags.
 
 ## Lizenz
 

@@ -344,6 +344,7 @@ var INFO = {
     facts: ['24-Pin ATX: Hauptversorgung des Mainboards (12 V, 5 V, 3,3 V).',
       '8-Pin EPS12V (oft 4+4): Versorgung der CPU – sitzt oben links am Mainboard, nahe den Spannungswandlern.',
       '12V-2x6 (16-polig, ATX 3.1): versorgt moderne Grafikkarten mit bis zu 600 W. Ältere Karten nutzen 6+2-Pin-PCIe-Stecker (je bis 150 W).',
+      'SATA-Strom (15-polig) versorgt 2,5″-SSDs und Festplatten. Dazu gehört ein SATA-Datenkabel (7-polig) zum Mainboard.',
       'Die Front-Panel-Kabel verbinden Power-Taste, Reset und LEDs des Gehäuses mit dem Header F_PANEL.'],
     chips: ['24-Pin ATX', '8-Pin EPS', '12V-2x6', 'F_PANEL'],
     good: 'Stecker immer gerade und vollständig einstecken, bis die Rastnase einrastet. Ein halb steckender 12V-2x6-Stecker kann wegen der hohen Ströme überhitzen.',
@@ -422,7 +423,7 @@ var INFO = {
     row: ['Verbindet alle Komponenten, stellt Steckplätze bereit', 'Formfaktor (ATX/mATX/ITX), Sockel, Chipsatz', 'Sockel, Chipsatz, Anzahl Slots'] }
 };
 var EXP_ORDER = ['power', 'panel', 'fans', 'cables', 'gpu', 'ssd', 'sata', 'cooler', 'ram', 'cpu', 'psu', 'board'];
-var EXP_DEPS = { power: [], panel: ['power'], fans: ['panel'], cables: ['panel'], cooler: ['panel'], gpu: ['cables'], ssd: ['gpu'], ram: ['cooler'], cpu: ['cooler'], sata: ['panel'], psu: ['cables', 'sata'], board: ['gpu', 'ssd', 'sata', 'ram', 'cpu', 'cables'] };
+var EXP_DEPS = { power: [], panel: ['power'], fans: ['panel'], cables: ['panel'], cooler: ['panel'], gpu: ['cables'], ssd: ['gpu'], ram: ['cooler'], cpu: ['cooler'], sata: ['cables'], psu: ['cables'], board: ['gpu', 'ssd', 'ram', 'cpu', 'cables'] };
 var EXP_WHY = {
   panel: 'Erst den Strom trennen – das Netzkabel steckt noch!',
   fans: 'Das Seitenteil ist noch zu.', cables: 'Das Seitenteil ist noch zu.', cooler: 'Das Seitenteil ist noch zu.',
@@ -430,7 +431,8 @@ var EXP_WHY = {
   ssd: 'Der M.2-Slot liegt unter der Grafikkarte – die muss zuerst raus.',
   ram: 'Der große Tower-Kühler verdeckt den ersten RAM-Slot und die Clips.',
   cpu: 'Auf der CPU sitzt noch der Kühler.',
-  psu: 'Am Netzteil hängen noch Stromkabel (auch das SATA-Stromkabel der SSD).',
+  psu: 'Am Netzteil hängen noch die Stromkabel.',
+  sata: 'An der SSD stecken noch das SATA-Datenkabel und das SATA-Stromkabel.',
   board: 'Auf dem Mainboard steckt noch etwas.'
 };
 
@@ -508,7 +510,7 @@ var PAL = {
     slot: '#0e1116', slotEdge: '#5b6470', heat: '#59626d', heat2: '#8a939e', gpu: '#2b3039', gpuEdge: '#15181d', acc: '#e8862a',
     fanHub: '#1a1d22', fanBlade: '#58616d', ram: '#2a2e35', psu: '#202329', psuTxt: '#ffd166', cable: '#15171b', sleeve: '#4a505a',
     cpu: '#c5cad1', ssd: '#14171b', cooler: '#aab2bb', fin: '#7e8892', fan: '#1d2026', label: '#e8edf3', std: '#d2b55b' },
-  B: { caseO: '#e3e8ee', caseI: '#f4f6f9', edge: '#aab3bf', mesh: '#d5dbe3', shroud: '#e1e6ec', pcb: '#24242a', pcbLine: '#3a3a44', silk: '#9aa1ad',
+  B: { caseO: '#e3e8ee', caseI: '#dde3ea', edge: '#aab3bf', mesh: '#d5dbe3', shroud: '#e1e6ec', pcb: '#24242a', pcbLine: '#3a3a44', silk: '#9aa1ad',
     slot: '#4a4a54', slotEdge: '#8a8a96', heat: '#b9c0c8', heat2: '#dde2e8', gpu: '#eef1f5', gpuEdge: '#9aa4b0', acc: '#14958a',
     fanHub: '#d9dee5', fanBlade: '#aeb6c1', ram: '#eef1f4', psu: '#eceff3', psuTxt: '#14958a', cable: '#e8ebee', sleeve: '#c3cad3',
     cpu: '#c5cad1', ssd: '#24242a', cooler: '#1e2026', fin: '#3a3d45', fan: '#f1f3f6', label: '#1b2333', std: '#c9a943' }
@@ -1386,7 +1388,7 @@ function fullState(){
 }
 function expRemove(S, id){
   if (id === 'fans') S.fans = { fan_rear: null, fan_f1: null, fan_f2: null };
-  else if (id === 'cables') ['atx', 'eps', 'gpu', 'fp'].forEach(function(k){ S.plugs[k] = 0; });
+  else if (id === 'cables') ['atx', 'eps', 'gpu', 'fp', 'sdata', 'spwr'].forEach(function(k){ S.plugs[k] = 0; });
   else if (id === 'sata'){ S.sata = 0; S.plugs.sdata = 0; S.plugs.spwr = 0; }
   else if (id === 'ram') S.ram = [0, 0, 0, 0];
   else S[id] = 0;

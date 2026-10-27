@@ -1,5 +1,9 @@
 # PING – interaktive IT-Lernmodule als SCORM-Pakete
 
+> **Neu: Leitfaden für evidenzbasierte Lernpakete** – [docs/leitfaden-lernpakete.md](docs/leitfaden-lernpakete.md)
+>
+> Der Leitfaden hilft Lehrkräften, auch ohne Medienpädagogik- oder Programmierkenntnisse, Lernpakete wissenschaftlich fundiert und einheitlich zu bauen. Er fasst die Forschungslage zusammen (u. a. Kerres, Mayer, 4C/ID), leitet daraus 13 Prinzipien ab (Muss/Soll mit Aufwand), beschreibt Paketstruktur, Entwicklungsprozess und technische Standards (SCORM 1.2, ByCS) und enthält eine Qualitätscheckliste für das Review sowie einen Vorschlag für ein KI-gestütztes Skill-Set. Neue und überarbeitete Pakete werden gegen diese Checkliste geprüft.
+
 Fünf selbstgesteuerte Lernmodule für die Berufsschule (Fachinformatik, Einstiegsklasse). Jedes Modul läuft komplett im Browser, braucht keinen Server und lässt sich als SCORM-1.2-Paket in jede Lernplattform einbinden, z. B. Moodle, ILIAS oder die bayerische ByCS-Plattform.
 
 Alle Module folgen demselben didaktischen Muster aus Erkunden, Üben und einer Lernzielkontrolle. Bei Shell Yeah! und Get-Going! heißt das **① Tutorial → ② Üben → ③ Kompetenznachweis**. Die Kontrolle wird automatisch bewertet und ans LMS gemeldet (bei diesen beiden bestanden ab 70 %).
@@ -25,10 +29,6 @@ Alle Module folgen demselben didaktischen Muster aus Erkunden, Üben und einer L
 Weitere Bilder in den Steckbriefen der Module.
 
 Die Inhalte sind auf Deutsch. Shell Yeah! und Get-Going! sind reine JavaScript-Simulationen, es wird nichts auf Deinem Rechner ausgeführt. Die Ordner `packages/<name>/` enthalten jeweils einen Steckbrief mit Lernzielen, Aufbau und didaktischen Entscheidungen (bei Netzwerktopologien und Strukturierte Verkabelung steht er noch aus).
-
-## Leitfaden für neue Lernpakete
-
-Wie wir Pakete didaktisch begründet bauen (13 Prinzipien, Paketstruktur, Checkliste, Skill-Set-Vorschlag): [docs/leitfaden-lernpakete.md](docs/leitfaden-lernpakete.md). Neue Pakete und Überarbeitungen werden gegen die Checkliste in Teil C6 geprüft.
 
 ## Benutzen
 

@@ -1,5 +1,9 @@
 # PING – interaktive IT-Lernmodule als SCORM-Pakete
 
+> **Neu: Leitfaden für evidenzbasierte Lernpakete** – [docs/leitfaden-lernpakete.md](docs/leitfaden-lernpakete.md)
+>
+> Der Leitfaden hilft Lehrkräften, auch ohne Medienpädagogik- oder Programmierkenntnisse, Lernpakete wissenschaftlich fundiert und einheitlich zu bauen. Er fasst die Forschungslage zusammen (u. a. Kerres, Mayer, 4C/ID), leitet daraus 13 Prinzipien ab (Muss/Soll mit Aufwand), beschreibt Paketstruktur, Entwicklungsprozess und technische Standards (SCORM 1.2, ByCS) und enthält eine Qualitätscheckliste für das Review sowie einen Vorschlag für ein KI-gestütztes Skill-Set. Neue und überarbeitete Pakete werden gegen diese Checkliste geprüft.
+
 Fünf selbstgesteuerte Lernmodule für die Berufsschule (Fachinformatik, Einstiegsklasse). Jedes Modul läuft komplett im Browser, braucht keinen Server und lässt sich als SCORM-1.2-Paket in jede Lernplattform einbinden, z. B. Moodle, ILIAS oder die bayerische ByCS-Plattform.
 
 Alle Module folgen demselben didaktischen Muster aus Erkunden, Üben und einer Lernzielkontrolle. Bei Shell Yeah! und Get-Going! heißt das **① Tutorial → ② Üben → ③ Kompetenznachweis**. Die Kontrolle wird automatisch bewertet und ans LMS gemeldet (bei diesen beiden bestanden ab 70 %).

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lernpaket</title>
+<link rel="stylesheet" href="css/stil.css">
+</head>
+<body>
+<div class="app" id="app">
+  <header class="kopf card">
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 46 46" width="46" height="46"><rect width="46" height="46" rx="12" fill="var(--accent)"/><path d="M13 30 L23 14 L33 30 Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><circle cx="23" cy="25" r="3" fill="#ffd166"/></svg></div>
+    <div class="titel"><h1 id="titel"></h1><div class="unter" id="untertitel"></div></div>
+    <div class="fortschritt" id="fortschritt" aria-live="polite"></div>
+  </header>
+  <nav class="tabs card" id="tabs" aria-label="Teile des Lernpakets"></nav>
+  <main id="haupt" tabindex="-1"></main>
+  <footer class="leiste card" id="leiste"></footer>
+  <div class="fuss" id="fuss"></div>
+</div>
+<script src="js/inhalt.js"></script>
+<script src="js/engine.js"></script>
+</body>
+</html>

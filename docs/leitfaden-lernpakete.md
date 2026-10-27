@@ -23,6 +23,8 @@ Der Leitfaden hat drei Teile: **A** fasst die Forschungslage zusammen, **B** wä
 
 Wer wenig Zeit hat, liest diese zehn Sätze, Teil B (Prinzipienübersicht) und Teil C6 (Checkliste).
 
+**Skill-Set:** Wer ein Paket bauen möchte, muss den Leitfaden nicht auswendig kennen. Fünf Skills für Claude führen durch Planung, Fragen, Bau, Prüfung und Auswertung und wenden die Prinzipien dabei automatisch an (Teil C7). Einrichtung und Beispiel-Prompts: [Anleitung zum Skill-Set](skill-set-anleitung.md).
+
 ## Teil A1: Was die Forschung sagt und wie verlässlich sie ist
 
 Für die Gestaltung digitaler Lernangebote gibt es eine Handvoll gut untersuchter Ansätze. Sie beantworten unterschiedliche Fragen und ergänzen sich; am besten belegt sind die Regeln zur Bildschirmgestaltung (Mayer) und der Aufbau eines Kurses über ganze, realistische Aufgaben (4C/ID).
@@ -363,7 +365,11 @@ Ein Paket ist einsatzbereit, wenn alle Muss-Punkte erfüllt sind; die Checkliste
 
 ## Teil C7: Der Leitfaden als Skill-Set
 
-Der Leitfaden wird zusätzlich als Skill-Set für Claude bereitgestellt: Jede Phase aus Teil C1 bekommt einen Skill, der die Lehrkraft im Gespräch durch die Phase führt und die Prinzipien automatisch anwendet. So müssen Einsteiger den Leitfaden nicht auswendig kennen, um ihn einzuhalten.
+Der Leitfaden ist zusätzlich als Skill-Set für Claude umgesetzt: Jede Phase aus Teil C1 bekommt einen Skill, der die Lehrkraft im Gespräch durch die Phase führt und die Prinzipien automatisch anwendet. So müssen Einsteiger den Leitfaden nicht auswendig kennen, um ihn einzuhalten.
+
+**So bekommst du das Skill-Set:** Die fünf Skills liegen im [PING-Repository unter skills/](../skills) und als ZIP-Dateien in den [Releases](https://github.com/dennismarcbusch/PING/releases). Jede ZIP-Datei wird in Claude unter *Customize → Skills* hochgeladen. Die [Anleitung zum Skill-Set](skill-set-anleitung.md) beschreibt Einrichtung, Arbeitsschritte mit Beispiel-Prompts, Upload in die ByCS-Lernplattform und häufige Probleme.
+
+**Was dahintersteckt:** `lernpaket-bauen` arbeitet mit einer Paketvorlage, die die Paketstruktur aus Teil C2 und die technischen Mindeststandards aus Teil C5 bereits enthält: Selbsteinschätzung, Kurz-Checks, gestufte Tipps, Nachweis ab 80 %, Auswertung je Lernziel, Merkblatt, SCORM-Datenübergabe. Pro Paket werden nur Inhalte und Interaktionen geschrieben, deshalb sehen alle Pakete gleich aus und bedienen sich gleich. Ein Prüfskript spielt jedes Paket automatisch mit der Musterlösung durch und testet Datenübergabe, Wiedereinstieg und Tablet-Ansicht; es lässt sich auch auf ältere Pakete anwenden.
 
 | Skill | Phase | Was er tut | Die Lehrkraft liefert | Ergebnis |
 | --- | --- | --- | --- | --- |
@@ -386,15 +392,15 @@ Gemeinsame Grundlage aller Skills ist eine Referenzdatei mit den dreizehn Prinzi
 
 **Grenzen, die im Leitfaden klar stehen müssen:** Die KI kann fachliche Fehler machen; jede Musterlösung und jede Frage wird von einer Lehrkraft geprüft. Schülerdaten werden nur ohne Namen an die KI gegeben. Die Entscheidung über Lernziele und Bewertung bleibt bei der Lehrkraft.
 
-**Bereitstellung in zwei Formen:** (1) dieses Dokument als Langfassung plus eine zweiseitige Kurzfassung mit den zehn Kernsätzen und der Checkliste; (2) das Skill-Set als Paket für Claude, zusammen mit einer bebilderten Kurzanleitung zur Einrichtung.
+**Bereitstellung in zwei Formen:** (1) dieses Dokument als Langfassung plus eine zweiseitige Kurzfassung mit den zehn Kernsätzen und der Checkliste; (2) das Skill-Set als Paket für Claude, zusammen mit einer Anleitung zur Einrichtung und Nutzung (umgesetzt).
 
 ## Offene Punkte und nächste Schritte
 
 - [ ] Leitfaden mit zwei bis drei Kolleginnen und Kollegen aus anderen Fächern gegenlesen: Passt das Grundmuster auch für wissenslastige Fächer (z. B. Deutsch, Wirtschaft)? Dort trägt vermutlich Abrufen und Verteilen (P5, P10) mehr als die Handlungsaufgabe.
 - [ ] Test eines PING-Pakets in der echten ByCS-Lernplattform abschließen (steht für „Plug & Pray“ und „Netzwerktopologien erleben“ noch aus).
 - [ ] Vorhandene PING-Pakete gegen die Checkliste prüfen und P6, P10, P11 nachschärfen; bei „Plug & Pray“ zuerst die Orientierung („Wo geht es weiter?“) verbessern.
-- [ ] Kurzfassung (zwei Seiten) und bebilderte Einrichtungsanleitung erstellen.
-- [ ] Skill-Set bauen, zuerst `lernpaket-planen` und `lernpaket-pruefen`, weil sie unabhängig von der Technik den größten Nutzen bringen.
+- [ ] Kurzfassung (zwei Seiten) erstellen.
+- [ ] Skill-Set (gebaut am 27.10.2026) mit dem ersten neuen Paket erproben und die Anleitung um Screenshots ergänzen.
 - [ ] Lizenz und Ablage für Pakete anderer Fächer klären (Repository, SCORM Hub).
 - [x] Kapitel aus Kerres (2024) im Original prüfen und die Zusammenfassung in Teil A1 abgleichen.
 - [ ] Bestehensgrenze der vorhandenen PING-Pakete von 70 % bzw. 60 % auf 80 % umstellen (Prüfen, ob die Fragen dazu passen).

@@ -26,6 +26,10 @@ Weitere Bilder in den Steckbriefen der Module.
 
 Die Inhalte sind auf Deutsch. Shell Yeah! und Get-Going! sind reine JavaScript-Simulationen, es wird nichts auf Deinem Rechner ausgeführt. Die Ordner `packages/<name>/` enthalten jeweils einen Steckbrief mit Lernzielen, Aufbau und didaktischen Entscheidungen (bei Netzwerktopologien und Strukturierte Verkabelung steht er noch aus).
 
+## Leitfaden für neue Lernpakete
+
+Wie wir Pakete didaktisch begründet bauen (13 Prinzipien, Paketstruktur, Checkliste, Skill-Set-Vorschlag): [docs/leitfaden-lernpakete.md](docs/leitfaden-lernpakete.md). Neue Pakete und Überarbeitungen werden gegen die Checkliste in Teil C6 geprüft.
+
 ## Benutzen
 
 **Fertiges ZIP laden:** Unter [Releases](../../releases) liegen die gebauten Pakete (`<name>_scorm12.zip`). Das ZIP in der Lernplattform als SCORM-1.2-Aktivität hochladen, fertig.

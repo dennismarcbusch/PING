@@ -45,12 +45,22 @@ Alle Inhalte eines Pakets stehen in `js/inhalt.js` als ein Objekt `window.PAKET`
 | `leitsituation` | Einstiegstext der Figur (HTML) |
 | `lernziele` | `[{id: 'LZ1', kurz, text: 'Ich kann …'}]` – drei bis acht |
 | `vorwissen` | Liste von Fragen-IDs für den freiwilligen Vorwissens-Check (eine je Lernziel) |
-| `stationen` | `[{id, titel, lz: [...], auftrag, leitfrage, inhalt, bild, beispiel: {titel, aufgabe, schritte: [{tun, warum}]}, vertiefung, interaktion, beruf, steckbrief, check: [Fragen-IDs]}]` |
-| `uebungen` | `[{id, titel, lz, auftrag, frage (ID) oder interaktion, tipps: [Denkanstoß, Teillösung, Lösung], reflexion: {frage, muster}, steckbrief}]` |
+| `glossar` | `[{begriff, erklaerung, vorab}]` – alle Fachbegriffe; `vorab: true` stellt den Begriff schon auf der Startseite vor (Vortraining). Unter jeder Station und Übung aufklappbar. |
+| `stationen` | `[{id, titel, lz: [...], auftrag, leitfrage, inhalt, bild, beispiel: {titel, aufgabe, schritte: [{tun, warum}], selbsterklaerung: {schritt, frage}}, vertiefung, interaktion, mitdenken: {auftrag, muster}, beruf, steckbrief, check: [Fragen-IDs]}]` |
+| `uebungen` | `[{id, titel, lz, auftrag, frage (ID) oder interaktion, tipps: [Denkanstoß, Teillösung, Lösung], mitdenken: {auftrag, muster}, reflexion: {frage, muster}, steckbrief}]` |
 | `nachweis` | `{dauer, gewichtA (Prozent, Standard 50), einleitung, teilA: {titel, auftrag, inhalt, interaktion}, teilB: {proLZ: 2}}` |
 | `merkblatt` | `[{lz, titel, zeilen: [{text mit ___, loesung}], fehler, beispiel, schema}]` |
 | `selbsttest` | fünf Fragen-IDs für die Rückseite des Merkblatts |
 | `fragen` | Fragenpool (siehe oben) |
+
+## Zum Mitdenken anregen (generatives Lernen)
+
+- **`beispiel.selbsterklaerung: {schritt, frage}`** – an einem entscheidenden Schritt des Lösungsbeispiels (Nummer ab 1) wird dessen `warum` zunächst verborgen. Die Lernenden lesen die Frage („Warum rechnest du mit 72 weiter?“), überlegen und schreiben, dann klappen sie die Begründung auf. Jedes Lösungsbeispiel sollte eine solche Frage haben.
+- **`mitdenken: {auftrag, muster}`** – kurzer Auftrag nach einer Station oder Übung: skizzieren, in eigenen Worten zusammenfassen, jemand anderem erklären. Die Musterlösung lässt sich zum Vergleich aufklappen. Einträge werden nicht gespeichert.
+
+## Ton und Video
+
+Die Vorlage nutzt keinen Ton. Wer Ton oder Video einbaut, liefert immer den Text mit (Untertitel per `<track>` oder ein Transkript direkt darunter) und vermittelt nichts nur über Ton.
 
 ## Interaktionen
 

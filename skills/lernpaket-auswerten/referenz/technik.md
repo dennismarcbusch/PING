@@ -12,7 +12,7 @@ Die Standards stammen aus den bisherigen PING-Paketen und den Tests in der ByCS-
 | Datenübergabe | `cmi.core.score.raw` = bestes Ergebnis (0–100), `lesson_status` passed/failed, `masteryscore` im Manifest = 80; Fortschritt in `suspend_data`; Name aus `cmi.core.student_name` vorbelegen; optional `cmi.objectives` je Lernziel und `cmi.interactions` je Frage |
 | Ohne Lernplattform | Paket läuft auch lokal; Fortschritt dann nur im Browser, mit Hinweis |
 | Geräte | Zielgerät im Steckbrief festlegen (PC, Tablet oder beides); bei Tablets: Antippen statt nur Ziehen |
-| Barrierefreiheit | Bedienung per Tastatur, ausreichender Kontrast, Alternativtexte für Bilder, Schrift skalierbar, Information nie nur über Farbe |
+| Barrierefreiheit | Bedienung per Tastatur, ausreichender Kontrast, Alternativtexte für Bilder, Schrift skalierbar, Information nie nur über Farbe oder nur über Ton; Gesprochenes immer auch als Text (Untertitel oder Transkript); Glossar mit Fachbegriffen |
 | Datenschutz | Keine Daten an Dritte, keine Tracking-Dienste, keine Konten außerhalb der Lernplattform; nur die SCORM-Felder, die für Lernen und Bewertung nötig sind |
 | Ergebnis | Auswertung je Lernziel, druckbar als PDF |
 | Qualitätssicherung | Test im SCORM-1.2-Testplayer; automatisierter Test, dass alle Aufgaben mit der Musterlösung lösbar sind; Test in der echten ByCS-Lernplattform vor dem ersten Einsatz |

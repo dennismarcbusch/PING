@@ -8,7 +8,8 @@ Die Regeln übersetzen die Prinzipien in überprüfbare Vorgaben; in Klammern st
 
 **Bildschirm und Darstellung (nach Mayer)**
 
-- Alles weglassen, was nicht dem Lernziel dient: keine Deko-Bilder, keine Hintergrundmusik, keine „interessanten Nebenfakten“ (Kohärenz).
+- Wort und Bild zusammen statt Text allein: Zu jeder Erklärung gehört eine passende Grafik, Skizze oder Animation, die zum Inhalt passt, nicht zu einem angeblichen Lerntyp (Multimedia).
+- Alles weglassen, was nicht dem Lernziel dient: keine Deko-Bilder, keine Hintergrundmusik, keine „interessanten Nebenfakten“ (Kohärenz). Solche interessanten, aber unwichtigen Details heißen in der Forschung „verführerische Details“: Sie ziehen Aufmerksamkeit vom Wesentlichen ab. Ein witziges Bild passt in den Einstieg, nicht mitten in die Erklärung.
 - Das Wichtige hervorheben: Schlüsselbegriffe fett, im Bild ein Pfeil oder Rahmen genau auf die Stelle, um die es geht, Zwischenüberschriften statt langer Textblöcke. Farben und Markierungen sparsam einsetzen und im ganzen Paket immer mit derselben Bedeutung (Signalisierung).
 - Beschriftung direkt ans Bild, nicht in eine Legende darunter; Erklärung und zugehörige Grafik gleichzeitig sichtbar (räumliche und zeitliche Nähe; in der Lernpsychologie spricht man vom „Split-Attention-Effekt“, der geteilten Aufmerksamkeit).
 - Alles, was für eine Aufgabe nötig ist, gleichzeitig sichtbar halten: Auftrag, Bild oder Terminal und Eingabe stehen auf einem Bildschirm, ohne Scrollen oder Umschalten.
@@ -49,6 +50,7 @@ Signale braucht nicht nur der Lernstoff, sondern auch die Bedienung. Wer suchen 
 
 - Jede Aufgabe beginnt mit einem Auftrag aus der Leitsituation („Mira bittet dich …“), nicht mit „Aufgabe 3“.
 - Erst Lösungsbeispiel, dann ähnliche Aufgabe, dann veränderte Aufgabe (Lösungsbeispiele, Ausblenden der Hilfe).
+- Lernende zum Mitdenken auffordern, nicht nur zum Lesen: Im Lösungsbeispiel steht an einem entscheidenden Schritt eine Frage zum Selbsterklären („Warum ist dieser Schritt nötig?“) – erst selbst überlegen, dann die Begründung aufklappen. Nach Stationen und Übungen regelmäßig ein kurzer Auftrag zum Skizzieren, Zusammenfassen in eigenen Worten oder Erklären für andere (generative Lernaktivitäten).
 - Situationen variieren (andere Kunden, andere Geräte, andere Daten), damit Wissen übertragbar wird (4C/ID).
 - Geprüft wird das Ergebnis, nicht ein bestimmter Lösungsweg; alternative richtige Wege werden akzeptiert.
 
@@ -73,6 +75,16 @@ Was Einsteigern hilft, kann Fortgeschrittene bremsen: Ausführliche Erklärungen
 - Ausführliche Erklärungen und Lösungsbeispiele sind aufklappbar, nicht Pflichtlektüre; die Kurzfassung steht sichtbar.
 - Tipps gibt es nur auf Anforderung (siehe oben).
 - Übersprungene Stationen bleiben jederzeit erreichbar; der Kompetenznachweis ist für alle gleich.
+
+**Ton, Inklusion und Deutsch als Zweitsprache**
+
+Die Gestaltungsregeln sind Faustregeln. Für manche Lernende gelten sie nur eingeschränkt, deshalb zusätzlich:
+
+- Gesprochenes ist nie die einzige Quelle: Wo Ton eingesetzt wird, gibt es den Text zum Zuschalten (Untertitel oder Transkript). Lernende mit Hörbeeinträchtigung brauchen ihn, und ohne Kopfhörer geht es im Klassenzimmer oft nicht anders.
+- Für Lernende, die noch Deutsch lernen, dürfen Untertitel auch zusätzlich zum Ton laufen, obwohl das Redundanzprinzip davon abrät; das Verstehen der Sprache wiegt hier schwerer.
+- Fachbegriffe in einem Glossar sammeln, das jederzeit erreichbar ist; die wichtigsten am Anfang kurz vorstellen (Vortraining).
+- Kurze Sätze, geläufige Wörter, eine Information pro Satz. Fachbegriffe bleiben, werden aber erklärt.
+- Information nie nur über Ton oder nur über Farbe vermitteln.
 
 **Feedback**
 

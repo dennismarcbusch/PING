@@ -44,6 +44,7 @@ Ein Paket ist einsatzbereit, wenn alle Muss-Punkte erfüllt sind; die Checkliste
 - [ ] Paket läuft im Testplayer und in der ByCS-Lernplattform; Punktzahl und Status kommen an.
 - [ ] Wiedereinstieg nach Abbruch funktioniert.
 - [ ] Tastaturbedienung, Kontrast und Alternativtexte geprüft.
+- [ ] Gesprochenes ist auch als Text verfügbar (Untertitel oder Transkript); keine Information nur über Ton.
 - [ ] Keine externen Verbindungen, keine personenbezogenen Daten außerhalb der Lernplattform.
 
 **Soll**
@@ -52,3 +53,5 @@ Ein Paket ist einsatzbereit, wenn alle Muss-Punkte erfüllt sind; die Checkliste
 - [ ] Trennung von Hintergrundwissen (Steckbrief, Glossar) und Bedienhilfe am Ort der Aufgabe. (P9)
 - [ ] Mit drei bis fünf Schülern erprobt; Änderungen eingearbeitet.
 - [ ] Am Ende gibt es ein halb vorgefülltes Merkblatt zum Ergänzen und Herunterladen, freigeschaltet erst nach dem Nachweis, mit Selbsttest-Fragen zum späteren Wiederholen. (P13)
+- [ ] Lösungsbeispiele enthalten eine Frage zum Selbsterklären; nach Stationen oder Übungen gibt es Aufträge zum Skizzieren, Zusammenfassen oder Erklären. (P3)
+- [ ] Glossar mit allen Fachbegriffen, jederzeit erreichbar; die wichtigsten Begriffe werden am Anfang vorgestellt; kurze Sätze, geläufige Wörter (auch für Lernende, die Deutsch lernen).

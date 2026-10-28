@@ -122,6 +122,10 @@
       else if (n < pro + 2) hinweise.push(z.id + ': Pool klein (' + n + ' Nachweis-Fragen) – Wiederholungen ziehen oft dieselben Fragen.');
     });
     if (!NW.teilA) hinweise.push('Nachweis ohne Teil A (Handlungsaufgabe in neuer Situation).');
+    STATIONEN.forEach(function (s) { if (s.beispiel && !s.beispiel.selbsterklaerung) hinweise.push(s.id + ': Lösungsbeispiel ohne Frage zum Selbsterklären (selbsterklaerung).'); });
+    if (!STATIONEN.concat(UEBUNGEN).some(function (x) { return x.mitdenken; })) hinweise.push('Keine Aufträge zum Mitdenken (Skizzieren, Zusammenfassen, Erklären).');
+    if (!(P.glossar || []).length) hinweise.push('Kein Glossar mit Fachbegriffen.');
+    if (/<(audio|video)\b/i.test(JSON.stringify(P, function (k, v) { return typeof v === 'function' ? String(v) : v; }))) hinweise.push('Paket enthält Ton oder Video: Untertitel bzw. Transkript sicherstellen.');
     if (!P.merkblatt || !P.merkblatt.length) hinweise.push('Kein Merkblatt (P13, Soll).');
     else LZ.forEach(function (z) { if (!P.merkblatt.some(function (m) { return m.lz === z.id; })) hinweise.push('Merkblatt ohne Abschnitt zu ' + z.id + '.'); });
     (P.selbsttest || []).forEach(function (q) { if (!FR[q]) fehler.push('Selbsttest-Frage ' + q + ' gibt es nicht.'); });
@@ -372,6 +376,12 @@
     ]));
     if (P.dauer) c.appendChild(el('p', { class: 'klein', text: 'Dauer: ' + P.dauer + '. Du kannst jederzeit aufhören, dein Stand bleibt erhalten.' }));
     haupt.appendChild(c);
+    var vorab = (P.glossar || []).filter(function (g) { return g.vorab; });
+    if (vorab.length) {
+      var gb = el('div', { class: 'card' }, [el('h2', { text: 'Wichtige Begriffe vorab' }), el('p', { class: 'klein', text: 'Diese Wörter kommen gleich vor. Alle Begriffe findest du später unter jeder Station im Glossar.' })]);
+      gb.appendChild(el('dl', { class: 'glossar' }, vorab.reduce(function (a, g) { return a.concat([el('dt', { html: g.begriff }), el('dd', { html: g.erklaerung })]); }, [])));
+      haupt.appendChild(gb);
+    }
 
     var z = el('div', { class: 'card' });
     z.appendChild(el('h2', { text: 'Deine Lernziele' }));
@@ -407,6 +417,38 @@
     });
   }
 
+  /* ---------- Bausteine zum Mitdenken und Nachschlagen ---------- */
+  // Selbsterklärung im Lösungsbeispiel: erst selbst überlegen, dann die Begründung aufklappen (P3, generatives Lernen)
+  function selbsterklaeren(frage, begruendung) {
+    var box = el('div', { class: 'selbst' });
+    box.appendChild(el('div', { html: '🤔 <b>Erklär es dir selbst:</b> ' + frage }));
+    var ta = el('textarea', { rows: 2, 'aria-label': 'Deine Erklärung', placeholder: 'Deine Erklärung in eigenen Worten …' });
+    var aus = el('div', { 'aria-live': 'polite' });
+    box.appendChild(ta);
+    box.appendChild(el('button', { type: 'button', text: 'Begründung zeigen', onclick: function (e) { aus.innerHTML = ''; aus.appendChild(el('div', { class: 'warum', html: 'Warum: ' + begruendung })); e.target.hidden = true; } }));
+    box.appendChild(aus);
+    return box;
+  }
+  // Auftrag zum Mitdenken nach Station oder Übung: skizzieren, zusammenfassen, jemandem erklären
+  function mitdenken(md) {
+    var box = el('div', { class: 'mitdenken' });
+    box.appendChild(el('div', { html: '✏️ <b>Mitdenken:</b> ' + md.auftrag }));
+    if (md.eingabe !== false) box.appendChild(el('textarea', { rows: 3, 'aria-label': 'Deine Antwort', placeholder: 'Schreib oder skizziere auf Papier – hier ist Platz für Stichpunkte.' }));
+    if (md.muster) {
+      var mu = el('div', { 'aria-live': 'polite' });
+      box.appendChild(el('button', { type: 'button', text: 'Mit Muster vergleichen', onclick: function () { mu.innerHTML = ''; mu.appendChild(el('div', { class: 'muster', html: '<b>Muster:</b> ' + md.muster })); } }));
+      box.appendChild(mu);
+    }
+    return box;
+  }
+  // Glossar mit allen Fachbegriffen, jederzeit aufklappbar (C3: Vortraining, Deutsch als Zweitsprache)
+  function glossar() {
+    if (!(P.glossar || []).length) return null;
+    var d = el('details', { class: 'glossar-box' }, [el('summary', { text: '📖 Fachbegriffe nachschlagen' })]);
+    d.appendChild(el('dl', { class: 'glossar' }, P.glossar.reduce(function (a, g) { return a.concat([el('dt', { html: g.begriff }), el('dd', { html: g.erklaerung })]); }, [])));
+    return d;
+  }
+
   /* ---------- ① Entdecken ---------- */
   function seitenliste(items, aktiv, teil, erledigt, praefix) {
     var ul = el('ul', { class: 'liste', 'aria-label': praefix });
@@ -435,7 +477,11 @@
       if (S.skip.indexOf(s.id) < 0) bsp.open = true;
       bsp.appendChild(el('summary', { text: 'Gelöstes Beispiel: ' + (s.beispiel.titel || '') + ' (überspringbar)' }));
       if (s.beispiel.aufgabe) bsp.appendChild(el('p', { html: s.beispiel.aufgabe }));
-      bsp.appendChild(el('ol', {}, (s.beispiel.schritte || []).map(function (x) { return el('li', {}, [el('div', { html: x.tun }), x.warum ? el('div', { class: 'warum', html: 'Warum: ' + x.warum }) : null]); })));
+      var se = s.beispiel.selbsterklaerung;  // {schritt: Nummer ab 1, frage}
+      bsp.appendChild(el('ol', {}, (s.beispiel.schritte || []).map(function (x, k) {
+        if (se && se.schritt === k + 1 && x.warum) return el('li', {}, [el('div', { html: x.tun }), selbsterklaeren(se.frage, x.warum)]);
+        return el('li', {}, [el('div', { html: x.tun }), x.warum ? el('div', { class: 'warum', html: 'Warum: ' + x.warum }) : null]);
+      })));
       m.appendChild(bsp);
     }
     if (s.vertiefung) m.appendChild(el('details', {}, [el('summary', { text: 'Genauer erklärt (aufklappen)' }), el('div', { html: s.vertiefung })]));
@@ -461,6 +507,7 @@
       m.appendChild(iMeld);
       testHaken.push({ art: 'interaktion', obj: obj });
     }
+    if (s.mitdenken) m.appendChild(mitdenken(s.mitdenken));
     if (s.beruf) m.appendChild(msg('<b>Wozu brauchst du das?</b> ' + s.beruf, ''));
     if ((s.check || []).length) {
       m.appendChild(el('h3', { html: 'Kurz-Check <span class="badge zaehlt-nicht">zählt nicht</span>' }));
@@ -482,6 +529,7 @@
       m.appendChild(sum);
     }
     m.appendChild(fertigMeldung);
+    if (glossar()) m.appendChild(glossar());
     r.appendChild(m);
     if (s.steckbrief) r.appendChild(el('aside', { class: 'seite' }, el('div', { class: 'card' }, [el('div', { class: 'klein', text: 'Steckbrief' }), el('div', { html: s.steckbrief })])));
     haupt.appendChild(r);
@@ -527,6 +575,7 @@
       tb.appendChild(el('span', { class: 'klein', text: 'Tipps zählen nicht gegen dich. ' }));
       tb.appendChild(bt); m.appendChild(tb); m.appendChild(tl);
     }
+    if (u.mitdenken) m.appendChild(mitdenken(u.mitdenken));
     if (u.reflexion) {
       m.appendChild(el('h3', { text: 'Nachgedacht' }));
       m.appendChild(el('p', { html: u.reflexion.frage }));
@@ -536,6 +585,7 @@
       m.appendChild(el('button', { type: 'button', text: 'Mit Musterantwort vergleichen', onclick: function () { mu.innerHTML = ''; mu.appendChild(el('div', { class: 'muster', html: '<b>Musterantwort:</b> ' + u.reflexion.muster })); } }));
       m.appendChild(mu);
     }
+    if (glossar()) m.appendChild(glossar());
     r.appendChild(m);
     if (u.steckbrief) r.appendChild(el('aside', { class: 'seite' }, el('div', { class: 'card' }, [el('div', { class: 'klein', text: 'Steckbrief' }), el('div', { html: u.steckbrief })])));
     haupt.appendChild(r);

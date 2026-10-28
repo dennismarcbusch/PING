@@ -32,7 +32,7 @@ Sieh dir die Screenshots an und mache für jede Ansicht den **Fünf-Sekunden-Tes
 Lies `js/inhalt.js` (bzw. die Texte in `index.html`) und beantworte jede Prüffrage P1–P13 und jeden Punkt der Checkliste mit Befund und Fundstelle. Besonders:
 
 - **P1/P4:** Beginnt jede Station und Übung mit einem Auftrag aus der Leitsituation? Gibt es eine Leitfrage und Rückmeldung?
-- **P3:** Lösungsbeispiel vor jedem neuen Aufgabentyp, mit Begründung je Schritt, überspringbar?
+- **P3:** Lösungsbeispiel vor jedem neuen Aufgabentyp, mit Begründung je Schritt und Frage zum Selbsterklären, überspringbar? Gibt es Aufträge zum Mitdenken (skizzieren, zusammenfassen, erklären)?
 - **P6:** Hat jede Falschantwort ein eigenes Feedback, das eine Fehlvorstellung anspricht? Stichprobe von mindestens zehn Fragen, bei kleinen Pools alle.
 - **P8:** Jedes Lernziel mit mindestens zwei Fragen oder Prüfpunkten im Nachweis; Lernziele in Schülersprache; nichts geprüft, was nicht geübt wurde.
 - **P2/P10:** Hilfe nimmt ab, Situationen wechseln, Wiederholungsfragen ab Station 3, gemischter Nachweis.
@@ -41,7 +41,9 @@ Lies `js/inhalt.js` (bzw. die Texte in `index.html`) und beantworte jede Prüffr
 
 ### 4. Barrierefreiheit (Stichprobe)
 
-Mit Playwright: Lässt sich eine Station mit der Tabulatortaste und Enter bedienen? Haben Bilder bzw. SVGs eine Beschreibung (`aria-label`, `alt`)? Wird Information nur über Farbe vermittelt? Bleibt die Darstellung bei 200 % Zoom nutzbar?
+Mit Playwright: Lässt sich eine Station mit der Tabulatortaste und Enter bedienen? Haben Bilder bzw. SVGs eine Beschreibung (`aria-label`, `alt`)? Wird Information nur über Farbe oder nur über Ton vermittelt? Haben Ton und Video Untertitel oder ein Transkript? Bleibt die Darstellung bei 200 % Zoom nutzbar?
+
+Sprache und Deutsch als Zweitsprache: Gibt es ein Glossar, werden die wichtigsten Begriffe vorab vorgestellt, sind die Sätze kurz? Lange Schachtelsätze und unerklärte Fachwörter nennst du mit Fundstelle.
 
 ### 5. Fachliche Punkte
 

@@ -12,6 +12,12 @@
 - Lernziele mit Selbsteinschätzung (automatisch)
 - Vorwissens-Check: je Lernziel eine Frage → Empfehlung, welche Stationen übersprungen werden können
 
+## Glossar
+
+| Begriff | Erklärung (kurz, einfache Sprache) | vorab vorstellen? |
+|---|---|---|
+| | | ☐ |
+
 ## ① Entdecken – Stationen
 
 ### Station 1: <Titel> (LZ…)
@@ -19,8 +25,10 @@
 - **Leitfrage:** …
 - **Kurz erklärt (sichtbar, 2–5 Sätze, Bild vor Text):** …
 - **Gelöstes Beispiel:** Aufgabe … / Schritte mit „Warum“: 1. … 2. … 3. …
+- **Frage zum Selbsterklären** (an Schritt …): „Warum …?“
 - **Ausprobieren mit Rückmeldung:** Was tun die Lernenden? Woran erkennt das Paket den Erfolg? (Antippen statt Ziehen)
 - **Hintergrund (Steckbrief, aufklappbar):** …
+- **Mitdenken (optional):** Skizzieren / in eigenen Worten zusammenfassen / jemandem erklären: … Muster: …
 - **Wozu brauchst du das?** …
 - **Kurz-Check (3–5 Fragen, zählt nicht):** Themen … (ab Station 3 eine Wiederholungsfrage)
 

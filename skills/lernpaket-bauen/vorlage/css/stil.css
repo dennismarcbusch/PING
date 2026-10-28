@@ -25,7 +25,7 @@ p{margin:.4rem 0 .7rem}
 .tabs button.aktiv{background:var(--ink);color:#fff;border-color:var(--ink)}
 .tabs button[aria-disabled="true"]{opacity:.5}
 main{display:block;outline:none}
-main:focus,main:focus-visible{outline:none}
+main:focus,main[tabindex]:focus-visible{outline:none}
 .auftrag{background:var(--accent-soft);border-left:5px solid var(--accent);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-weight:600}
 .auftrag .was{display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);font-weight:700}
 .raster{display:grid;grid-template-columns:240px minmax(0,1fr);gap:12px;align-items:start}
@@ -105,3 +105,10 @@ table.tab td,table.tab th{border:1px solid var(--line);padding:6px 8px;text-alig
   .app{max-width:none;padding:0}
   .card{box-shadow:none}
 }
+.selbst,.mitdenken{border:1px dashed var(--ink-soft);border-radius:10px;padding:8px 10px;margin:.5rem 0;background:var(--card)}
+.selbst textarea,.mitdenken textarea{width:100%;margin:.4rem 0}
+.glossar-box{margin-top:1rem}
+dl.glossar{margin:.4rem 0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 12px}
+dl.glossar dt{font-weight:700}
+dl.glossar dd{margin:0}
+@media (max-width:600px){dl.glossar{grid-template-columns:1fr}dl.glossar dd{margin-bottom:6px}}

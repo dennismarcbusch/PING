@@ -13,7 +13,7 @@ Du baust aus Drehbuch und Fragenpool ein fertiges SCORM-1.2-Paket (ZIP), das die
 
 ## Was die Vorlage schon kann (nicht neu bauen)
 
-Start mit Leitsituation, Ablauf, Lernzielen und Selbsteinschätzung · freiwilliger Vorwissens-Check mit Überspring-Empfehlung · Stationen mit Auftrag, Leitfrage, aufklappbarem Lösungsbeispiel, Steckbrief-Seitenleiste und Kurz-Check („zählt nicht“) · Übungen mit drei gestuften Tipps und Reflexion mit Musterantwort · Nachweis mit Teil A (Handlungsaufgabe) und Teil B (gezogen und gemischt, 2 je Lernziel), Bestehen ab 80 %, bestes Ergebnis zählt · Abschluss mit Auswertung je Lernziel, Empfehlung, Selbsteinschätzung nachher, Merkblatt zum Ergänzen mit PDF und Selbsttest, Ergebnis-PDF · genau ein Weiter-Knopf je Ansicht, Fortschrittsanzeige nach Teilen und Lernzielen · SCORM 1.2 (score, status, objectives je Lernziel, interactions je Frage, suspend_data, Name) · läuft ohne Lernplattform · Tablet und Tastatur.
+Start mit Leitsituation, Ablauf, Lernzielen, Selbsteinschätzung und „Wichtige Begriffe vorab“ · Glossar unter jeder Station · Frage zum Selbsterklären im Lösungsbeispiel · Aufträge zum Mitdenken mit Muster · freiwilliger Vorwissens-Check mit Überspring-Empfehlung · Stationen mit Auftrag, Leitfrage, aufklappbarem Lösungsbeispiel, Steckbrief-Seitenleiste und Kurz-Check („zählt nicht“) · Übungen mit drei gestuften Tipps und Reflexion mit Musterantwort · Nachweis mit Teil A (Handlungsaufgabe) und Teil B (gezogen und gemischt, 2 je Lernziel), Bestehen ab 80 %, bestes Ergebnis zählt · Abschluss mit Auswertung je Lernziel, Empfehlung, Selbsteinschätzung nachher, Merkblatt zum Ergänzen mit PDF und Selbsttest, Ergebnis-PDF · genau ein Weiter-Knopf je Ansicht, Fortschrittsanzeige nach Teilen und Lernzielen · SCORM 1.2 (score, status, objectives je Lernziel, interactions je Frage, suspend_data, Name) · läuft ohne Lernplattform · Tablet und Tastatur.
 
 **`js/engine.js` und `css/stil.css` nicht verändern.** Sie sorgen dafür, dass alle Pakete gleich aussehen und sich gleich bedienen. Fehlt eine Funktion, löse sie in `inhalt.js` (z. B. als Interaktion) und notiere den Wunsch für die Pflege der Vorlage.
 
@@ -43,7 +43,10 @@ Beim Schreiben der Texte:
 
 - Jede Station und Übung beginnt mit einem **Auftrag aus der Leitsituation** („Frau Maier bittet dich …“), nicht mit „Aufgabe 3“.
 - Sichtbarer Text kurz (2–5 Sätze), Ausführliches in `vertiefung` oder `steckbrief`. **Bild vor Text**, Beschriftungen direkt im Bild, für Einsteiger einfache Skizzen statt Fotos.
-- Lösungsbeispiel mit Begründung je Schritt (`warum`).
+- Lösungsbeispiel mit Begründung je Schritt (`warum`) und einer Frage zum Selbsterklären (`selbsterklaerung`) an einem entscheidenden Schritt.
+- In einigen Stationen oder Übungen ein Auftrag zum Mitdenken (`mitdenken`): skizzieren, zusammenfassen, jemandem erklären – mit Muster.
+- Glossar (`glossar`) mit allen Fachbegriffen, die wichtigsten mit `vorab: true`. Kurze Sätze, geläufige Wörter, eine Information pro Satz – das hilft besonders Lernenden, die Deutsch lernen.
+- Kein Ton als einzige Quelle: Ton oder Video nur mit Untertiteln (`<track>`) oder Transkript.
 - Hervorhebungen sparsam (`<b>`), Farben nur über Variablen (`var(--accent)` ist für Handlungsaufforderungen reserviert).
 - Übungen in **anderen** Situationen als die Stationen; Tipps in drei Stufen (Denkanstoß, Teillösung, Lösung mit Begründung).
 - Nachweis Teil A: neue Situation, keine Rückmeldung während der Bearbeitung; Prüfpunkte je Lernziel in `auswerten()`.

@@ -25,7 +25,7 @@ Frage in zwei bis drei Runden ab, was noch fehlt:
 
 1. **Lernproblem:** Was können die Schüler bisher nicht oder nicht sicher? Woran merkt man das im Unterricht? („Ein Paket kann nur ein Lernproblem lösen.“)
 2. **Rahmen:** Fach, Beruf bzw. Schulart, Jahrgang, Lehrplanbezug, Zeitrahmen, Geräte (PC, Tablet, beides).
-3. **Lernende:** Vorwissen, Motivation, Erfahrung mit selbstständigem Lernen.
+3. **Lernende:** Vorwissen, Motivation, Erfahrung mit selbstständigem Lernen. Gibt es Lernende, die noch Deutsch lernen, oder Lernende mit Hör- oder Sehbeeinträchtigung? Das beeinflusst Sprache, Glossar und den Einsatz von Ton.
 4. **Einsatz:** Standard ist SeGeL (selbstgesteuert, das Paket trägt die ganze Einheit). Stationen sollen auch einzeln im klassischen Unterricht nutzbar sein. Nur nachfragen, wenn etwas dagegen spricht.
 5. **Typische Fehler und Fehlvorstellungen der Schüler** – mindestens drei, besser fünf. Das ist die wichtigste Frage: Daraus entstehen gute Falschantworten, gutes Feedback und das Merkblatt. Gib Beispiele, um die Erinnerung anzustoßen.
 6. **Leitsituation:** Gibt es einen Betrieb, Kunden oder eine Alltagssituation, in der das Thema gebraucht wird? Gibt es aus anderen Paketen schon Story-Figuren (bei PING z. B. Korbwerk IT-Service mit Ausbilderin Mira Hofmann)? Wenn nicht, schlage zwei Varianten vor.
@@ -46,6 +46,9 @@ Fülle danach `vorlagen/steckbrief.md` aus und lass ihn bestätigen.
 Fülle `vorlagen/drehbuch.md`. Halte dich an die Paketstruktur (Einstieg → ① Entdecken → ② Üben → ③ Nachweis → ④ Abschluss) und an diese Regeln:
 
 - **Stationen** (höchstens etwa acht; mehr = zwei Pakete): je ein Auftrag aus der Leitsituation („Mira bittet dich …“), eine Leitfrage, eine kurze sichtbare Erklärung, ein **gelöstes Beispiel mit Begründung je Schritt** vor dem ersten eigenen Versuch, eine Idee zum Ausprobieren mit Rückmeldung (was tun die Lernenden, woran erkennt das Paket, dass es geklappt hat?), ein Satz „Wozu brauchst du das?“, ein Kurz-Check mit 3–5 Fragen (ab Station 3 eine Frage zu früheren Stationen).
+- **Zum Mitdenken anregen:** In jedem Lösungsbeispiel eine Frage zum Selbsterklären an einem entscheidenden Schritt („Warum …?“). In einigen Stationen oder Übungen ein kurzer Auftrag zum Skizzieren, Zusammenfassen in eigenen Worten oder Erklären für andere, mit Musterlösung.
+- **Fachbegriffe:** Alle Fachbegriffe für das Glossar sammeln und die drei bis fünf wichtigsten markieren, die schon am Anfang vorgestellt werden (Vortraining). Kurze Sätze, geläufige Wörter.
+- **Ton nur mit Text:** Ton oder Video nur, wenn sie wirklich nötig sind, und dann immer mit Untertiteln oder Transkript.
 - **Hintergrund und Bedienung trennen:** Hintergrundwissen als Steckbrief neben der Aufgabe, Bedienhinweise genau dort, wo sie gebraucht werden.
 - **Übungen:** mindestens eine je Lernziel, in **anderen** Situationen als die Stationen, je drei gestufte Tipps (1 Denkanstoß, 2 Teillösung, 3 Lösung mit Begründung) und eine Reflexionsfrage mit Musterantwort.
 - **Nachweis:** Teil A ausformulieren (Situation, Auftrag, Prüfpunkte); Teil B als Fragethemen je Lernziel (die Fragen selbst schreibt `fragenpool-erstellen`).

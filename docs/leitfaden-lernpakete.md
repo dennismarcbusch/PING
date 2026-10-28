@@ -1,6 +1,6 @@
 # Leitfaden: Evidenzbasierte Lernpakete (SCORM) gestalten
 
-Entwurf · Stand 27.10.2026 · Dennis Busch
+Entwurf · Stand 28.10.2026 · Dennis Busch
 
 ## Zweck und Kurzfassung
 
@@ -64,11 +64,23 @@ Kerres' Fazit: Nicht das Digitale macht den Erfolg aus, sondern die didaktische 
 - **Steuerung bewusst entscheiden.** Ob ein Paket einen festen Weg vorgibt oder freies Erkunden erlaubt, hängt vom Stoff und von den Lernenden ab (Kriterien in Teil C4). Eine harte Sperre („erst weiter, wenn alles richtig ist“) erleben Lernende schnell als Gängelung; besser ist ein Vorschlag, was als Nächstes sinnvoll ist.
 - **Automatische Anpassung lohnt sich selten.** Damit sich ein Programm sinnvoll an den Lernstand anpasst, braucht es ein geprüftes Modell, wie Kompetenz wächst, laufende Tests und mehrere Varianten jedes Inhalts. Das ist teuer, und ständig eingestreute Testfragen stören beim Lernen. In einer Vergleichsstudie lernten Schüler mit der anpassenden Variante nicht mehr, waren aber weniger motiviert (Iterbeke et al. 2021). Einfache Anpassungen sind dagegen sinnvoll: Wer wenig Vorwissen hat, bekommt mehr Beispiele; wer es schon kann, darf überspringen.
 
-**Zu Mayer, genauer.** Die Gestaltungsregeln helfen vor allem Lernenden mit wenig Vorwissen. Wer sich schon auskennt, profitiert weniger, manche Hilfen stören sogar (Kalyuga 2007). Das Diagramm zeigt die Wirkung der einzelnen Regeln in Mayers eigenen Studien. Diese Werte stammen überwiegend aus kurzen Laborversuchen und sind deshalb eher als Obergrenze zu lesen.
+**Zu Mayer, genauer.** Die Gestaltungsregeln helfen vor allem Lernenden mit wenig Vorwissen. Wer sich schon auskennt, profitiert weniger, manche Hilfen stören sogar (Expertise-Umkehr-Effekt; Kalyuga et al. 2003; Kalyuga 2007). Das Diagramm zeigt die Wirkung der einzelnen Regeln in Mayers eigenen Studien. Diese Werte stammen überwiegend aus kurzen Laborversuchen und sind deshalb eher als Obergrenze zu lesen.
 
 *(Diagramm mit den Effektstärken der zwölf Mayer-Prinzipien nach Mayer 2017 und der Re-Analyse von Cromley et al.: nur in der Dokumentfassung. Im Mittel g ≈ 0,37.)*
 
 Für die Praxis heißt das: Die Reihenfolge zeigt, wo sich Aufwand am ehesten lohnt (Text und Bild zusammenbringen, Überflüssiges streichen). Im echten Unterricht sind aber eher kleine bis mittlere Wirkungen realistisch.
+
+**Warum das wirkt: die Theorie der kognitiven Belastung.** Hinter Mayers Regeln und hinter den Lösungsbeispielen steht die *Cognitive Load Theory* (Sweller 1988). Ihr Kern: Das Arbeitsgedächtnis, in dem wir bewusst denken, kann nur wenige Dinge gleichzeitig bearbeiten (heute geht man von etwa vier sinnvollen Einheiten aus); das Langzeitgedächtnis ist dagegen fast unbegrenzt. Belastet wird das Arbeitsgedächtnis auf drei Arten:
+
+- durch die Schwierigkeit des Stoffs selbst, weil viele Elemente zusammenspielen (*intrinsische* Belastung) – sie lässt sich nicht wegzaubern, nur gut portionieren;
+- durch ungünstige Gestaltung, etwa das Hin-und-her-Springen zwischen Grafik und Legende (*extrinsische* Belastung) – sie kostet Kapazität und bringt nichts;
+- durch die Anstrengung, die wirklich ins Lernen fließt, also in den Aufbau von Wissen im Langzeitgedächtnis (*lernbezogene* Belastung).
+
+Die Grundregel lautet: unnötige Belastung durch die Gestaltung senken, damit Kapazität fürs Lernen frei wird. Mayer fasst dasselbe als drei Aufgaben der Gestaltung: überflüssige Verarbeitung vermeiden (Kohärenz, Signalisierung, Nähe), die notwendige Verarbeitung des schwierigen Stoffs steuern (Segmentierung, Vortraining) und tiefes Durchdenken anregen (*generative* Verarbeitung, z. B. sich selbst erklären, skizzieren, in eigenen Worten zusammenfassen; Fiorella & Mayer 2016). Der dritte Teil wird leicht vergessen, weil die meisten Regeln vom Weglassen handeln.
+
+**Grenzen der Theorie.** Die drei Belastungsarten lassen sich kaum getrennt messen; meist fragt man die Lernenden nur, wie anstrengend sie eine Aufgabe fanden. Die „lernbezogene Belastung“ wurde kritisiert, weil sich mit ihr im Nachhinein fast jedes Ergebnis erklären lässt (de Jong 2010); Sweller hat die Theorie daraufhin überarbeitet (Sweller, van Merriënboer & Paas 2019). Und viele Befunde stammen aus kurzen Laborstudien. Als Begründung dafür, warum Lösungsbeispiele (P3) und aufgeräumte Bildschirme (P7) wirken, taugt die Theorie trotzdem gut.
+
+**Faustregeln, keine Gesetze.** Die Prinzipien wirken nicht für alle gleich. Neben dem Vorwissen (siehe oben) kommt es auf die Lernenden an: Für Lernende mit Hörbeeinträchtigung gilt das Modalitätsprinzip (Erklärung gesprochen statt geschrieben) nicht, sie brauchen Text oder Untertitel. Für Lernende, die noch Deutsch lernen, können Untertitel hilfreich sein, obwohl das Redundanzprinzip davon abrät. Teil C3 zieht daraus Regeln für Ton, Untertitel und Fachbegriffe.
 
 ## Teil A2: Weitere Befunde, die sich direkt umsetzen lassen
 
@@ -88,6 +100,7 @@ Neben den großen Ansätzen gibt es eine Reihe gut untersuchter Einzelbefunde au
 | Rückmeldung (Feedback) | Keine Rückmeldung | *d* = 0,48, stark abhängig vom Inhalt; Lob, Strafe und Belohnung wirken kaum | [Wisniewski et al. 2020](https://opus.bibliothek.uni-augsburg.de/opus4/files/71009/fpsyg-10-03087.pdf) | Rückmeldung erklärt den Fehler und zeigt den nächsten Schritt |
 | Spielelemente (Gamification) | Ohne Spielelemente | *g* = 0,49 auf Wissen, 0,36 auf Motivation, 0,25 auf Verhalten; eine Rahmengeschichte und Zusammenarbeit verstärken | [Sailer & Homner 2020](https://resources.rework.com/libraries/edtech-growth/gamification-in-learning) | Story ja, Punkte und Abzeichen nur sparsam |
 | Umgedrehter Unterricht (Flipped Classroom: zu Hause erarbeiten, im Unterricht anwenden) | Herkömmlicher Unterricht | *g* ≈ 0,37 (Hochschule); in IT-Fächern eher geringer | [Zusammenfassung mehrerer Übersichten](https://dro.deakin.edu.au/articles/journal_contribution/On_the_use_of_flipped_classroom_across_various_disciplines_Insights_from_a_second-order_meta-analysis/20658822); [Strelan et al.](https://able.adelaide.edu.au/education/events/list/2019/06/research-seminar-flipped-classrooms-do-they-really-work) | Pakete eignen sich gut zur Vorbereitung auf die Unterrichtsstunde |
+| Sich selbst erklären (z. B. „Warum ist dieser Schritt nötig?“ beim Lösungsbeispiel) | Lernen ohne Aufforderung zum Erklären | g ≈ 0,43 in der Oberstufe, 0,61 an Hochschulen | Bisra et al. 2018 (zit. n. Brod 2021); Fiorella & Mayer 2016 | Lösungsbeispiele mit einer Frage zum Selbsterklären; Aufträge zum Skizzieren, Zusammenfassen oder Erklären für andere (P3) |
 | Mit vollständigen Notizen der Lehrkraft wiederholen | Mit eigenen Notizen wiederholen | etwa 17 % bessere Testergebnisse; halbfertige Notizen zum Ergänzen ähnlich gut | Kiewra & Benton 1987; Kiewra et al. 1995 (Übersicht Kiewra) | Muster-Merkblatt mitgeben, halb vorgefüllt zum Ergänzen (P13) |
 | Concept Maps selbst erstellen | Herkömmliche Lernaktivitäten (z. B. Lesen) | g ≈ 0,74 in Klasse 9–12; Schüler profitieren mehr von teilweise vorgegebenen Maps als von leeren | Schroeder et al. 2018; Gurlitt & Renkl 2008 (zit. n. Brod 2021) | Struktur des Merkblatts vorgeben, Lernende füllen die Kernaussagen (P13) |
 | Erlaubter Spickzettel in der Prüfung (selbst erstellt) | Prüfung ohne Spickzettel | kein verlässlicher Vorteil; Hinweise, dass man sich auf den Zettel verlässt statt zu lernen | Dickson & Miller 2005; Funk & Dickson 2011; Hamouda & Shaffer 2016 | Merkblatt erst nach dem Nachweis, nicht als Hilfsmittel im Nachweis (P13) |
@@ -102,7 +115,7 @@ Dreizehn Prinzipien reichen. Acht davon sind gut belegt und mit vertretbarem Auf
 | --- | --- | --- | --- | --- | --- |
 | P1 | Eine realistische Handlungssituation zieht sich durchs ganze Paket | mittel bis gut | gering | Story mit Betrieb und Kundenauftrag (z. B. Korbwerk IT-Service, Bäckerei Brunner) | Muss |
 | P2 | Vom Einfachen zum Schweren; die Hilfe wird schrittweise weniger | gut | mittel | Entdecken → Üben mit Tipps → Kompetenznachweis ohne Tipps | Muss |
-| P3 | Erst vormachen: Musterlösungen | gut (für Einsteiger) | gering | Musterlösung je neuem Aufgabentyp, überspringbar | Muss |
+| P3 | Erst vormachen: Musterlösungen | gut (für Einsteiger) | gering | Musterlösung je neuem Aufgabentyp mit Frage zum Selbsterklären, überspringbar | Muss |
 | P4 | Entdecken nur mit Anleitung | gut | gering | Jede Station hat Auftrag, Leitfrage und Rückmeldung | Muss |
 | P5 | Abfragen statt nochmal lesen | gut | gering | Kurz-Check (3–5 Fragen) je Kapitel, ohne Note | Muss |
 | P6 | Rückmeldung, die erklärt | mittel | mittel | Begründung zu jeder Antwort, Hinweis auf typische Fehler | Muss |
@@ -130,7 +143,7 @@ Einige Ideen aus Forschung und Praxis sind entweder schlecht belegt oder für ei
 | KI-gesteuerte Lernpfade, die sich automatisch anpassen | Kein belegter Vorteil gegenüber gut gemachten Lernprogrammen, hoher Aufwand, offene Datenschutzfragen. |
 | Möglichst viel Wahlfreiheit als Qualitätsmerkmal | Freie Wahl allein bringt praktisch nichts (*g* = 0,05). Freiheit nur zusammen mit Orientierung. |
 | Varianten für verschiedene „Lerntypen“ | Nicht belegt; auch Kerres (2024) stellt klar: Lerntypen gibt es nicht. |
-| Erklärungen standardmäßig vorlesen lassen | Wirkt im Labor, aber im Klassenzimmer fehlen oft Kopfhörer, und Gesprochenes lässt sich schlecht überfliegen. Ton ist optional, Text immer kurz und in Schritten. |
+| Erklärungen standardmäßig vorlesen lassen (Modalitätsprinzip) | Wirkt im Labor, aber im Klassenzimmer fehlen oft Kopfhörer, und Gesprochenes lässt sich schlecht überfliegen. Ton ist optional, Text immer kurz und in Schritten. Wo doch Ton eingesetzt wird: eine natürlich klingende Stimme (Stimmprinzip; moderne KI-Stimmen schneiden deutlich besser ab als die blechernen Computerstimmen früher Studien) und immer mit zuschaltbarem Text. |
 | Hatties Rangliste als Entscheidungsgrundlage | Methodisch umstritten; nur zur Orientierung. |
 | Punkte, Abzeichen, Ranglisten als Ersatz für echte Motivation | Wirkung auf das Verhalten klein und unsicher; Belohnungen können die Freude an der Sache sogar schmälern. |
 | Erst ein komplettes Konzept, dann bauen | Mit KI ist ein Probelauf in Stunden gebaut; Fehler zeigen sich am Probelauf schneller als im Konzeptpapier. |
@@ -176,7 +189,8 @@ Die Regeln übersetzen die Prinzipien in überprüfbare Vorgaben; in Klammern st
 
 **Bildschirm und Darstellung (nach Mayer)**
 
-- Alles weglassen, was nicht dem Lernziel dient: keine Deko-Bilder, keine Hintergrundmusik, keine „interessanten Nebenfakten“ (Kohärenz).
+- Wort und Bild zusammen statt Text allein: Zu jeder Erklärung gehört eine passende Grafik, Skizze oder Animation, die zum Inhalt passt, nicht zu einem angeblichen Lerntyp (Multimedia).
+- Alles weglassen, was nicht dem Lernziel dient: keine Deko-Bilder, keine Hintergrundmusik, keine „interessanten Nebenfakten“ (Kohärenz). Solche interessanten, aber unwichtigen Details heißen in der Forschung „verführerische Details“: Sie ziehen Aufmerksamkeit vom Wesentlichen ab. Ein witziges Bild passt in den Einstieg, nicht mitten in die Erklärung.
 - Das Wichtige hervorheben: Schlüsselbegriffe fett, im Bild ein Pfeil oder Rahmen genau auf die Stelle, um die es geht, Zwischenüberschriften statt langer Textblöcke. Farben und Markierungen sparsam einsetzen und im ganzen Paket immer mit derselben Bedeutung (Signalisierung).
 - Beschriftung direkt ans Bild, nicht in eine Legende darunter; Erklärung und zugehörige Grafik gleichzeitig sichtbar (räumliche und zeitliche Nähe; in der Lernpsychologie spricht man vom „Split-Attention-Effekt“, der geteilten Aufmerksamkeit).
 - Alles, was für eine Aufgabe nötig ist, gleichzeitig sichtbar halten: Auftrag, Bild oder Terminal und Eingabe stehen auf einem Bildschirm, ohne Scrollen oder Umschalten.
@@ -217,6 +231,7 @@ Signale braucht nicht nur der Lernstoff, sondern auch die Bedienung. Wer suchen 
 
 - Jede Aufgabe beginnt mit einem Auftrag aus der Leitsituation („Mira bittet dich …“), nicht mit „Aufgabe 3“.
 - Erst Lösungsbeispiel, dann ähnliche Aufgabe, dann veränderte Aufgabe (Lösungsbeispiele, Ausblenden der Hilfe).
+- Lernende zum Mitdenken auffordern, nicht nur zum Lesen: Im Lösungsbeispiel steht an einem entscheidenden Schritt eine Frage zum Selbsterklären („Warum ist dieser Schritt nötig?“) – erst selbst überlegen, dann die Begründung aufklappen. Nach Stationen und Übungen regelmäßig ein kurzer Auftrag zum Skizzieren, Zusammenfassen in eigenen Worten oder Erklären für andere (generative Lernaktivitäten).
 - Situationen variieren (andere Kunden, andere Geräte, andere Daten), damit Wissen übertragbar wird (4C/ID).
 - Geprüft wird das Ergebnis, nicht ein bestimmter Lösungsweg; alternative richtige Wege werden akzeptiert.
 
@@ -241,6 +256,16 @@ Was Einsteigern hilft, kann Fortgeschrittene bremsen: Ausführliche Erklärungen
 - Ausführliche Erklärungen und Lösungsbeispiele sind aufklappbar, nicht Pflichtlektüre; die Kurzfassung steht sichtbar.
 - Tipps gibt es nur auf Anforderung (siehe oben).
 - Übersprungene Stationen bleiben jederzeit erreichbar; der Kompetenznachweis ist für alle gleich.
+
+**Ton, Inklusion und Deutsch als Zweitsprache**
+
+Die Gestaltungsregeln sind Faustregeln. Für manche Lernende gelten sie nur eingeschränkt, deshalb zusätzlich:
+
+- Gesprochenes ist nie die einzige Quelle: Wo Ton eingesetzt wird, gibt es den Text zum Zuschalten (Untertitel oder Transkript). Lernende mit Hörbeeinträchtigung brauchen ihn, und ohne Kopfhörer geht es im Klassenzimmer oft nicht anders.
+- Für Lernende, die noch Deutsch lernen, dürfen Untertitel auch zusätzlich zum Ton laufen, obwohl das Redundanzprinzip davon abrät; das Verstehen der Sprache wiegt hier schwerer.
+- Fachbegriffe in einem Glossar sammeln, das jederzeit erreichbar ist; die wichtigsten am Anfang kurz vorstellen (Vortraining).
+- Kurze Sätze, geläufige Wörter, eine Information pro Satz. Fachbegriffe bleiben, werden aber erklärt.
+- Information nie nur über Ton oder nur über Farbe vermitteln.
 
 **Feedback**
 
@@ -302,7 +327,7 @@ Die Standards stammen aus den bisherigen PING-Paketen und den Tests in der ByCS-
 | Datenübergabe | `cmi.core.score.raw` = bestes Ergebnis (0–100), `lesson_status` passed/failed, `masteryscore` im Manifest = 80; Fortschritt in `suspend_data`; Name aus `cmi.core.student_name` vorbelegen; optional `cmi.objectives` je Lernziel und `cmi.interactions` je Frage |
 | Ohne Lernplattform | Paket läuft auch lokal; Fortschritt dann nur im Browser, mit Hinweis |
 | Geräte | Zielgerät im Steckbrief festlegen (PC, Tablet oder beides); bei Tablets: Antippen statt nur Ziehen |
-| Barrierefreiheit | Bedienung per Tastatur, ausreichender Kontrast, Alternativtexte für Bilder, Schrift skalierbar, Information nie nur über Farbe |
+| Barrierefreiheit | Bedienung per Tastatur, ausreichender Kontrast, Alternativtexte für Bilder, Schrift skalierbar, Information nie nur über Farbe oder nur über Ton; Gesprochenes immer auch als Text (Untertitel oder Transkript); Glossar mit Fachbegriffen |
 | Datenschutz | Keine Daten an Dritte, keine Tracking-Dienste, keine Konten außerhalb der Lernplattform; nur die SCORM-Felder, die für Lernen und Bewertung nötig sind |
 | Ergebnis | Auswertung je Lernziel, druckbar als PDF |
 | Qualitätssicherung | Test im SCORM-1.2-Testplayer; automatisierter Test, dass alle Aufgaben mit der Musterlösung lösbar sind; Test in der echten ByCS-Lernplattform vor dem ersten Einsatz |
@@ -354,6 +379,7 @@ Ein Paket ist einsatzbereit, wenn alle Muss-Punkte erfüllt sind; die Checkliste
 - [ ] Paket läuft im Testplayer und in der ByCS-Lernplattform; Punktzahl und Status kommen an.
 - [ ] Wiedereinstieg nach Abbruch funktioniert.
 - [ ] Tastaturbedienung, Kontrast und Alternativtexte geprüft.
+- [ ] Gesprochenes ist auch als Text verfügbar (Untertitel oder Transkript); keine Information nur über Ton.
 - [ ] Keine externen Verbindungen, keine personenbezogenen Daten außerhalb der Lernplattform.
 
 **Soll**
@@ -362,6 +388,8 @@ Ein Paket ist einsatzbereit, wenn alle Muss-Punkte erfüllt sind; die Checkliste
 - [ ] Trennung von Hintergrundwissen (Steckbrief, Glossar) und Bedienhilfe am Ort der Aufgabe. (P9)
 - [ ] Mit drei bis fünf Schülern erprobt; Änderungen eingearbeitet.
 - [ ] Am Ende gibt es ein halb vorgefülltes Merkblatt zum Ergänzen und Herunterladen, freigeschaltet erst nach dem Nachweis, mit Selbsttest-Fragen zum späteren Wiederholen. (P13)
+- [ ] Lösungsbeispiele enthalten eine Frage zum Selbsterklären; nach Stationen oder Übungen gibt es Aufträge zum Skizzieren, Zusammenfassen oder Erklären. (P3)
+- [ ] Glossar mit allen Fachbegriffen, jederzeit erreichbar; die wichtigsten Begriffe werden am Anfang vorgestellt; kurze Sätze, geläufige Wörter (auch für Lernende, die Deutsch lernen).
 
 ## Teil C7: Der Leitfaden als Skill-Set
 
@@ -412,19 +440,23 @@ Links führen zum Volltext oder zu einer Zusammenfassung, die für diesen Entwur
 - Adesope, O. O., Trevisan, D. A. & Sundararajan, N. (2017). [Rethinking the use of tests: A meta-analysis of practice testing](https://education.wsu.edu/documents/2018/01/rethinking-use-tests.pdf/). *Review of Educational Research, 87*(3), 659–701.
 - Alfieri, L., Brooks, P. J., Aldrich, N. J. & Tenenbaum, H. R. (2011). [Does discovery-based instruction enhance learning?](https://www.fisme.science.uu.nl/publicaties/literatuur/2011_alfieri_discovery_learning.pdf) *Journal of Educational Psychology, 103*(1), 1–18.
 - Barbieri, C. A., Miller-Cotto, D., Clerjuste, S. N. & Chawla, K. (2023). [A meta-analysis of the worked examples effect on mathematics performance](https://oaks.kent.edu/hcri/meta-analysis-worked-examples-effect-mathematics-performance). *Educational Psychology Review, 35*.
+- Bisra, K., Liu, Q., Nesbit, J. C., Salimi, F. & Winne, P. H. (2018). Inducing self-explanation: A meta-analysis. Educational Psychology Review, 30(3), 703–725.
 - Brod, G. (2021). Generative learning: Which strategies for what age? Educational Psychology Review, 33, 1295–1318. ([Volltext](https://www.pedocs.de/volltexte/2021/23704/pdf/EPR_2021_4_Brod_Generative_Learning_A.pdf))
 - Brunmair, M. & Richter, T. (2019). [Similarity matters: A meta-analysis of interleaved learning and its moderators](https://www.psychologie.uni-wuerzburg.de/fileadmin/06020400/2019/Brunmair_Richter_in_press__2019_META-ANALYSIS_OF_INTERLEAVED_LEARNING.pdf). *Psychological Bulletin, 145*(11), 1029–1052.
 - Collins, A., Brown, J. S. & Newman, S. E. (1989). Cognitive apprenticeship: Teaching the crafts of reading, writing, and mathematics. In L. B. Resnick (Hrsg.), *Knowing, learning, and instruction* (S. 453–494). Erlbaum.
 - Costa, J. M., Miranda, G. & Melo, M. (2022). [The four-component instructional design model (4C/ID): A meta-analysis on use and effect](https://repositorio.iscte-iul.pt/bitstream/10071/23015/1/article_81383.pdf). *Learning Environments Research, 25*(2), 445–463.
+- de Jong, T. (2010). Cognitive load theory, educational research, and instructional design: Some food for thought. Instructional Science, 38(2), 105–134.
 - Dickson, K. L. & Miller, M. D. (2005). Authorized crib cards do not improve exam performance. Teaching of Psychology, 32(4), 230–233.
 - Dignath, C. & Büttner, G. (2008). Components of fostering self-regulated learning among students. *Metacognition and Learning, 3*, 231–264.
 - Dignath, C. & van Ewijk, R. (2023). [Let learners monitor the learning content and their learning behavior!](https://bibliographie.ub.uni-mainz.de/catalog/publication-170139) *Educational Psychology Review, 35*, Art. 62.
+- Fiorella, L. & Mayer, R. E. (2016). Eight ways to promote generative learning. Educational Psychology Review, 28(4), 717–741.
 - Frick, T. W., Chadha, R., Watson, C. & Zlatkovska, E. (2010). [Improving course evaluations to improve instruction and complex learning in higher education](https://bio.tedfrick.me/etrd/ETRD2010ImprovingCourseEvaluations.pdf). *ETR&D, 58*(2), 115–136.
 - Funk, S. C. & Dickson, K. L. (2011). Crib card use during tests: Helpful or a crutch? Teaching of Psychology, 38(2), 114–117. ([Abstract](https://experts.nau.edu/en/publications/crib-card-use-during-testshelpful-or-a-crutch/))
 - Gurlitt, J. & Renkl, A. (2008). Are high-coherent concept maps better for prior knowledge activation? Differential effects of concept mapping tasks on high school vs. university students. Journal of Computer Assisted Learning, 24(5), 407–419.
 - Hamouda, S. & Shaffer, C. A. (2016). Crib sheets and exam performance in a data structures course. Computer Science Education. ([Volltext](https://people.cs.vt.edu/shaffer/Papers/Crib_Sheets2016.pdf))
 - Hattie, J. (2023). *Visible learning: The sequel*. Routledge. ([Rezension](https://jle.hse.ru/article/download/27821/23245))
 - Iterbeke, K., De Witte, K. & Schelfhout, W. (2021). The effects of computer-assisted adaptive instruction and elaborated feedback on learning outcomes. A randomized control trial. *Computers in Human Behavior, 120*, 106666.
+- Kalyuga, S., Ayres, P., Chandler, P. & Sweller, J. (2003). The expertise reversal effect. Educational Psychologist, 38(1), 23–31.
 - Kalyuga, S. (2007). Expertise reversal effect and its implications for learner-tailored instruction. *Educational Psychology Review, 19*, 509–539.
 - Karich, A. C., Burns, M. K. & Maki, K. E. (2014). Updated meta-analysis of learner control within educational technology. *Review of Educational Research, 84*(3), 392–410. ([Kurzreview Clearing House Unterricht](https://www.clearinghouse.edu.tum.de/wp-content/uploads/2017/07/CHU_KR_8_Karich_2014_Lernersteuerung-Software.pdf))
 - Kerres, M. (2024). [*Mediendidaktik: Lernen in der digitalen Welt*](https://www.degruyterbrill.com/document/doi/10.1515/9783111201078/html) (6. Aufl.). De Gruyter Oldenbourg. Genutzt v. a. Kap. 4 (Wirksamkeit digitalen Lernens), 6.6 (Gestaltung), 8.3 und 8.6 (Instruktionsdesign, Vorgehen), 9.2 (Bildungsproblem), 10.2–10.5 (Steuerung, 3-2-1-Modell, adaptive Systeme, Kriterien für die Methode), 11.6 (Spielelemente), 12.6 (Struktur, Lernaufgaben) und 14 (Planungsleitfaden).
@@ -439,6 +471,8 @@ Links führen zum Volltext oder zu einer Zusammenfassung, die für diesen Entwur
 - Sarfo, F. K. & Elen, J. (2007). Developing technical expertise in secondary technical schools: The effect of 4C/ID learning environments. *Learning Environments Research, 10*, 207–221.
 - Schroeder, N. L., Nesbit, J. C., Anguiano, C. J. & Adesope, O. O. (2018). Studying and constructing concept maps: A meta-analysis. Educational Psychology Review, 30(2), 431–455.
 - Shah, A. & Soosai Raj, A. G. (2024). [A review of cognitive apprenticeship methods in computing education research](https://par.nsf.gov//servlets/purl/10491208). *SIGCSE 2024*.
+- Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. Cognitive Science, 12(2), 257–285.
+- Sweller, J., van Merriënboer, J. J. G. & Paas, F. (2019). Cognitive architecture and instructional design: 20 years later. Educational Psychology Review, 31(2), 261–292.
 - Tamim, R. M. u. a. (2011). What forty years of research says about the impact of technology on learning. *Review of Educational Research, 81*(1), 4–28.
 - Theobald, M. (2021). [Self-regulated learning training programs enhance university students' academic performance, self-regulated learning strategies, and motivation](https://www.uni-trier.de/securedl/sdl-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NTM2NTI4MTUsImV4cCI6MTc1Mzc0MjgxNSwidXNlciI6MCwiZ3JvdXBzIjpbMCwtMSw5ODgsOTk1XSwiZmlsZSI6ImZpbGVhZG1pbi9mYjEvcHJvZi9QU1kvU1VLL1RoZW9iYWxkXzIwMjEtMS5wZGYiLCJwYWdlIjo5NTE0OH0.rrGtHfoBsZdG8aoyxIzuKf5p-jYdLs1yv1ttKjS62ag/Theobald_2021-1.pdf). *Contemporary Educational Psychology*.
 - van Merriënboer, J. J. G., Clark, R. E. & de Croock, M. B. M. (2002). [Blueprints for complex learning: The 4C/ID-model](https://link.springer.com/doi/10.1007/BF02504993). *ETR&D, 50*(2), 39–64.

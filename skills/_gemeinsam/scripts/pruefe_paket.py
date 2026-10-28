@@ -80,6 +80,10 @@ def statisch(root):
         punkt(feld in alles, 'Datenübergabe', f'{text} ({feld}) ' + ('wird verwendet.' if feld in alles else 'fehlt im Code.'), gelb=feld == 'cmi.core.student_name')
     punkt('cmi.objectives' in alles, 'Datenübergabe', 'Ergebnisse je Lernziel (cmi.objectives) ' + ('werden übertragen.' if 'cmi.objectives' in alles else 'werden nicht übertragen (optional).'), gelb=True)
     punkt('cmi.interactions' in alles, 'Datenübergabe', 'Ergebnisse je Frage (cmi.interactions) ' + ('werden übertragen.' if 'cmi.interactions' in alles else 'werden nicht übertragen (optional, aber nötig für die Auswertung je Frage).'), gelb=True)
+    medien = re.findall(r'<(audio|video)\b', alles, re.I)
+    if medien:
+        text_da = re.search(r'<track\b|transkript|untertitel', alles, re.I)
+        punkt(bool(text_da), 'Barrierefreiheit', 'Ton/Video vorhanden ' + ('mit Hinweis auf Untertitel oder Transkript.' if text_da else 'ohne erkennbare Untertitel oder Transkript – Gesprochenes muss auch als Text verfügbar sein.'), gelb=True)
     for kw in ['alert(', 'confirm(', 'prompt(']:
         if re.search(r'(?<![\w.])' + re.escape(kw), alles):
             punkt(False, 'Bedienung', f'{kw[:-1]}-Dialog im Code gefunden; Dialoge blockieren in manchen Lernplattformen.', gelb=True)

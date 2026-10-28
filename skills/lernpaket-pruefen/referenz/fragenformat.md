@@ -51,6 +51,7 @@ Alle Inhalte eines Pakets stehen in `js/inhalt.js` als ein Objekt `window.PAKET`
 | `nachweis` | `{dauer, gewichtA (Prozent, Standard 50), einleitung, teilA: {titel, auftrag, inhalt, interaktion}, teilB: {proLZ: 2}}` |
 | `merkblatt` | `[{lz, titel, zeilen: [{text mit ___, loesung}], fehler, beispiel, schema}]` |
 | `selbsttest` | fünf Fragen-IDs für die Rückseite des Merkblatts |
+| `tafel` | optional: Tafelbild für einen freiwilligen Lehrer-Input (siehe „Tafelbild“ unten). Ohne dieses Feld gibt es kein Tafelbild. |
 | `fragen` | Fragenpool (siehe oben) |
 
 ## Zum Mitdenken anregen (generatives Lernen)
@@ -79,6 +80,46 @@ interaktion: function (box, api) {
 ```
 
 Regeln: Antippen statt nur Ziehen (Tablet), per Tastatur bedienbar (`<button>`), Beschriftungen direkt im Bild, Farben über CSS-Variablen (`var(--ok)` usw.), keine externen Dateien, keine `alert/confirm/prompt`. Im Nachweis Teil A gibt es keine Rückmeldung während der Bearbeitung; Fehler wirken sich, wo möglich, realistisch aus.
+
+## Tafelbild (optional)
+
+Für Pakete mit einem freiwilligen Lehrer-Input (Leitfaden C2). `js/tafel.js` zeigt die Szenen als Präsentation: groß, ohne erklärenden Text, Schritt für Schritt. Nicht jedes Paket braucht das – sinnvoll vor allem bei Simulationen, Abläufen und Vergleichen.
+
+```js
+tafel: {
+  titel: 'Bits & Bytes – Überblick',
+  dauer: '15 Minuten',
+  szenen: [
+    { id: 'stellenwerte', titel: 'Stellenwerte', station: 'S1',
+      erklaerung: '<p>Kurz, für Schüler zuschaltbar …</p>',
+      zeichne: function (buehne, api) {
+        // buehne: leeres <div> (Flex-Spalte, füllt den Bildschirm)
+        // api.werkzeug({ icon, text, taste, typ: 'knopf'|'schalter'|'modus', gruppe, an, aktion(an, knopf) })
+        //   → Knopf in der unteren Leiste mit Tastenkürzel; Rückgabe { setze(an), knopf }
+        // api.praesentation → true, wenn ohne Erklärungen gestartet (index.html#tafel)
+        return { aufraeumen: function () { /* Animationen stoppen */ } };
+      } }
+  ]
+}
+```
+
+| Feld | Pflicht | Bedeutung |
+|---|---|---|
+| `titel`, `dauer` | nein | Anzeige im Dialog und auf der Startseiten-Karte |
+| `szenen[].titel` | ja | kurzer Name (2–3 Wörter); erscheint nur mit eingeschalteten Erklärungen |
+| `szenen[].station` | ja | ID der Station, die das Thema vertieft – das Tafelbild zeigt nichts, was im Paket fehlt |
+| `szenen[].erklaerung` | ja | 2–4 kurze Sätze für Schüler, die das Tafelbild selbst öffnen |
+| `szenen[].zeichne` | ja | baut die Szene; nutzt dieselben Bausteine wie die Interaktionen der Stationen |
+
+Regeln:
+
+- **Kein erklärender Text auf der Bühne.** Erlaubt: Beschriftungen im Bild, Zahlen, Symbole. Die Lehrkraft erklärt mündlich; die Erklärung steht in `erklaerung`.
+- **Höchstens etwa sechs Szenen** für 20 Minuten, je Szene eine Kernaussage. Die **letzte Szene sichert** (z. B. Vergleich mit aufdeckbaren Kennzahlen).
+- Jede Szene trägt das Muster **Vorhersagen → Klicken → Deuten**: Werkzeuge so anlegen, dass die Lehrkraft erst fragen und dann auslösen oder aufdecken kann (Schalter „Anzahl zeigen“, „Dezimal“ usw.).
+- Groß zeichnen: Die Bühne ist so breit wie der Beamer; Schrift und Linien in der Szene größer als in der Station.
+- Werkzeuge mit sprechendem Kurztext und Tastenkürzel; Kürzel `e`, `p`, `w`, `f`, Ziffern und Pfeiltasten sind vom Tafelbild belegt.
+- Nichts speichern: keine SCORM-Aufrufe, kein `localStorage`.
+- Zum Tafelbild gehört ein **Ablaufplan** für die Lehrkraft (`lehrer/input-ablauf.md`, Vorlage im Skill `lernpaket-bauen`).
 
 ## Mengen (Richtwerte aus dem Leitfaden)
 

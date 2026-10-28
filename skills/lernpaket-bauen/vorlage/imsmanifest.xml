@@ -21,8 +21,10 @@
     <resource identifier="RES" type="webcontent" adlcp:scormtype="sco" href="index.html">
       <file href="index.html"/>
       <file href="css/stil.css"/>
+      <file href="css/tafel.css"/>
       <file href="js/engine.js"/>
       <file href="js/inhalt.js"/>
+      <file href="js/tafel.js"/>
     </resource>
   </resources>
 </manifest>

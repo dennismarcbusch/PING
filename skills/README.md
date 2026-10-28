@@ -20,14 +20,16 @@ skills/
     fragenformat.md        Format von js/inhalt.js (Fragen, Stationen, Interaktionen)
     scripts/pruefe_paket.py  automatischer Paket-Test (nachgebauter SCORM-Player, Playwright)
   lernpaket-*/ , fragenpool-erstellen/   die fünf Skills; referenz/ ist eine Kopie, nicht von Hand ändern
-  lernpaket-bauen/vorlage/ PING-Vorlage: index.html, css/stil.css, js/engine.js, js/inhalt.js (Beispiel), imsmanifest.xml
+  lernpaket-bauen/vorlage/ PING-Vorlage: index.html, css/stil.css, js/engine.js, js/inhalt.js (Beispiel), imsmanifest.xml,
+                           optionales Tafelbild: js/tafel.js, css/tafel.css
+  lernpaket-bauen/vorlagen-lehrkraft/  Ablaufplan für einen Input mit Tafelbild (nicht im Paket)
   baue-skills.sh           verteilt die Referenz und baut dist/skill_<name>.zip
 ```
 
 ## Pflege
 
 - **Leitfaden geändert?** Markdown-Export des Dokuments holen und `python3 skills/leitfaden_sync.py --export <export>` ausführen: Das aktualisiert `docs/leitfaden-lernpakete.md` und erzeugt die Auszüge in `_gemeinsam/` (Prozess, Gestaltung, Technik, Checkliste) neu. `prinzipien.md` und `fragenformat.md` von Hand nachziehen, dann `skills/baue-skills.sh`.
-- **Vorlage geändert?** Nach jeder Änderung an `engine.js` oder `stil.css`: `python3 skills/_gemeinsam/scripts/pruefe_paket.py skills/lernpaket-bauen/vorlage` muss komplett grün sein. Die Engine ist für alle Pakete gleich; paketspezifisches gehört in `inhalt.js`.
+- **Vorlage geändert?** Nach jeder Änderung an `engine.js`, `tafel.js`, `stil.css` oder `tafel.css`: `python3 skills/_gemeinsam/scripts/pruefe_paket.py skills/lernpaket-bauen/vorlage` muss komplett grün sein. Die Engine ist für alle Pakete gleich; paketspezifisches gehört in `inhalt.js`.
 - **Veröffentlichen:** Der Release-Workflow baut die Skill-ZIPs mit und legt sie ins Release und auf die Pages-Seite.
 - Der ältere Skill `tools/bycs-lernmodul` (HTML-Schnipsel für Textseiten, ohne SCORM) ist in `lernpaket-bauen` aufgegangen: Design-Tokens und Komponenten stecken jetzt in `vorlage/css/stil.css`. Er bleibt für reine Einbettungen ohne Bewertung erhalten.
 

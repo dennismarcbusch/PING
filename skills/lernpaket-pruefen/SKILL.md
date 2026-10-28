@@ -45,6 +45,19 @@ Mit Playwright: Lässt sich eine Station mit der Tabulatortaste und Enter bedien
 
 Sprache und Deutsch als Zweitsprache: Gibt es ein Glossar, werden die wichtigsten Begriffe vorab vorgestellt, sind die Sätze kurz? Lange Schachtelsätze und unerklärte Fachwörter nennst du mit Fundstelle.
 
+### 4a. Tafelbild (nur wenn das Paket eines hat)
+
+Erkennbar an `tafel:` in `js/inhalt.js`. Das Skript schaltet alle Szenen und Werkzeuge durch, prüft Konsolenfehler, `index.html#tafel` und dass nichts an die Lernplattform geschrieben wird. Du prüfst zusätzlich anhand der Screenshots `tafel-<n>.png` und des Inhalts:
+
+- **Textfrei:** Steht auf der Bühne ein erklärender Satz? Erlaubt sind Beschriftungen, Zahlen, Symbole.
+- **Lesbar am Beamer:** Schrift und Linien groß genug für die letzte Reihe?
+- **Inhalt ⊆ Paket:** Hat jede Szene eine `station`, die es gibt, und kommt dort dasselbe vor? Zeigt das Tafelbild etwas, das im Paket fehlt?
+- **Vorhersage möglich:** Lassen sich Ergebnisse erst auslösen bzw. aufdecken, nachdem die Klasse geschätzt hat?
+- **Umfang:** höchstens etwa sechs Szenen, die letzte sichert.
+- **Ablaufplan** liegt bei (`lehrer/input-ablauf.md`); Zahlen darin stichprobenartig mit Code gegen das Paket prüfen.
+
+Befunde zum Tafelbild sind Soll-Punkte (der Input ist optional), außer das Tafelbild schreibt Daten oder erzeugt Fehler – das ist rot.
+
 ### 5. Fachliche Punkte
 
 Du darfst Auffälligkeiten melden (z. B. eine Rechnung, die nicht stimmt, eine veraltete Angabe), **hakst den Punkt „Fachlich geprüft“ aber nie selbst ab**. Das ist Aufgabe einer Fachlehrkraft. Rechnungen und Musterlösungen prüfst du mit Code nach.
@@ -59,7 +72,7 @@ Als Markdown-Datei `pruefbericht-<name>.md`:
 4. **Tabelle Muss-Punkte** (aus der Checkliste): Punkt · Ampel · Befund · Fundstelle · Vorschlag.
 5. **Tabelle Soll-Punkte**, gleiche Spalten.
 6. **Technik-Test:** Ergebnis des Skripts, zusammengefasst.
-7. **Offen für Menschen:** fachliche Prüfung durch eine Fachlehrkraft, Review durch eine zweite Lehrkraft, Test mit drei bis fünf Schülern, Test in der echten ByCS-Lernplattform.
+7. **Offen für Menschen:** fachliche Prüfung durch eine Fachlehrkraft, Review durch eine zweite Lehrkraft, Test mit drei bis fünf Schülern, Test in der echten ByCS-Lernplattform; bei Tafelbild ein Probelauf am echten Board.
 
 Formuliere Befunde sachlich und als Vorschlag, nicht als Urteil über die Kollegin oder den Kollegen. Ältere Pakete, die vor dem Leitfaden entstanden sind, bekommen dieselben Maßstäbe; weise dann darauf hin, welche Abweichungen mit wenig Aufwand zu beheben sind (z. B. masteryscore) und welche einen größeren Umbau bräuchten.
 

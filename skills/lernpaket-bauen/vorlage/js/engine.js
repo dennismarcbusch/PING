@@ -5,6 +5,7 @@
    (Stationen mit Lösungsbeispiel und Kurz-Check) → ② Üben (3 gestufte Tipps,
    Reflexion) → ③ Nachweis (Teil A Handlungsaufgabe, Teil B Fragenpool, 80 %) →
    ④ Abschluss (Auswertung je Lernziel, Selbsteinschätzung nachher, Merkblatt).
+   Optional: Tafelbild für einen freiwilligen Input (js/tafel.js, PAKET.tafel).
    ===================================================================== */
 (function () {
   'use strict';
@@ -129,6 +130,20 @@
     if (!P.merkblatt || !P.merkblatt.length) hinweise.push('Kein Merkblatt (P13, Soll).');
     else LZ.forEach(function (z) { if (!P.merkblatt.some(function (m) { return m.lz === z.id; })) hinweise.push('Merkblatt ohne Abschnitt zu ' + z.id + '.'); });
     (P.selbsttest || []).forEach(function (q) { if (!FR[q]) fehler.push('Selbsttest-Frage ' + q + ' gibt es nicht.'); });
+    if (P.tafel) {  // optionales Tafelbild für den Input (Leitfaden C2)
+      var sz = P.tafel.szenen || [];
+      if (!window.TAFEL) fehler.push('PAKET.tafel ist gesetzt, aber js/tafel.js ist nicht (vor engine.js) eingebunden.');
+      if (!sz.length) fehler.push('Tafelbild ohne Szenen.');
+      if (sz.length > 8) hinweise.push('Tafelbild mit ' + sz.length + ' Szenen – für etwa 20 Minuten sind höchstens 6–8 sinnvoll.');
+      sz.forEach(function (s, i) {
+        var w = 'Tafelbild-Szene ' + (i + 1);
+        if (typeof s.zeichne !== 'function') fehler.push(w + ': zeichne-Funktion fehlt.');
+        if (!s.titel) hinweise.push(w + ': titel fehlt.');
+        if (!s.erklaerung) hinweise.push(w + ': zuschaltbare Erklärung für Schüler fehlt.');
+        if (!s.station) hinweise.push(w + ': keine Station verknüpft (das Tafelbild zeigt nur, was auch im Paket vorkommt).');
+        else if (!STATIONEN.some(function (x) { return x.id === s.station; })) hinweise.push(w + ': Station ' + s.station + ' gibt es (noch) nicht.');
+      });
+    }
     return { fehler: fehler, hinweise: hinweise };
   }
   function lzIds() { var o = {}; LZ.forEach(function (z) { o[z.id] = 1; }); return o; }
@@ -376,6 +391,7 @@
     ]));
     if (P.dauer) c.appendChild(el('p', { class: 'klein', text: 'Dauer: ' + P.dauer + '. Du kannst jederzeit aufhören, dein Stand bleibt erhalten.' }));
     haupt.appendChild(c);
+    if (P.tafel && window.TAFEL && window.TAFEL.startKarte) haupt.appendChild(window.TAFEL.startKarte());  // optionaler Input mit Tafelbild
     var vorab = (P.glossar || []).filter(function (g) { return g.vorab; });
     if (vorab.length) {
       var gb = el('div', { class: 'card' }, [el('h2', { text: 'Wichtige Begriffe vorab' }), el('p', { class: 'klein', text: 'Diese Wörter kommen gleich vor. Alle Begriffe findest du später unter jeder Station im Glossar.' })]);
@@ -808,7 +824,7 @@
 
   /* ---------- Schnittstelle für automatische Tests ---------- */
   window.LERNPAKET = {
-    version: '1.0',
+    version: '1.1',
     pruefeInhalt: pruefeInhalt,
     zustand: function () { return JSON.parse(JSON.stringify(S)); },
     ansicht: function () { return ANSICHT; },

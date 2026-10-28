@@ -53,6 +53,18 @@
 - **Merkblatt** je Lernziel: zwei Lückensätze mit Lösung, typischer Fehler, kurzes Beispiel, ggf. Schritt-Schema
 - **Selbsttest** (Rückseite des Merkblatts): fünf Fragen aus allen Lernzielen
 
+## Input und Tafelbild (optional – nur wenn ein freiwilliger Input geplant ist)
+
+Rolle: Einstieg (Überblick, Neugier), nicht Ersatz. Wer nicht teilnimmt, verpasst nichts. Kein erklärender Text auf der Tafel; Erklärungen für Schüler zuschaltbar.
+
+| Szene | Station | Was zu sehen ist / was die Lehrkraft auslöst | Vorhersage-Frage an die Klasse | Kernaussage (mündlich) |
+|---|---|---|---|---|
+| 1 … | S… | | | |
+| … (höchstens etwa 6) | | | | |
+| letzte: Sicherung | | z. B. Vergleich mit aufdeckbaren Kennzahlen | | |
+
+Bewusst offen gelassen (wird in der Station gelöst): …
+
 ## Geschätzte Dauer
 
 …
@@ -74,3 +86,4 @@
 | P11 Selbststeuerung | ☐ | |
 | P12 Spielelemente (Soll) | ☐ | |
 | P13 Merkblatt (Soll) | ☐ | |
+| Input mit Tafelbild (optional) | ☐ / entfällt | Inhalt ⊆ Paket, je Szene Station, textfrei, Sicherung am Ende |

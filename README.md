@@ -1,12 +1,6 @@
 # PING – interaktive IT-Lernmodule als SCORM-Pakete
 
-> **Neu: Leitfaden für evidenzbasierte Lernpakete** – [docs/leitfaden-lernpakete.md](docs/leitfaden-lernpakete.md)
->
-> Der Leitfaden hilft Lehrkräften, auch ohne Medienpädagogik- oder Programmierkenntnisse, Lernpakete wissenschaftlich fundiert und einheitlich zu bauen. Er fasst die Forschungslage zusammen (u. a. Kerres, Mayer, 4C/ID), leitet daraus 13 Prinzipien ab (Muss/Soll mit Aufwand), beschreibt Paketstruktur, Entwicklungsprozess und technische Standards (SCORM 1.2, ByCS) und enthält eine Qualitätscheckliste für das Review sowie das KI-gestützte Skill-Set. Neue und überarbeitete Pakete werden gegen diese Checkliste geprüft.
->
-> **Skill-Set für Claude** – [skills/](skills) · [Anleitung](docs/skill-set-anleitung.md)
->
-> Fünf Skills setzen den Leitfaden um und führen auch Einsteiger durch Planen, Fragen erstellen, Bauen, Prüfen und Auswerten. Gebaut wird mit einer Paketvorlage, die Struktur, Nachweis (80 %), Merkblatt und SCORM-Anbindung schon enthält; ein Prüfskript spielt jedes Paket automatisch mit der Musterlösung durch. Die Skills gibt es als ZIP-Dateien zum Hochladen in Claude unter [Releases](../../releases).
+> **Leitfaden und Skill-Set** sind in ein eigenes Repository umgezogen: [Lernpaket-Kompass – Leitfaden für interaktive Lernpakete](https://github.com/dennismarcbusch/lernpaket-kompass). Neue und überarbeitete PING-Pakete werden mit der Kompass-Vorlage gebaut (Paket-ID `ping-<name>`) und gegen dessen Checkliste geprüft.
 
 Fünf selbstgesteuerte Lernmodule für die Berufsschule (Fachinformatik, Einstiegsklasse). Jedes Modul läuft komplett im Browser, braucht keinen Server und lässt sich als SCORM-1.2-Paket in jede Lernplattform einbinden, z. B. Moodle, ILIAS oder die bayerische ByCS-Plattform.
 
@@ -58,9 +52,7 @@ packages/<name>/
   README.md   Steckbrief des Moduls
   src/        entpackter Paketinhalt (index.html, imsmanifest.xml, js/, css/ …)
   screenshots/  Bilder für die READMEs (nicht im ZIP)
-docs/                   Leitfaden und Anleitung zum Skill-Set
-skills/                 Skill-Set (fünf Skills, Paketvorlage, Prüfskript); skills/baue-skills.sh -> dist/skill_<name>.zip
-tools/bycs-lernmodul/   älterer Skill für HTML-Schnipsel ohne SCORM (aufgegangen in skills/lernpaket-bauen)
+tools/bycs-lernmodul/   älterer Skill für HTML-Schnipsel ohne SCORM (aufgegangen im Lernpaket-Kompass, Skill lernpaket-bauen)
 tools/screenshots/      erzeugt die Screenshots neu (Node + Edge headless)
 build.sh                baut die ZIPs
 ```

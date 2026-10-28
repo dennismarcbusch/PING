@@ -3,7 +3,6 @@ name: Release
 # Tag "v1.0"           -> baut alle Pakete, Release + GitHub Pages
 # Tag "pc-aufbau-v1.2" -> baut nur dieses Paket, nur Release
 # Pages bekommt nur vollständige Builds, sonst fehlten dort die übrigen Pakete.
-# Vollständige Builds enthalten auch das Skill-Set (dist/skill_<name>.zip).
 on:
   push:
     tags: ['v*', '*-v*']
@@ -27,7 +26,6 @@ jobs:
           tag="${GITHUB_REF_NAME:-manual}"
           if [[ "$GITHUB_REF_TYPE" != tag || "$tag" == v* ]]; then
             ./build.sh
-            skills/baue-skills.sh
             echo "full=true" >> "$GITHUB_OUTPUT"
           else
             ./build.sh "${tag%-v*}"

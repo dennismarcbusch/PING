@@ -94,6 +94,16 @@ window.PAKET = {
 
   vorwissen: ['F3', 'F10', 'F15'],
 
+  // Glossar: alle Fachbegriffe; vorab: true = wird am Anfang vorgestellt (Vortraining)
+  glossar: [
+    { begriff: 'Bit', erklaerung: 'Kleinste Informationseinheit: 0 oder 1.', vorab: true },
+    { begriff: 'Byte', erklaerung: '8 Bit zusammen. Ein Byte kann 256 verschiedene Werte haben (0 bis 255).', vorab: true },
+    { begriff: 'Stellenwert', erklaerung: 'Wie viel eine Stelle in einer Zahl wert ist. Im Binärsystem: 1, 2, 4, 8, 16, 32, 64, 128 (von rechts).', vorab: true },
+    { begriff: 'Binärzahl', erklaerung: 'Zahl, die nur aus 0 und 1 besteht (Zweiersystem).' },
+    { begriff: 'Dezimalzahl', erklaerung: 'Zahl im gewohnten Zehnersystem mit den Ziffern 0 bis 9.' },
+    { begriff: 'Oktett', erklaerung: 'Ein Byte als Teil einer IPv4-Adresse. Eine IPv4-Adresse hat vier Oktette, z. B. 192.168.1.10.' }
+  ],
+
   stationen: [
     {
       id: 'S1', titel: 'Stellenwerte: So zählt ein Byte', lz: ['LZ1'],
@@ -107,7 +117,8 @@ window.PAKET = {
           { tun: 'Stellenwerte über die Bits schreiben: 128 64 32 16 8 4 2 1.', warum: 'Jede Stelle ist doppelt so viel wert wie die rechts daneben.' },
           { tun: 'Die Stellenwerte aller Einsen herausschreiben: 128, 32, 16, 2.', warum: 'Eine 0 bedeutet „Stelle nicht benutzt“.' },
           { tun: 'Addieren: 128 + 32 + 16 + 2 = <b>178</b>.', warum: 'Der Wert der Zahl ist die Summe der benutzten Stellenwerte.' }
-        ]
+        ],
+        selbsterklaerung: { schritt: 2, frage: 'Warum schreibst du nur die Stellenwerte der Einsen heraus und nicht alle acht?' }
       },
       interaktion: function (box, api) {
         box.appendChild(Object.assign(document.createElement('p'), { innerHTML: 'Probiere es aus: Schalte die Bits so, dass die Router-Anzeige <code>11000000</code> entsteht. Welcher Dezimalwert erscheint?' }));
@@ -130,7 +141,8 @@ window.PAKET = {
           { tun: '64 passt in 72 → <b>1</b>, Rest 8.', warum: 'Mit dem Rest geht es weiter, nicht mit 200.' },
           { tun: '32 und 16 passen nicht in 8 → <b>0</b>, <b>0</b>. 8 passt → <b>1</b>, Rest 0.', warum: 'Eine Stelle, die nicht passt, bekommt eine 0 – sie bleibt trotzdem stehen.' },
           { tun: 'Die übrigen Stellen 4, 2, 1 → <b>0</b>. Ergebnis: <b>11001000</b>.', warum: 'Ein Byte hat immer acht Stellen, auch wenn vorne oder hinten Nullen stehen.' }
-        ]
+        ],
+        selbsterklaerung: { schritt: 2, frage: 'Warum rechnest du nach dem ersten Schritt mit 72 weiter und nicht mehr mit 200?' }
       },
       interaktion: function (box, api) {
         box.appendChild(Object.assign(document.createElement('p'), { innerHTML: 'Stelle 200 mit den Schaltern ein.' }));
@@ -152,8 +164,10 @@ window.PAKET = {
           { tun: 'Jedes Bit hat 2 Möglichkeiten.', warum: 'Es ist entweder 0 oder 1.' },
           { tun: 'Für 3 Bit: 2 · 2 · 2 = 2³ = <b>8</b>.', warum: 'Jede Möglichkeit des ersten Bits lässt sich mit jeder des zweiten und dritten kombinieren.' },
           { tun: 'Die Werte reichen von 0 (000) bis 7 (111).', warum: 'Die 0 ist einer der 8 Werte – deshalb ist der größte Wert 7, nicht 8.' }
-        ]
+        ],
+        selbsterklaerung: { schritt: 3, frage: 'Es gibt 8 Werte – warum ist der größte trotzdem nur 7?' }
       },
+      mitdenken: { auftrag: 'Zeichne auf Papier eine Tabelle für 1 bis 4 Bit mit der Anzahl der Werte. Erkläre deinem Sitznachbarn mit der Tabelle, warum sich die Anzahl mit jedem Bit verdoppelt.', muster: '1 Bit: 2 · 2 Bit: 4 · 3 Bit: 8 · 4 Bit: 16. Das neue Bit kann bei jedem bisherigen Muster 0 oder 1 sein – aus jedem Muster werden zwei.' },
       beruf: 'In einem Netz mit 8 Bit für Geräte gibt es 256 Bitmuster. Zwei davon sind reserviert, deshalb bleiben 254 Adressen für Geräte.',
       check: ['F14', 'F11', 'F13']
     }

@@ -22,6 +22,10 @@ Jedes Prinzip hat: **So geht’s** (konkret im Paket), **Warum** (Mechanismus), 
 
 Querschnitt: iterativ entwickeln – früh einen Prototyp mit Schülern erproben, nach dem Einsatz die Daten auswerten.
 
+**Theoretische Grundlage von P3 und P7 (Cognitive Load Theory, Sweller 1988):** Das Arbeitsgedächtnis kann nur wenige Einheiten gleichzeitig bearbeiten. Belastung entsteht durch den Stoff selbst (intrinsisch, nur portionierbar), durch ungünstige Gestaltung (extrinsisch, vermeiden) und durch die eigentliche Lernanstrengung (lernbezogen). Mayer: überflüssige Verarbeitung vermeiden, notwendige steuern, generative anregen (Selbsterklären, Skizzieren, Zusammenfassen). Grenzen: Belastungsarten kaum messbar, „lernbezogene Belastung“ nachträglich beliebig deutbar (de Jong 2010), viele Laborbefunde.
+
+**Faustregeln, keine Gesetze:** Die Prinzipien wirken je nach Vorwissen (Expertise-Umkehr) und Lernenden unterschiedlich. Gesprochenes immer auch als Text (Hörbeeinträchtigung); für Lernende, die Deutsch lernen, dürfen Untertitel trotz Redundanzprinzip zusätzlich laufen; Glossar und einfache Sätze. Lerntypen gibt es nicht (Pashler et al. 2008): Die Darstellung richtet sich nach dem Inhalt.
+
 ## P1 · Echte Handlungssituation (Muss)
 
 **So geht’s**
@@ -58,14 +62,15 @@ Drei Stufen mit abnehmender Hilfe (Fading) und wechselnden Fällen. Nicht diesel
 - Bei jedem neuen Aufgabentyp zuerst ein vollständig gelöstes Beispiel
 - Jeden Schritt kurz begründen, nicht nur zeigen
 - Danach ähnliche Aufgabe, dann veränderte; Beispiel überspringbar
+- An einem entscheidenden Schritt eine Frage zum Selbsterklären („Warum …?“), erst überlegen, dann Begründung aufklappen
 
 Gelöstes Beispiel → ähnliche Aufgabe mit Tipp → veränderte Aufgabe ohne Hilfe. Die Begründung je Schritt ist entscheidend, sonst wird nur kopiert.
 
 **Warum:** Beim Beispiel nutzt man das Arbeitsgedächtnis zum Verstehen statt zum Suchen. Könnern hilft das nicht – daher überspringbar.
 
-**Prüffrage:** Gibt es vor jedem neuen Aufgabentyp ein vollständig gelöstes Beispiel mit Begründung je Schritt, das man überspringen kann?
+**Prüffrage:** Gibt es vor jedem neuen Aufgabentyp ein vollständig gelöstes Beispiel mit Begründung je Schritt und einer Frage zum Selbsterklären, das man überspringen kann?
 
-**Belege:** Worked-Example-Effekt, Meta-Analyse g = 0,48 (Barbieri et al. 2023, Mathematik). Kognitive Belastungstheorie: Problemlösen ohne Schema bindet das Arbeitsgedächtnis an die Suche nach einem Lösungsweg. Expertise-Umkehr-Effekt (Kalyuga 2007): Fortgeschrittenen helfen Beispiele kaum oder stören, daher überspringbar.
+**Belege:** Worked-Example-Effekt, Meta-Analyse g = 0,48 (Barbieri et al. 2023, Mathematik). Kognitive Belastungstheorie: Problemlösen ohne Schema bindet das Arbeitsgedächtnis an die Suche nach einem Lösungsweg. Expertise-Umkehr-Effekt (Kalyuga et al. 2003; Kalyuga 2007): Fortgeschrittenen helfen Beispiele kaum oder stören, daher überspringbar. Aufforderungen zum Selbsterklären wirken zusätzlich: g ≈ 0,43 in der Oberstufe (Bisra et al. 2018, zit. n. Brod 2021); generative Lernaktivitäten nach Fiorella & Mayer 2016.
 
 ## P4 · Entdecken mit Auftrag (Muss)
 

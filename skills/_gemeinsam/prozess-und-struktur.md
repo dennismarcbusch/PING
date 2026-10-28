@@ -33,6 +33,15 @@ Jedes Paket folgt demselben Grundmuster aus fünf Teilen. Es ist aus den PING-Pa
 
 **Merkblatt (P13).** Nach dem Nachweis öffnet sich ein halb vorgefülltes Merkblatt, gegliedert nach Lernzielen. Lernende ergänzen die Kernaussagen ohne Zurückblättern und vergleichen dann mit dem Muster. Zum Herunterladen gibt es eine Seite als PDF: vorne die eigenen Einträge neben dem Muster, der typische Fehler mit Korrektur, ein kurzes gelöstes Beispiel und bei Abläufen das Schritt-Schema. Hinten stehen fünf Selbsttest-Fragen ohne Lösung mit dem Hinweis „In 1–2 Wochen nochmal beantworten“; die Lösungen sind im Paket. Früher freigeschaltet würde das Merkblatt nur gelesen oder zum Spickzettel für den Nachweis. Im SeGeL-Unterricht gehört es ins Lernportfolio. Wir nennen es bewusst „Merkblatt“, nicht „Cheat Sheet“.
 
+**Optional: Input mit Tafelbild.** Zu einem Paket kann es einen freiwilligen Lehrer-Input von etwa 20 Minuten geben, wenn sich das Thema gut gemeinsam vorführen lässt (typisch: Simulationen, Abläufe, Vergleiche). Er ist kein Pflichtteil und lohnt sich nicht für jedes Paket. Der Input nutzt die interaktiven Bilder des Pakets als **Tafelbild**: groß, Schritt für Schritt, ohne erklärenden Text; die Lehrkraft erklärt mündlich (Bild plus gesprochenes Wort statt Bild plus Text an der Wand, vgl. Redundanzprinzip). Jede Szene folgt dem Muster *Vorhersagen → Klicken → Deuten*, die letzte Szene sichert das Ergebnis. Regeln:
+
+- Der Input ist **Einstieg, nicht Ersatz.** Schüler entscheiden selbst, ob sie teilnehmen; das Paket bleibt allein vollständig. Das Tafelbild zeigt nichts, was im Paket fehlt, und jede Szene verweist auf ihre Station. Formeln, Vor-/Nachteil-Listen und Details bleiben in den Stationen.
+- Das Tafelbild steckt im Paket (Symbol „Tafelbild“ in der Kopfzeile, Hinweis auf der Startseite, Aufruf als Präsentation über `index.html#tafel`). Öffnen Schüler es selbst, sind kurze Erklärungen zuschaltbar.
+- Das Tafelbild speichert nichts und verändert weder Fortschritt noch Ergebnis.
+- Zum Input gehört ein **Ablaufplan** für die Lehrkraft (Szene, Klicks, Impulsfrage, erwartete Fehlvorstellung, Merksatz), abgelegt neben dem Paket, nicht im ZIP.
+
+Beispiel: „Netzwerktopologien erleben“ (Version 2) mit sechs Szenen und Ablaufplan unter `packages/netzwerktopologien/lehrer/`.
+
 **Größe.** Ein Paket deckt ein Thema ab, das sich in einem Satz benennen lässt. Wird das Drehbuch länger als etwa acht Stationen, lohnt es sich, zwei Pakete daraus zu machen.
 
 Kerres (2024) nennt als Richtwert Lerneinheiten von 30 bis 45 Minuten, drei bis neun davon pro Kapitel und höchstens drei Gliederungsebenen. Wichtiger als die genaue Zahl ist, dass alle Einheiten gleich gerahmt sind: Jede beginnt mit Orientierung (worum es geht, wozu, wie lange) und endet mit einem Abschluss (Kurz-Check oder Zusammenfassung).

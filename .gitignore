@@ -2,3 +2,7 @@ dist/
 *.zip
 .DS_Store
 Thumbs.db
+
+# Gesamt-Skill: nur der Wegweiser ist Quelle, der Rest wird von skills/baue-skills.sh erzeugt
+skills/lernpaket/*
+!skills/lernpaket/SKILL.md

@@ -203,6 +203,9 @@ def _vorlage(pg, bilder):
     if bilder:
         pg.screenshot(path=os.path.join(bilder, '0-start.png'), full_page=True)
     ansichten.append(('Start', _primaer(pg)))
+    pv = pg.evaluate("String(PAKET.version || '')")
+    ver = pg.evaluate("(() => { const v = document.getElementById('version'); return v && v.offsetParent !== null ? v.textContent : ''; })()")
+    punkt(bool(pv) and pv in ver, 'Bedienung', f'Versionsnummer sichtbar in der Kopfzeile ({ver}).' if pv and pv in ver else 'Versionsnummer ist nicht sichtbar – PAKET.version in js/inhalt.js setzen.')
     loese = """(() => { LERNPAKET.aktuelleTeile().forEach(t => {
         if (t.art === 'interaktion' && t.obj && t.obj.loesen) t.obj.loesen();
         if (t.art === 'frage') { t.obj.loesungEinsetzen(); const b = t.obj.el.querySelector('button.pruefen'); if (b && !b.hidden) b.click(); }

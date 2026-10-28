@@ -39,7 +39,7 @@ Alle Inhalte eines Pakets stehen in `js/inhalt.js` als ein Objekt `window.PAKET`
 | Feld | Bedeutung |
 |---|---|
 | `id` | `ping-<name>`, gleich dem Identifier im Manifest |
-| `titel`, `untertitel`, `version`, `dauer` | Anzeige |
+| `titel`, `untertitel`, `version`, `dauer` | Anzeige. `version` steht klein neben dem Titel und auf Ergebnis- und Merkblatt-PDF (Pflicht; Prototyp `0.1`, erster Einsatz `1.0`, bei jeder ausgelieferten Änderung erhöhen) |
 | `bestehen` | 80 (Leitfaden) |
 | `figur` | `{name, rolle}` der Story-Figur (Sprechblasen) |
 | `leitsituation` | Einstiegstext der Figur (HTML) |

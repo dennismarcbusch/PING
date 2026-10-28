@@ -23,7 +23,7 @@ Der Leitfaden hat drei Teile: **A** fasst die Forschungslage zusammen, **B** wä
 
 Wer wenig Zeit hat, liest diese zehn Sätze, Teil B (Prinzipienübersicht) und Teil C6 (Checkliste).
 
-**Skill-Set:** Wer ein Paket bauen möchte, muss den Leitfaden nicht auswendig kennen. Fünf Skills für Claude führen durch Planung, Fragen, Bau, Prüfung und Auswertung und wenden die Prinzipien dabei automatisch an (Teil C7). Einrichtung und Beispiel-Prompts: [Anleitung zum Skill-Set](skill-set-anleitung.md).
+**Skill-Set:** Wer ein Paket bauen möchte, muss den Leitfaden nicht auswendig kennen. Ein einziger Skill für Claude (`lernpaket`) führt durch Planung, Fragen, Bau, Prüfung und Auswertung und wenden die Prinzipien dabei automatisch an (Teil C7). Einrichtung und Beispiel-Prompts: [Anleitung zum Skill-Set](skill-set-anleitung.md).
 
 ## Teil A1: Was die Forschung sagt und wie verlässlich sie ist
 
@@ -340,7 +340,7 @@ Die Standards stammen aus den bisherigen PING-Paketen und den Tests in der ByCS-
 | Datenschutz | Keine Daten an Dritte, keine Tracking-Dienste, keine Konten außerhalb der Lernplattform; nur die SCORM-Felder, die für Lernen und Bewertung nötig sind |
 | Ergebnis | Auswertung je Lernziel, druckbar als PDF |
 | Qualitätssicherung | Test im SCORM-1.2-Testplayer; automatisierter Test, dass alle Aufgaben mit der Musterlösung lösbar sind; Test in der echten ByCS-Lernplattform vor dem ersten Einsatz |
-| Ablage | Quellcode und ZIP im gemeinsamen Repository, einheitliche Benennung, Versionsnummer und Änderungsprotokoll |
+| Ablage und Version | Quellcode und ZIP im gemeinsamen Repository, einheitliche Benennung, Versionsnummer und Änderungsprotokoll; die Versionsnummer steht klein, aber sichtbar im Paket (neben dem Titel und auf den PDFs), damit bei Rückfragen und in der Auswertung klar ist, welche Fassung im Einsatz war |
 | Lizenz | Lizenz festlegen (z. B. CC BY-SA), damit Kollegen Pakete anpassen und weitergeben dürfen |
 | Tafelbild (optional) | Präsentationsmodus im Paket (`js/tafel.js`, Daten in `PAKET.tafel`); Bedienung per Pfeiltasten und Presenter, Schaltflächen mindestens 48 px, lesbar am Beamer; schreibt keine SCORM-Werte, kein `suspend_data`, kein `localStorage` |
 | Merkblatt (P13) | Wird im Browser als druckbare Seite erzeugt und als PDF gespeichert, ohne Server. Einträge nicht dauerhaft in suspend\_data ablegen (SCORM 1.2: höchstens 4096 Zeichen); das Merkblatt braucht keinen Namen. |
@@ -406,12 +406,13 @@ Ein Paket ist einsatzbereit, wenn alle Muss-Punkte erfüllt sind; die Checkliste
 
 Der Leitfaden ist zusätzlich als Skill-Set für Claude umgesetzt: Jede Phase aus Teil C1 bekommt einen Skill, der die Lehrkraft im Gespräch durch die Phase führt und die Prinzipien automatisch anwendet. So müssen Einsteiger den Leitfaden nicht auswendig kennen, um ihn einzuhalten.
 
-**So bekommst du das Skill-Set:** Die fünf Skills liegen im [PING-Repository unter skills/](../skills) und als ZIP-Dateien in den [Releases](https://github.com/dennismarcbusch/PING/releases). Jede ZIP-Datei wird in Claude unter *Customize → Skills* hochgeladen. Die [Anleitung zum Skill-Set](skill-set-anleitung.md) beschreibt Einrichtung, Arbeitsschritte mit Beispiel-Prompts, Upload in die ByCS-Lernplattform und häufige Probleme.
+**So bekommst du das Skill-Set:** Für die meisten reicht **ein** Skill: `lernpaket`. Er erkennt, wo man gerade steht (nur eine Idee, ein Drehbuch, ein fertiges Paket oder ein Export aus der Lernplattform), und führt durch die passende Phase. Die ZIP-Datei `skill_lernpaket.zip` liegt in den [Releases](https://github.com/dennismarcbusch/PING/releases) und wird in Claude unter *Customize → Skills* hochgeladen. Die fünf Einzel-Skills gibt es weiterhin für alle, die gezielt nur eine Phase brauchen; alle sechs werden aus denselben Quellen im [PING-Repository unter skills/](../skills) gebaut. Die [Anleitung zum Skill-Set](skill-set-anleitung.md) beschreibt Einrichtung, Arbeitsschritte mit Beispiel-Prompts, Upload in die ByCS-Lernplattform und häufige Probleme.
 
 **Was dahintersteckt:** `lernpaket-bauen` arbeitet mit einer Paketvorlage, die die Paketstruktur aus Teil C2 und die technischen Mindeststandards aus Teil C5 bereits enthält: Selbsteinschätzung, Kurz-Checks, gestufte Tipps, Nachweis ab 80 %, Auswertung je Lernziel, Merkblatt, SCORM-Datenübergabe und optional ein Tafelbild für den Input. Pro Paket werden nur Inhalte und Interaktionen geschrieben, deshalb sehen alle Pakete gleich aus und bedienen sich gleich. Ein Prüfskript spielt jedes Paket automatisch mit der Musterlösung durch und testet Datenübergabe, Wiedereinstieg und Tablet-Ansicht; es lässt sich auch auf ältere Pakete anwenden.
 
 | Skill | Phase | Was er tut | Die Lehrkraft liefert | Ergebnis |
 | --- | --- | --- | --- | --- |
+| `lernpaket` (Einstieg) | 1–6 | Erkennt, was schon vorliegt, sagt, was jetzt dran ist, und führt durch die passende Phase; enthält die fünf folgenden Skills | was gerade vorliegt | die Ergebnisse der jeweiligen Phase |
 | `lernpaket-planen` | 1–3 | Führt ein Interview (Fach, Klasse, Vorwissen, Einsatzform, optional Input mit Tafelbild, Leitsituation), formuliert Lernziele, schlägt Nachweis und Drehbuch vor; fragt gezielt nach typischen Schülerfehlern | Fachwissen, Unterrichtserfahrung, Entscheidungen | Steckbrief, Lernziel-Nachweis-Tabelle, Drehbuch |
 | `fragenpool-erstellen` | 2–3 | Erzeugt Fragen je Lernziel in den fünf Fragetypen, Falschantworten aus typischen Fehlern, Feedback zu jeder Antwort | Lernziele, typische Fehler, Prüfung der Fragen | Fragenpool (geprüft) |
 | `lernpaket-bauen` | 4 | Baut das SCORM-Paket im einheitlichen Design mit fertigen Bausteinen (Station, Kurz-Check, Übung mit Tipps, Nachweis, Auswertung, PDF, optional Tafelbild mit Ablaufplan); erst Prototyp, dann Rest | Drehbuch, Rückmeldung zum Prototyp | ZIP-Datei |

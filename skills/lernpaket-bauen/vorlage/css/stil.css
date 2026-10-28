@@ -17,6 +17,8 @@ p{margin:.4rem 0 .7rem}
 .kopf{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .kopf .titel{flex:1;min-width:200px}
 .unter{color:var(--muted)}
+.kopf .titel h1{display:inline;margin-right:.5rem}
+.version{display:inline-block;vertical-align:middle;font-size:.72rem;font-weight:700;letter-spacing:.02em;color:var(--ink-soft);background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:1px 8px;white-space:nowrap}
 .fortschritt{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:.85rem;background:var(--card2);border:1px solid var(--line);color:var(--ink-soft)}
 .chip.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}

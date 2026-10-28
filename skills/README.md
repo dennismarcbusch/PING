@@ -1,9 +1,10 @@
 # Skill-Set „Lernpakete nach Leitfaden“
 
-Fünf Skills für Claude, die den [Leitfaden für evidenzbasierte Lernpakete](../docs/leitfaden-lernpakete.md) umsetzen. Jede Phase des Entwicklungsprozesses (Leitfaden Teil C1) hat einen Skill; alle greifen auf dieselbe Referenz zurück. **Anleitung für Kolleginnen und Kollegen:** [docs/skill-set-anleitung.md](../docs/skill-set-anleitung.md).
+Skills für Claude, die den [Leitfaden für evidenzbasierte Lernpakete](../docs/leitfaden-lernpakete.md) umsetzen. **Für Kolleginnen und Kollegen reicht der Gesamt-Skill `lernpaket`:** Er erkennt, wo man steht, und lädt die passende Phase. Daneben gibt es jede Phase des Entwicklungsprozesses (Leitfaden Teil C1) als Einzel-Skill; alle greifen auf dieselbe Referenz zurück. **Anleitung für Kolleginnen und Kollegen:** [docs/skill-set-anleitung.md](../docs/skill-set-anleitung.md).
 
 | Skill | Phase | Ergebnis |
 |---|---|---|
+| [`lernpaket`](lernpaket/SKILL.md) | 1–6 Einstieg | Wegweiser mit Standort-Erkennung; enthält die fünf folgenden Skills als `phasen/*.md` |
 | [`lernpaket-planen`](lernpaket-planen/SKILL.md) | 1–3 Klären, Zielen, Entwerfen | Steckbrief, Lernziel-Nachweis-Tabelle, Drehbuch |
 | [`fragenpool-erstellen`](fragenpool-erstellen/SKILL.md) | 2–3 | Fragen im Vorlagenformat + Prüftabelle für die Lehrkraft |
 | [`lernpaket-bauen`](lernpaket-bauen/SKILL.md) | 4 Bauen | SCORM-1.2-ZIP aus der PING-Vorlage (erst Prototyp) |
@@ -19,11 +20,14 @@ skills/
     prozess-und-struktur.md, gestaltung.md, technik.md, checkliste.md   aus Leitfaden C1–C6
     fragenformat.md        Format von js/inhalt.js (Fragen, Stationen, Interaktionen)
     scripts/pruefe_paket.py  automatischer Paket-Test (nachgebauter SCORM-Player, Playwright)
-  lernpaket-*/ , fragenpool-erstellen/   die fünf Skills; referenz/ ist eine Kopie, nicht von Hand ändern
+  lernpaket/                Gesamt-Skill: nur SKILL.md (Wegweiser) ist von Hand gepflegt; phasen/, referenz/, vorlage/,
+                           vorlagen/, vorlagen-lehrkraft/, scripts/ erzeugt baue-skills.sh (nicht eingecheckt)
+  lernpaket-*/ , fragenpool-erstellen/   die fünf Einzel-Skills; referenz/ ist eine Kopie, nicht von Hand ändern
   lernpaket-bauen/vorlage/ PING-Vorlage: index.html, css/stil.css, js/engine.js, js/inhalt.js (Beispiel), imsmanifest.xml,
                            optionales Tafelbild: js/tafel.js, css/tafel.css
   lernpaket-bauen/vorlagen-lehrkraft/  Ablaufplan für einen Input mit Tafelbild (nicht im Paket)
-  baue-skills.sh           verteilt die Referenz und baut dist/skill_<name>.zip
+  baue-skills.sh           verteilt die Referenz, setzt lernpaket/ zusammen (Verweise zwischen den Skills werden
+                           zu Verweisen auf phasen/*.md) und baut dist/skill_<name>.zip
 ```
 
 ## Pflege

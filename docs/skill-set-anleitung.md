@@ -4,9 +4,9 @@ Diese Anleitung richtet sich an Kolleginnen und Kollegen, die ein Lernpaket für
 
 ## Worum es geht
 
-Der [Leitfaden](leitfaden-lernpakete.md) beschreibt, wie gute Lernpakete aussehen: 13 Prinzipien, eine feste Paketstruktur und eine Checkliste. Das **Skill-Set** sind fünf Arbeitsanweisungen für die KI Claude, die genau diesen Leitfaden umsetzen. Du musst den Leitfaden also nicht auswendig kennen: Claude stellt die richtigen Fragen, wendet die Prinzipien an und baut das Paket in unserem einheitlichen Design.
+Der [Leitfaden](leitfaden-lernpakete.md) beschreibt, wie gute Lernpakete aussehen: 13 Prinzipien, eine feste Paketstruktur und eine Checkliste. Das **Skill-Set** sind Arbeitsanweisungen für die KI Claude, die genau diesen Leitfaden umsetzen. Du brauchst davon nur **einen** Skill: `lernpaket`. Er erkennt, wo du gerade stehst, und führt dich Schritt für Schritt durch Planen, Fragen, Bauen, Prüfen und Auswerten. Du musst den Leitfaden also nicht auswendig kennen: Claude stellt die richtigen Fragen, wendet die Prinzipien an und baut das Paket in unserem einheitlichen Design.
 
-| Schritt | Skill | Du bringst ein | Du bekommst |
+| Schritt | im Skill `lernpaket` (einzeln: …) | Du bringst ein | Du bekommst |
 |---|---|---|---|
 | 1 Planen | `lernpaket-planen` | Thema, Klasse, typische Schülerfehler | Steckbrief, Lernziele, Drehbuch |
 | 2 Fragen | `fragenpool-erstellen` | Prüfung der Fragen | Fragenpool mit Feedback |
@@ -27,24 +27,20 @@ Du brauchst ein Claude-Konto (claude.ai). Skills funktionieren in allen Tarifen,
 
 Die Menünamen können sich je nach Version und Sprache leicht unterscheiden. Die aktuelle Beschreibung steht in der [Hilfe von Claude](https://support.claude.com/en/articles/12512180-use-skills-in-claude).
 
-### 2. Die fünf Skills herunterladen
+### 2. Den Skill herunterladen
 
-Lade die fünf ZIP-Dateien herunter, z. B. aus den [Releases des PING-Repositorys](https://github.com/dennismarcbusch/PING/releases) oder von der [Paketseite](https://dennismarcbusch.github.io/PING/):
+Lade die Datei **`skill_lernpaket.zip`** herunter, z. B. aus den [Releases des PING-Repositorys](https://github.com/dennismarcbusch/PING/releases) oder von der [Paketseite](https://dennismarcbusch.github.io/PING/). **Nicht entpacken und nicht umbenennen.**
 
-`skill_lernpaket-planen.zip`, `skill_fragenpool-erstellen.zip`, `skill_lernpaket-bauen.zip`, `skill_lernpaket-pruefen.zip`, `skill_lernpaket-auswerten.zip`
-
-**Nicht entpacken und nicht umbenennen.**
+(Die fünf Einzel-Skills `skill_lernpaket-planen.zip`, `skill_fragenpool-erstellen.zip`, `skill_lernpaket-bauen.zip`, `skill_lernpaket-pruefen.zip` und `skill_lernpaket-auswerten.zip` brauchst du nur, wenn du gezielt einzelne Schritte nutzen willst. Sie enthalten dasselbe.)
 
 ### 3. Hochladen
-
-Für jede der fünf Dateien:
 
 1. In Claude **Customize → Skills** öffnen.
 2. Auf **+** und dann **Create skill → Upload a skill** klicken.
 3. Die ZIP-Datei auswählen.
 4. Den Skill einschalten (Schalter rechts).
 
-Danach stehen alle fünf in deiner Skill-Liste. In Team-Konten kann die Verwaltung die Skills auch für alle bereitstellen; dann entfällt dieser Schritt.
+In Team-Konten kann die Verwaltung den Skill auch für alle bereitstellen; dann entfällt dieser Schritt.
 
 ### 4. Ein Projekt je Lernpaket (empfohlen)
 
@@ -52,11 +48,15 @@ Lege in Claude für jedes Lernpaket ein **Projekt** an (z. B. „Lernpaket Dreis
 
 ## Arbeiten mit dem Skill-Set
 
-Du schreibst in normaler Sprache. Wenn du den Namen des Skills dazuschreibst, nutzt Claude ihn sicher; meist erkennt Claude ihn aber auch so.
+Du schreibst in normaler Sprache. Wenn du „lernpaket“ dazuschreibst, nutzt Claude den Skill sicher; meist erkennt Claude ihn aber auch so. Du musst dir die Schritte nicht merken: Claude sagt dir zu Beginn, wo du stehst, und schlägt am Ende jedes Schritts den nächsten vor. An einem anderen Tag reicht im selben Projekt:
+
+> Mach mit meinem Lernpaket weiter.
+
+Die Beispiele unten nennen zur Orientierung die Einzel-Skills; mit dem Skill `lernpaket` kannst du sie weglassen.
 
 ### Schritt 1: Planen
 
-> Ich möchte ein Lernpaket planen: Dreisatz für die Berufsintegrationsklasse, etwa 90 Minuten. Nutze den Skill lernpaket-planen.
+> Ich möchte ein Lernpaket bauen: Dreisatz für die Berufsintegrationsklasse, etwa 90 Minuten. Nutze den Skill lernpaket.
 
 Claude stellt dir in mehreren Runden Fragen: Was können die Schüler bisher nicht? Welche Fehler machen sie typischerweise? Welche Situation aus Beruf oder Alltag passt? **Nimm dir für die typischen Fehler Zeit** – daraus entstehen gute Falschantworten und gutes Feedback.
 
@@ -83,6 +83,8 @@ Wenn der Prototyp passt:
 > Bau jetzt das ganze Paket.
 
 Claude testet das Paket automatisch (alle Aufgaben mit der Musterlösung lösbar, Datenübergabe, Tablet-Ansicht) und gibt dir das fertige ZIP.
+
+**Versionsnummer:** Jedes Paket zeigt klein neben dem Titel seine Version (z. B. „v1.0“), auch auf den PDFs. Fragen Schüler nach oder wertest du später aus, siehst du so sofort, welche Fassung im Einsatz war. Bei jeder Änderung erhöht Claude die Nummer.
 
 ### Optional: Input mit Tafelbild
 
@@ -135,7 +137,8 @@ Du siehst, welche Fragen zu schwer oder zu leicht sind, bei welchem Lernziel die
 
 | Problem | Lösung |
 |---|---|
-| Claude nutzt den Skill nicht | Den Namen des Skills in die Nachricht schreiben. Prüfen, ob er unter *Customize → Skills* eingeschaltet ist. |
+| Claude nutzt den Skill nicht | „lernpaket“ in die Nachricht schreiben. Prüfen, ob er unter *Customize → Skills* eingeschaltet ist. |
+| Claude fängt wieder von vorn an | Im selben Projekt weiterarbeiten oder Drehbuch bzw. Paket anhängen und schreiben: „Mach mit meinem Lernpaket weiter.“ |
 | Hochladen des Skills klappt nicht | Die ZIP-Datei unverändert hochladen (nicht entpacken, nicht umbenennen). Bei Team-Konten kann das Hochladen gesperrt sein – die Verwaltung fragen. |
 | Roter Kasten „Hinweis für Autor:innen“ im Paket | Im Prototyp normal. Im fertigen Paket Claude bitten: „Behebe die Hinweise im roten Kasten.“ |
 | Claude schreibt, der Browser-Test fehle | Das Paket einmal selbst vollständig durchspielen, inklusive Nachweis. |
@@ -146,4 +149,4 @@ Du siehst, welche Fragen zu schwer oder zu leicht sind, bei welchem Lernziel die
 
 Das Format der Skills (Ordner mit einer Datei `SKILL.md`) ist offen; auch andere KI-Werkzeuge können solche Skills lesen. Planen und Fragen erstellen klappt notfalls in jedem Chatbot: Lade dazu `prinzipien.md` und die Vorlagen aus dem Skill-Ordner hoch und bitte darum, danach zu arbeiten. Für Bauen und Prüfen braucht das Werkzeug die Möglichkeit, Programme auszuführen.
 
-**Für Fortgeschrittene (Claude Code):** Die Skill-Ordner aus `skills/` nach `~/.claude/skills/` kopieren oder im Repository unter `.claude/skills/` ablegen. Vorher `skills/baue-skills.sh` ausführen, damit jeder Skill seine Referenz enthält.
+**Für Fortgeschrittene (Claude Code):** Vorher `skills/baue-skills.sh` ausführen – das setzt den Skill `lernpaket` zusammen und verteilt die Referenz. Dann `skills/lernpaket/` (oder einzelne Skill-Ordner) nach `~/.claude/skills/` kopieren oder im Repository unter `.claude/skills/` ablegen.

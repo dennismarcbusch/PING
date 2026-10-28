@@ -1,9 +1,13 @@
 name: Release
 
-# Tag "v1.0"           -> baut alle Pakete, Release + GitHub Pages
-# Tag "pc-aufbau-v1.2" -> baut nur dieses Paket, nur Release
-# Pages bekommt nur vollständige Builds, sonst fehlten dort die übrigen Pakete.
-# Vollständige Builds enthalten auch das Skill-Set (dist/skill_<name>.zip).
+# Tag "v1.4"               -> Release mit allen Paketen + Skill-Set
+# Tag "plug-and-pray-v1.4" -> Release nur mit diesem Paket
+# Manuell (workflow_dispatch) -> kein Release
+#
+# In allen drei Fällen wird GitHub Pages mit dem KOMPLETTEN Stand des
+# gebauten Commits neu veröffentlicht. Die Lernplattform (Typ
+# „Heruntergeladenes Paket“) zieht die ZIPs von dort, deshalb muss jede
+# Änderung dort ankommen – egal, welcher Tag sie ausgelöst hat.
 on:
   push:
     tags: ['v*', '*-v*']
@@ -14,53 +18,64 @@ permissions:
   pages: write
   id-token: write
 
+# Nie zwei Pages-Deployments gleichzeitig; ein laufendes wird nicht abgebrochen.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      full: ${{ steps.zips.outputs.full }}
     steps:
       - uses: actions/checkout@v4
-      - name: ZIPs bauen
-        id: zips
+
+      - name: Alle Pakete und Skills bauen
         run: |
-          tag="${GITHUB_REF_NAME:-manual}"
-          if [[ "$GITHUB_REF_TYPE" != tag || "$tag" == v* ]]; then
-            ./build.sh
-            skills/baue-skills.sh
-            echo "full=true" >> "$GITHUB_OUTPUT"
+          ./build.sh
+          skills/baue-skills.sh
+
+      - name: Dateien für das Release auswählen
+        id: release
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          if [[ "$GITHUB_REF_TYPE" == tag && "$tag" != v* ]]; then
+            slug="${tag%-v*}"
+            f="dist/${slug}_scorm12.zip"
+            [ -f "$f" ] || { echo "FEHLER: Tag $tag passt zu keinem Paket ($f fehlt)" >&2; exit 1; }
+            echo "files=$f" >> "$GITHUB_OUTPUT"
           else
-            ./build.sh "${tag%-v*}"
-            echo "full=false" >> "$GITHUB_OUTPUT"
+            echo "files=dist/*.zip" >> "$GITHUB_OUTPUT"
           fi
+
       - uses: actions/upload-artifact@v4
         with:
           name: scorm-pakete
           path: dist/*.zip
+
       - name: Release anlegen
-        if: startsWith(github.ref, 'refs/tags/')
+        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.zip
+          files: ${{ steps.release.outputs.files }}
           generate_release_notes: true
+
       - name: Pages-Seite vorbereiten
-        if: steps.zips.outputs.full == 'true'
         run: |
           mkdir -p site && cp dist/*.zip site/
+          stand="${GITHUB_REF_NAME} · $(TZ=Europe/Berlin date '+%d.%m.%Y %H:%M') · ${GITHUB_SHA::7}"
           {
             echo '<!doctype html><meta charset="utf-8"><title>PING SCORM-Pakete</title>'
-            echo "<h1>PING – SCORM-Pakete</h1><p>Stand: ${GITHUB_REF_NAME}</p><ul>"
+            echo "<h1>PING – SCORM-Pakete</h1><p>Stand: ${stand}</p><ul>"
             for f in site/*.zip; do n=$(basename "$f"); echo "<li><a href=\"$n\">$n</a></li>"; done
             echo '</ul>'
           } > site/index.html
+
       - uses: actions/upload-pages-artifact@v3
-        if: steps.zips.outputs.full == 'true'
         with:
           path: site
 
   pages:
     needs: build
-    if: needs.build.outputs.full == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

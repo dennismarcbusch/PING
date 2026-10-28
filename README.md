@@ -79,8 +79,11 @@ Fehler, Wünsche und Ideen gern als [Issue](../../issues). Ein neues Modul legst
 
 ## Veröffentlichen (Maintainer)
 
-- Tag `v1.0` setzen und pushen: Die GitHub Action baut alle Pakete, hängt die ZIPs an ein Release und stellt sie auf GitHub Pages (Voraussetzung: *Settings → Pages → Source: GitHub Actions*).
-- Tag `plug-and-pray-v1.1`: baut nur dieses Paket, nur als Release. Pages bleibt auf dem Stand des letzten `v*`-Tags.
+- Tag `v1.4` setzen und pushen: Die GitHub Action baut alle Pakete und hängt alle ZIPs an ein Release.
+- Tag `plug-and-pray-v1.4`: Das Release enthält nur dieses Paket.
+- In beiden Fällen (und bei einem manuellen Start der Action) wird GitHub Pages mit dem kompletten Stand des getaggten Commits neu veröffentlicht. Lernplattformen mit automatischer Aktualisierung holen sich die Änderung dann selbst. Voraussetzung: *Settings → Pages → Source: GitHub Actions*.
+- Paket-Tags deshalb nur auf einen aktuellen Stand von `main` setzen, sonst landen auf Pages auch die älteren Fassungen der übrigen Pakete.
+- Ändert sich das Format des gespeicherten Fortschritts (`suspend_data`), muss die neue Version alte Stände verwerfen können: Schüler mitten im Paket bekommen nach dem Update die neue Version mit ihrem alten Fortschritt.
 
 ## Lizenz
 

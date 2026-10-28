@@ -16,6 +16,8 @@
    Jede Frage: id, lz, einsatz (['check'|'nachweis'|'uebung'|'vorwissen']),
    frage, erklaerung (warum die richtige Antwort richtig ist), optional bild.
 
+   Optional: tafel – Tafelbild für einen freiwilligen Input (siehe unten).
+
    Interaktionen (Station, Übung, Nachweis Teil A) sind Funktionen
    function (box, api) { … return { loesen: fn, auswerten: fn } }.
      api.erledigt(text)       Aufgabe gelöst (Station/Übung)
@@ -328,5 +330,64 @@ window.PAKET = {
     { id: 'F20', lz: 'LZ3', einsatz: ['uebung'], typ: 'zahl', frage: 'Wie viele verschiedene Bitmuster gibt es mit <b>6 Bit</b>?', zahl: { wert: 64 },
       typisch: [{ wert: 63, feedback: '63 ist der größte Wert. Mit der 0 sind es 64 Muster.' }, { wert: 12, feedback: '12 wäre 2 · 6. Es heißt aber 2 hoch 6.' }],
       erklaerung: '2⁶ = 64.' }
-  ]
+  ],
+
+  /* ---------- Tafelbild für einen freiwilligen Input (optional, Leitfaden C2) ----------
+     Wird von js/tafel.js angezeigt: groß, ohne erklärenden Text, Schritt für Schritt.
+     Jede Szene zeigt nur, was auch in ihrer Station vorkommt (station), die Erklärung
+     ist für Schüler zuschaltbar. Werkzeuge mit api.werkzeug() erscheinen unten in der
+     Leiste, mit Tastenkürzel. Ablaufplan für die Lehrkraft: lehrer/input-ablauf.md.
+     Pakete ohne Input lassen das Feld einfach weg. */
+  tafel: {
+    titel: 'Bits & Bytes – Überblick',
+    dauer: '15 Minuten',
+    szenen: [
+      { id: 'stellenwerte', titel: 'Stellenwerte', station: 'S1',
+        erklaerung: '<p>Jede der acht Stellen hat einen <b>Stellenwert</b>: rechts 1, nach links jeweils doppelt so viel.</p><p>Eine 1 bedeutet: Dieser Wert zählt mit. Die Zahl ist die Summe aller Stellenwerte mit einer 1.</p>',
+        zeichne: function (box, api) {
+          var b = bitSchalter(box, { zeigeSumme: false, beschriftung: 'Acht Bit-Schalter' });
+          var w = box.querySelector('.bitschalter');
+          w.style.maxWidth = '960px'; w.style.width = '100%'; w.style.margin = 'auto auto 0';
+          w.querySelectorAll('b').forEach(function (x) { x.style.fontSize = '3rem'; });
+          w.querySelectorAll('span').forEach(function (x) { x.style.fontSize = '1.3rem'; });
+          box.querySelector('.klein').style.cssText = 'text-align:center;font-size:2rem';
+          var dez = document.createElement('div');
+          dez.style.cssText = 'text-align:center;font-size:5rem;font-weight:800;margin:0 auto auto;visibility:hidden';
+          dez.setAttribute('aria-live', 'polite');
+          box.appendChild(dez);
+          function zeige() { dez.textContent = '= ' + b.wert(); }
+          box.addEventListener('click', zeige);
+          zeige();
+          api.werkzeug({ icon: '🔢', text: 'Dezimal', taste: 'd', typ: 'schalter', aktion: function (an) { dez.style.visibility = an ? 'visible' : 'hidden'; } });
+          api.werkzeug({ icon: '🎲', text: 'Zufall', taste: 'z', aktion: function () { b.setze(Math.floor(Math.random() * 256)); zeige(); } });
+          api.werkzeug({ icon: '↺', text: 'Leeren', taste: 'r', aktion: function () { b.setze(0); zeige(); } });
+          return {};
+        } },
+      { id: 'anzahl', titel: 'Wie viele Werte?', station: 'S3',
+        erklaerung: '<p>Mit jedem zusätzlichen Bit <b>verdoppelt</b> sich die Zahl der möglichen Muster: 2, 4, 8, 16 …</p><p>Mit n Bit gibt es 2<sup>n</sup> Werte, von 0 bis 2<sup>n</sup> − 1.</p>',
+        zeichne: function (box, api) {
+          var n = 1;
+          var reihe = document.createElement('div');
+          reihe.style.cssText = 'display:flex;justify-content:center;gap:10px;margin:auto auto 0;flex-wrap:wrap';
+          var muster = document.createElement('div');
+          muster.style.cssText = 'text-align:center;font-family:ui-monospace,Consolas,monospace;font-size:1.6rem;color:var(--ink-soft);min-height:2.4em;margin:1rem 0';
+          var zahl = document.createElement('div');
+          zahl.style.cssText = 'text-align:center;font-size:5rem;font-weight:800;margin:0 auto auto;visibility:hidden';
+          box.appendChild(reihe); box.appendChild(muster); box.appendChild(zahl);
+          function zeichne() {
+            reihe.innerHTML = '';
+            for (var i = 0; i < n; i++) { var k = document.createElement('div'); k.style.cssText = 'width:72px;height:88px;border:2px solid var(--line);border-radius:10px;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:2.4rem;font-weight:800'; k.textContent = '?'; reihe.appendChild(k); }
+            var alle = [];
+            if (n <= 3) for (var m = 0; m < Math.pow(2, n); m++) alle.push((m + 256).toString(2).slice(-n));
+            muster.textContent = alle.join('  ');
+            zahl.textContent = '2' + ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸'][n] + ' = ' + Math.pow(2, n);
+          }
+          api.werkzeug({ icon: '−', text: 'Bit', taste: '-', aktion: function () { if (n > 1) { n--; zeichne(); } } });
+          api.werkzeug({ icon: '+', text: 'Bit', taste: '+', aktion: function () { if (n < 8) { n++; zeichne(); } } });
+          api.werkzeug({ icon: '🔢', text: 'Anzahl', taste: 'a', typ: 'schalter', aktion: function (an) { zahl.style.visibility = an ? 'visible' : 'hidden'; } });
+          zeichne();
+          return {};
+        } }
+    ]
+  }
 };

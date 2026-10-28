@@ -408,13 +408,13 @@ Der Leitfaden ist zusätzlich als Skill-Set für Claude umgesetzt: Jede Phase au
 
 **So bekommst du das Skill-Set:** Die fünf Skills liegen im [PING-Repository unter skills/](../skills) und als ZIP-Dateien in den [Releases](https://github.com/dennismarcbusch/PING/releases). Jede ZIP-Datei wird in Claude unter *Customize → Skills* hochgeladen. Die [Anleitung zum Skill-Set](skill-set-anleitung.md) beschreibt Einrichtung, Arbeitsschritte mit Beispiel-Prompts, Upload in die ByCS-Lernplattform und häufige Probleme.
 
-**Was dahintersteckt:** `lernpaket-bauen` arbeitet mit einer Paketvorlage, die die Paketstruktur aus Teil C2 und die technischen Mindeststandards aus Teil C5 bereits enthält: Selbsteinschätzung, Kurz-Checks, gestufte Tipps, Nachweis ab 80 %, Auswertung je Lernziel, Merkblatt, SCORM-Datenübergabe. Pro Paket werden nur Inhalte und Interaktionen geschrieben, deshalb sehen alle Pakete gleich aus und bedienen sich gleich. Ein Prüfskript spielt jedes Paket automatisch mit der Musterlösung durch und testet Datenübergabe, Wiedereinstieg und Tablet-Ansicht; es lässt sich auch auf ältere Pakete anwenden.
+**Was dahintersteckt:** `lernpaket-bauen` arbeitet mit einer Paketvorlage, die die Paketstruktur aus Teil C2 und die technischen Mindeststandards aus Teil C5 bereits enthält: Selbsteinschätzung, Kurz-Checks, gestufte Tipps, Nachweis ab 80 %, Auswertung je Lernziel, Merkblatt, SCORM-Datenübergabe und optional ein Tafelbild für den Input. Pro Paket werden nur Inhalte und Interaktionen geschrieben, deshalb sehen alle Pakete gleich aus und bedienen sich gleich. Ein Prüfskript spielt jedes Paket automatisch mit der Musterlösung durch und testet Datenübergabe, Wiedereinstieg und Tablet-Ansicht; es lässt sich auch auf ältere Pakete anwenden.
 
 | Skill | Phase | Was er tut | Die Lehrkraft liefert | Ergebnis |
 | --- | --- | --- | --- | --- |
-| `lernpaket-planen` | 1–3 | Führt ein Interview (Fach, Klasse, Vorwissen, Einsatzform, Leitsituation), formuliert Lernziele, schlägt Nachweis und Drehbuch vor; fragt gezielt nach typischen Schülerfehlern | Fachwissen, Unterrichtserfahrung, Entscheidungen | Steckbrief, Lernziel-Nachweis-Tabelle, Drehbuch |
+| `lernpaket-planen` | 1–3 | Führt ein Interview (Fach, Klasse, Vorwissen, Einsatzform, optional Input mit Tafelbild, Leitsituation), formuliert Lernziele, schlägt Nachweis und Drehbuch vor; fragt gezielt nach typischen Schülerfehlern | Fachwissen, Unterrichtserfahrung, Entscheidungen | Steckbrief, Lernziel-Nachweis-Tabelle, Drehbuch |
 | `fragenpool-erstellen` | 2–3 | Erzeugt Fragen je Lernziel in den fünf Fragetypen, Falschantworten aus typischen Fehlern, Feedback zu jeder Antwort | Lernziele, typische Fehler, Prüfung der Fragen | Fragenpool (geprüft) |
-| `lernpaket-bauen` | 4 | Baut das SCORM-Paket im einheitlichen Design mit fertigen Bausteinen (Station, Kurz-Check, Übung mit Tipps, Nachweis, Auswertung, PDF); erst Prototyp, dann Rest | Drehbuch, Rückmeldung zum Prototyp | ZIP-Datei |
+| `lernpaket-bauen` | 4 | Baut das SCORM-Paket im einheitlichen Design mit fertigen Bausteinen (Station, Kurz-Check, Übung mit Tipps, Nachweis, Auswertung, PDF, optional Tafelbild mit Ablaufplan); erst Prototyp, dann Rest | Drehbuch, Rückmeldung zum Prototyp | ZIP-Datei |
 | `lernpaket-pruefen` | 5 | Geht die Checkliste aus Teil C6 durch, testet die Datenübergabe, prüft Lösbarkeit und Barrierefreiheit, erstellt einen Review-Bericht | Paket, Ergebnis des Schülertests | Prüfbericht mit Ampel |
 | `lernpaket-auswerten` | 6 | Liest den Berichtsexport aus der Lernplattform, zeigt schwierige und zu leichte Fragen, fasst Reflexionsantworten zusammen | Berichtsexport (ohne Namen) | Auswertung und Änderungsvorschläge |
 
@@ -442,7 +442,7 @@ Gemeinsame Grundlage aller Skills ist eine Referenzdatei mit den dreizehn Prinzi
 - [ ] Skill-Set (gebaut am 27.10.2026) mit dem ersten neuen Paket erproben und die Anleitung um Screenshots ergänzen.
 - [ ] Lizenz und Ablage für Pakete anderer Fächer klären (Repository, SCORM Hub).
 - [x] Kapitel aus Kerres (2024) im Original prüfen und die Zusammenfassung in Teil A1 abgleichen.
-- [ ] Tafelbild in die Paketvorlage übernehmen (`tafel.js`/`tafel.css`, Startseiten-Hinweis als Hook in der Engine statt nachträglich eingehängt) und in `lernpaket-planen` (Drehbuch-Abschnitt „Input und Tafelbild“) sowie `lernpaket-bauen` (Feld `tafel`) ergänzen.
+- [x] Tafelbild in die Paketvorlage und das Skill-Set übernommen (28.10.2026): `tafel.js`/`tafel.css` in der Vorlage, Startseiten-Karte als Hook in der Engine, Inhaltsprüfung und Prüfskript erweitert, Drehbuch-Abschnitt „Input und Tafelbild“, Ablaufplan-Vorlage.
 - [ ] Eigenen Skill `tafelbild-erstellen` bauen: erzeugt nur ein Tafelbild mit Ablaufplan, ohne Lernpaket – für Themen, die praktisch, in einer anderen Simulation (z. B. Packet Tracer) oder ganz ohne Paket umgesetzt werden.
 - [ ] Bestehensgrenze der vorhandenen PING-Pakete von 70 % bzw. 60 % auf 80 % umstellen (Prüfen, ob die Fragen dazu passen).
 

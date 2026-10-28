@@ -11,6 +11,8 @@ Aufruf:
    einem nachgebauten SCORM-1.2-Player, löst bei Paketen aus der Vorlage alle Stationen,
    Übungen und den Nachweis mit der Musterlösung, prüft Datenübergabe, Wiedereinstieg,
    Konsolenfehler, Darstellung auf schmalen Bildschirmen und genau einen Weiter-Knopf.
+   Hat das Paket ein Tafelbild (PAKET.tafel), werden alle Szenen und Werkzeuge
+   durchgeschaltet und geprüft, dass das Tafelbild nichts an die Lernplattform schreibt.
 Ausgabe: Bericht als Text (Ampel je Punkt) und optional als JSON.
 """
 import argparse, functools, http.server, json, os, re, shutil, subprocess, sys, tempfile, threading, zipfile
@@ -175,6 +177,7 @@ def browser(root, href, bilder):
         else:
             _vorlage(pg, bilder)
             _schmal(ctx, url, bilder, True)
+            _tafel(ctx, url, bilder)
         echte = [f for f in fehler if 'favicon' not in f]
         punkt(not echte, 'Technik', 'Keine Fehler in der Browser-Konsole.' if not echte else 'Konsolenfehler: ' + ' | '.join(echte[:5]))
         b.close()
@@ -293,6 +296,72 @@ def _schmal(ctx, url, bilder, vorlage):
             pg.screenshot(path=os.path.join(bilder, f'schmal-{w}.png'), full_page=False)
         punkt(not zu_breit, 'Bedienung', f'{name} ({w}px): ' + (('kein seitliches Scrollen, Weiter-Knopf sichtbar.' if vorlage else 'kein seitliches Scrollen auf der Startseite.') if not zu_breit else 'Probleme: ' + ', '.join(zu_breit)), gelb=name == 'Handy')
         pg.close()
+
+
+def _tafel(ctx, url, bilder):
+    pg = ctx.new_page()
+    pg.set_viewport_size({'width': 1600, 'height': 900})  # Beamer
+    fehler = []
+    pg.on('pageerror', lambda e: fehler.append(str(e)))
+    pg.on('console', lambda m: fehler.append(m.text) if m.type == 'error' else None)
+    pg.goto(url)
+    pg.wait_for_timeout(500)
+    if not pg.evaluate('!!(window.PAKET && PAKET.tafel)'):
+        pg.close()
+        return
+    if not pg.evaluate('!!window.TAFEL'):
+        punkt(False, 'Tafelbild', 'PAKET.tafel ist gesetzt, aber js/tafel.js ist nicht eingebunden.')
+        pg.close()
+        return
+    schreib = "window.__scorm.calls.filter(c => c[0] === 'LMSSetValue').length"
+    vor = pg.evaluate(schreib)
+    zugang = pg.locator('.kopf .tafel-knopf').count() == 1 and pg.locator('#haupt .tafel-hinweis').count() == 1
+    punkt(zugang, 'Tafelbild', 'Zugänge vorhanden: Knopf „Tafelbild“ in der Kopfzeile und Hinweis auf der Startseite.' if zugang else 'Knopf in der Kopfzeile oder Hinweis auf der Startseite fehlt.')
+    pg.evaluate('TAFEL.oeffnen({})')
+    pg.wait_for_timeout(200)
+    n = pg.evaluate('TAFEL.zustand().anzahl')
+    leer, breit = [], []
+    for i in range(n):
+        pg.evaluate(f'TAFEL.szene({i})')
+        pg.wait_for_timeout(150)
+        if pg.evaluate("document.querySelector('.tafel-szene').children.length") == 0:
+            leer.append(str(i + 1))
+        if bilder:
+            pg.screenshot(path=os.path.join(bilder, f'tafel-{i + 1}.png'))
+        for k in range(pg.locator('.tafel-werkzeuge button').count()):
+            b = pg.locator('.tafel-werkzeuge button').nth(k)
+            if b.is_enabled():
+                b.click()
+                pg.wait_for_timeout(60)
+        if pg.evaluate('document.documentElement.scrollWidth') > 1601:
+            breit.append(str(i + 1))
+    punkt(not leer, 'Tafelbild', f'{n} Szenen; alle zeichnen etwas, alle Werkzeuge einmal ausgelöst.' if not leer else 'Szenen ohne Inhalt: ' + ', '.join(leer))
+    if n > 8:
+        punkt(False, 'Tafelbild', f'{n} Szenen – für etwa 20 Minuten sind höchstens 6–8 sinnvoll.', gelb=True)
+    pg.evaluate('TAFEL.szene(0)')
+    pg.locator('.tafel').focus()
+    pg.keyboard.press('ArrowRight')
+    tasten = n < 2 or pg.evaluate('TAFEL.zustand().szene') == 1
+    pg.keyboard.press('Escape')
+    pg.wait_for_timeout(100)
+    tasten = tasten and not pg.evaluate('TAFEL.zustand().offen')
+    punkt(tasten, 'Tafelbild', 'Bedienung per Tastatur (Pfeiltaste, Esc) funktioniert.')
+    nach = pg.evaluate(schreib)
+    punkt(vor == nach, 'Datenübergabe', 'Tafelbild schreibt nichts an die Lernplattform.' if vor == nach else f'Tafelbild hat {nach - vor} SCORM-Werte geschrieben – es darf nichts speichern.')
+    pg2 = ctx.new_page()
+    pg2.set_viewport_size({'width': 768, 'height': 1024})
+    pg2.goto(url + '#tafel')
+    pg2.wait_for_timeout(500)
+    z = pg2.evaluate('window.TAFEL && TAFEL.zustand()') or {}
+    ok = bool(z.get('offen')) and z.get('praesentation') and not z.get('erklaerungen')
+    punkt(ok, 'Tafelbild', 'index.html#tafel startet die Präsentation ohne Erklärungen.' if ok else 'index.html#tafel öffnet die Präsentation nicht richtig.')
+    if pg2.evaluate('document.documentElement.scrollWidth') > 769:
+        breit.append('Tablet')
+    pg2.close()
+    punkt(not breit, 'Tafelbild', 'Kein seitliches Scrollen (Beamer 1600 px, Tablet 768 px).' if not breit else 'Seitliches Scrollen in: ' + ', '.join(breit), gelb=True)
+    echte = [f for f in fehler if 'favicon' not in f]
+    punkt(not echte, 'Tafelbild', 'Keine Konsolenfehler beim Durchschalten.' if not echte else 'Konsolenfehler: ' + ' | '.join(echte[:5]))
+    pg.close()
 
 
 def main():

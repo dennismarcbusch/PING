@@ -112,7 +112,7 @@ Kerres (2024) bestätigt das aus der Forschung zum digitalen Lernen: Wer allein 
 | --- | --- | --- |
 | Rolle des Pakets | Trägt die gesamte Lerneinheit von Einstieg bis Nachweis | Baustein für eine Phase: Erarbeitung, Übung, Simulation oder Vorbereitung (Flipped) |
 | Zeitstruktur | Kein 45/90-Minuten-Raster; Fortschritt wird gespeichert, Wiedereinstieg jederzeit | Abschnitte von etwa 20–30 Minuten, die in eine Stunde passen; Stationen einzeln aufrufbar |
-| Einstieg | Im Paket: Leitsituation, Lernziele, Vorwissens-Check, Hinweis zum Vorgehen | Durch die Lehrkraft; das Paket kann den Einstieg kurz halten |
+| Einstieg | Im Paket: Leitsituation, Lernziele, Vorwissens-Check, Hinweis zum Vorgehen; optional ein freiwilliger Input mit Tafelbild (C2) | Durch die Lehrkraft, z. B. mit dem Tafelbild des Pakets; das Paket kann den Einstieg kurz halten |
 | Steuerung | Empfohlener Pfad mit Freiheit beim Tempo; Springen möglich, aber mit Hinweis, was vorausgesetzt wird | Lehrkraft gibt Abschnitte frei bzw. vor |
 | Hilfe | Drei gestufte Tipps, Lösungsbeispiele, Glossar und Steckbriefe immer erreichbar; Hinweis, wann man die Lehrkraft fragen sollte | Tipps im Paket; vertiefende Hilfe durch Lehrkraft und Mitschüler |
 | Selbstregulation | Verbindlich: Lernziele mit Selbsteinschätzung vorher/nachher, Fortschrittsanzeige, Reflexionsfragen mit Musterantwort, Lernempfehlung nach dem Nachweis | Optional; Reflexion und Sicherung im Plenum |

@@ -84,6 +84,18 @@ Wenn der Prototyp passt:
 
 Claude testet das Paket automatisch (alle Aufgaben mit der Musterlösung lösbar, Datenübergabe, Tablet-Ansicht) und gibt dir das fertige ZIP.
 
+### Optional: Input mit Tafelbild
+
+Lässt sich dein Thema gut gemeinsam vorführen (eine Simulation, ein Ablauf, ein Vergleich), kannst du zum Paket einen **freiwilligen Input** von etwa 20 Minuten anbieten. Sag das schon beim Planen:
+
+> Ich möchte zum Paket auch einen freiwilligen Input mit Tafelbild anbieten.
+
+Claude plant dann im Drehbuch ein paar Szenen und baut sie nach den Stationen als **Tafelbild** ins Paket: groß, ohne erklärenden Text, Schritt für Schritt. Du erklärst mündlich. Dazu bekommst du einen **Ablaufplan** mit Impulsfragen und erwarteten Schülerantworten.
+
+**So startest du den Input:** Den entpackten Paketordner öffnen und in der Adresszeile des Browsers hinter `index.html` den Zusatz `#tafel` anhängen (oder im Paket oben auf **Tafelbild** klicken und mit **E** die Erklärungen ausblenden). **F** schaltet auf Vollbild, die Pfeiltasten oder ein Presenter wechseln die Szenen. Die Schüler finden dasselbe Tafelbild im Paket, dort mit Erklärungen. Das Tafelbild speichert nichts und zählt nicht für die Bewertung.
+
+Nicht jedes Paket braucht einen Input – ohne Tafelbild funktioniert alles wie gewohnt.
+
 ### Schritt 4: Prüfen
 
 > Prüfe das Paket mit lernpaket-pruefen.

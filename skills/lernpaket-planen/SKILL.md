@@ -26,7 +26,7 @@ Frage in zwei bis drei Runden ab, was noch fehlt:
 1. **Lernproblem:** Was können die Schüler bisher nicht oder nicht sicher? Woran merkt man das im Unterricht? („Ein Paket kann nur ein Lernproblem lösen.“)
 2. **Rahmen:** Fach, Beruf bzw. Schulart, Jahrgang, Lehrplanbezug, Zeitrahmen, Geräte (PC, Tablet, beides).
 3. **Lernende:** Vorwissen, Motivation, Erfahrung mit selbstständigem Lernen. Gibt es Lernende, die noch Deutsch lernen, oder Lernende mit Hör- oder Sehbeeinträchtigung? Das beeinflusst Sprache, Glossar und den Einsatz von Ton.
-4. **Einsatz:** Standard ist SeGeL (selbstgesteuert, das Paket trägt die ganze Einheit). Stationen sollen auch einzeln im klassischen Unterricht nutzbar sein. Nur nachfragen, wenn etwas dagegen spricht.
+4. **Einsatz:** Standard ist SeGeL (selbstgesteuert, das Paket trägt die ganze Einheit). Stationen sollen auch einzeln im klassischen Unterricht nutzbar sein. Nur nachfragen, wenn etwas dagegen spricht. **Freiwilliger Input mit Tafelbild?** Nur ansprechen, wenn sich das Thema gut gemeinsam vorführen lässt (Simulation, Ablauf, Vergleich): „Möchtest du zum Paket einen freiwilligen Input von etwa 20 Minuten anbieten? Dann plane ich ein Tafelbild mit.“ Nicht jedes Paket braucht das.
 5. **Typische Fehler und Fehlvorstellungen der Schüler** – mindestens drei, besser fünf. Das ist die wichtigste Frage: Daraus entstehen gute Falschantworten, gutes Feedback und das Merkblatt. Gib Beispiele, um die Erinnerung anzustoßen.
 6. **Leitsituation:** Gibt es einen Betrieb, Kunden oder eine Alltagssituation, in der das Thema gebraucht wird? Gibt es aus anderen Paketen schon Story-Figuren (bei PING z. B. Korbwerk IT-Service mit Ausbilderin Mira Hofmann)? Wenn nicht, schlage zwei Varianten vor.
 
@@ -53,6 +53,7 @@ Fülle `vorlagen/drehbuch.md`. Halte dich an die Paketstruktur (Einstieg → ①
 - **Übungen:** mindestens eine je Lernziel, in **anderen** Situationen als die Stationen, je drei gestufte Tipps (1 Denkanstoß, 2 Teillösung, 3 Lösung mit Begründung) und eine Reflexionsfrage mit Musterantwort.
 - **Nachweis:** Teil A ausformulieren (Situation, Auftrag, Prüfpunkte); Teil B als Fragethemen je Lernziel (die Fragen selbst schreibt `fragenpool-erstellen`).
 - **Abschluss:** Merkblatt mit zwei Lückensätzen je Lernziel, dem typischen Fehler, einem kurzen Beispiel und bei Abläufen einem Schritt-Schema; fünf Selbsttest-Fragen; eine Vorwissensfrage je Lernziel.
+- **Input und Tafelbild (nur wenn gewünscht):** Abschnitt „Input und Tafelbild“ im Drehbuch ausfüllen. Höchstens etwa sechs Szenen für 20 Minuten, je Szene eine Kernaussage, eine Vorhersage-Frage an die Klasse und die Station, die das Thema vertieft. Die letzte Szene sichert. Der Input ist Einstieg, nicht Ersatz: Er zeigt nichts, was im Paket fehlt, und lässt mindestens eine Frage bewusst offen (Formeln, Details, Listen bleiben in den Stationen). Auf der Tafel steht kein erklärender Text; die Lehrkraft erklärt mündlich.
 - **Dauer schätzen:** Lerneinheiten von 30–45 Minuten; im klassischen Unterricht Abschnitte von 20–30 Minuten.
 
 ### 4. Selbstprüfung vor der Übergabe
@@ -65,7 +66,7 @@ Drei Dateien (bzw. ein Dokument mit drei Teilen), die die Lehrkraft speichern ka
 
 1. `steckbrief.md`
 2. `lernziele-nachweis.md`
-3. `drehbuch.md` mit Prüftabelle
+3. `drehbuch.md` mit Prüftabelle (bei Input mit dem Abschnitt „Input und Tafelbild“)
 
 Wenn ein Repository genutzt wird (z. B. PING): Ablage unter `packages/<name>/planung/`.
 

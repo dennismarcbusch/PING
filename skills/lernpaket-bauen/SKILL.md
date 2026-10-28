@@ -15,7 +15,9 @@ Du baust aus Drehbuch und Fragenpool ein fertiges SCORM-1.2-Paket (ZIP), das die
 
 Start mit Leitsituation, Ablauf, Lernzielen, Selbsteinschätzung und „Wichtige Begriffe vorab“ · Glossar unter jeder Station · Frage zum Selbsterklären im Lösungsbeispiel · Aufträge zum Mitdenken mit Muster · freiwilliger Vorwissens-Check mit Überspring-Empfehlung · Stationen mit Auftrag, Leitfrage, aufklappbarem Lösungsbeispiel, Steckbrief-Seitenleiste und Kurz-Check („zählt nicht“) · Übungen mit drei gestuften Tipps und Reflexion mit Musterantwort · Nachweis mit Teil A (Handlungsaufgabe) und Teil B (gezogen und gemischt, 2 je Lernziel), Bestehen ab 80 %, bestes Ergebnis zählt · Abschluss mit Auswertung je Lernziel, Empfehlung, Selbsteinschätzung nachher, Merkblatt zum Ergänzen mit PDF und Selbsttest, Ergebnis-PDF · genau ein Weiter-Knopf je Ansicht, Fortschrittsanzeige nach Teilen und Lernzielen · SCORM 1.2 (score, status, objectives je Lernziel, interactions je Frage, suspend_data, Name) · läuft ohne Lernplattform · Tablet und Tastatur.
 
-**`js/engine.js` und `css/stil.css` nicht verändern.** Sie sorgen dafür, dass alle Pakete gleich aussehen und sich gleich bedienen. Fehlt eine Funktion, löse sie in `inhalt.js` (z. B. als Interaktion) und notiere den Wunsch für die Pflege der Vorlage.
+**Optional: Tafelbild** (`js/tafel.js`, `css/tafel.css`) für einen freiwilligen Lehrer-Input: Präsentationsmodus mit Szenen, Werkzeugleiste, Tastatur und Presenter, zuschaltbaren Erklärungen, Stift, Verweis auf die Station, Knopf in der Kopfzeile, Karte auf der Startseite und Aufruf über `index.html#tafel`. Es speichert nichts. Ohne Feld `tafel` in `inhalt.js` passiert nichts – die Dateien bleiben trotzdem im Paket.
+
+**`js/engine.js`, `js/tafel.js`, `css/stil.css` und `css/tafel.css` nicht verändern.** Sie sorgen dafür, dass alle Pakete gleich aussehen und sich gleich bedienen. Fehlt eine Funktion, löse sie in `inhalt.js` (z. B. als Interaktion) und notiere den Wunsch für die Pflege der Vorlage.
 
 ## Ablauf
 
@@ -50,6 +52,16 @@ Beim Schreiben der Texte:
 - Hervorhebungen sparsam (`<b>`), Farben nur über Variablen (`var(--accent)` ist für Handlungsaufforderungen reserviert).
 - Übungen in **anderen** Situationen als die Stationen; Tipps in drei Stufen (Denkanstoß, Teillösung, Lösung mit Begründung).
 - Nachweis Teil A: neue Situation, keine Rückmeldung während der Bearbeitung; Prüfpunkte je Lernziel in `auswerten()`.
+
+### 3a. Tafelbild (nur wenn im Drehbuch ein Input geplant ist)
+
+Erst wenn die Stationen stehen, deren Szenen das Tafelbild zeigt. Format und Regeln: `referenz/fragenformat.md`, Abschnitt „Tafelbild“; Beispiel in `vorlage/js/inhalt.js`.
+
+- Szenen aus dem Drehbuch-Abschnitt „Input und Tafelbild“ als `tafel.szenen`. Für jede Szene dieselben Bausteine wie in der Station wiederverwenden (gleiche Optik = Wiedererkennung), aber größer und **ohne erklärenden Text**; nur Beschriftungen im Bild, Zahlen, Symbole.
+- Werkzeuge über `api.werkzeug()` mit kurzem Text und Tastenkürzel. Für die Vorhersage: Ergebnisse als Schalter zum Aufdecken anlegen statt sofort anzuzeigen.
+- Zu jeder Szene `station` (ID) und eine `erklaerung` (2–4 kurze Sätze) für Schüler, die das Tafelbild selbst öffnen.
+- **Ablaufplan** für die Lehrkraft aus `vorlagen-lehrkraft/input-ablauf.md` füllen: je Szene Zeit, Klicks, Impulsfrage, erwartete Fehlvorstellung, Merksatz. **Alle Zahlen im Ablaufplan mit Code gegen das Paket nachrechnen.** Der Ablaufplan kommt nicht ins ZIP (im Repository: `packages/<name>/lehrer/input-ablauf.md`).
+- Beim Test (Schritt 5) prüft das Skript das Tafelbild mit. Sieh dir die Screenshots `tafel-<n>.png` an: Ist aus der letzten Reihe lesbar, was gemeint ist? Steht nirgends ein erklärender Satz?
 
 ### 4. Interaktionen schreiben
 
@@ -86,8 +98,9 @@ Das aktualisiert die Dateiliste im Manifest, übernimmt Titel, ID und Bestehensg
 2. Empfohlene Einstellungen: Bewertungsmethode „Höchste Bewertung“, Versuche unbegrenzt, Anzeige in neuem Fenster oder mindestens 1000 px breit.
 3. Vor dem ersten Einsatz einmal mit einem Schülertestkonto durchspielen (Punktzahl kommt an?).
 4. Danach: Review durch eine Kollegin oder einen Kollegen (Skill `lernpaket-pruefen`) und Test mit drei bis fünf Schülern.
+5. Bei Paketen mit Tafelbild: Für den Input den entpackten Ordner öffnen und `index.html#tafel` aufrufen (F = Vollbild), den Ablaufplan mitgeben und einmal am echten Board ausprobieren.
 
-Wenn im PING-Repository gearbeitet wird: Quellen nach `packages/<name>/src/`, Steckbrief nach `packages/<name>/README.md`, Planung nach `packages/<name>/planung/`; ZIPs nicht einchecken (`./build.sh` baut sie).
+Wenn im PING-Repository gearbeitet wird: Quellen nach `packages/<name>/src/`, Steckbrief nach `packages/<name>/README.md`, Planung nach `packages/<name>/planung/`, Ablaufplan für einen Input nach `packages/<name>/lehrer/`; ZIPs nicht einchecken (`./build.sh` baut sie).
 
 ## Änderungen an bestehenden Paketen
 

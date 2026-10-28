@@ -85,6 +85,7 @@
     var fehler = [], hinweise = [], ids = {};
     function id(x, wo) { if (!x) fehler.push(wo + ': id fehlt'); else if (ids[x]) fehler.push('Doppelte id: ' + x); else ids[x] = 1; }
     if (!P.id || !/^ping-[a-z0-9-]+$/.test(P.id)) hinweise.push('PAKET.id sollte "ping-<name>" lauten (wie der Manifest-Identifier).');
+    if (!P.version) hinweise.push('Versionsnummer fehlt (PAKET.version) – sie steht klein in der Kopfzeile und auf den PDFs.');
     if (BESTEHEN !== 80) hinweise.push('Bestehensgrenze ist ' + BESTEHEN + ' %, der Leitfaden sieht 80 % vor.');
     if (LZ.length < 3 || LZ.length > 8) hinweise.push('Leitfaden: drei bis acht Lernziele (jetzt ' + LZ.length + ').');
     LZ.forEach(function (z) { id(z.id, 'Lernziel'); if (!/^Ich kann/.test(z.text || '')) hinweise.push(z.id + ': Lernziel in Schülersprache beginnen („Ich kann …“).'); });
@@ -323,6 +324,10 @@
     document.getElementById('titel').textContent = P.titel || '';
     document.getElementById('untertitel').textContent = P.untertitel || '';
     document.title = P.titel || 'Lernpaket';
+    // Versionsnummer klein, aber sichtbar neben dem Titel (für Rückfragen und Auswertung)
+    var ver = document.getElementById('version'), h1 = document.getElementById('titel');
+    if (!ver && h1) { ver = el('span', { id: 'version', class: 'version' }); h1.parentNode.insertBefore(ver, h1.nextSibling); }
+    if (ver) { ver.textContent = P.version ? 'v' + P.version : ''; ver.hidden = !P.version; ver.title = 'Version des Lernpakets – bei Rückfragen bitte angeben'; ver.setAttribute('aria-label', 'Version ' + (P.version || '')); }
     var fp = document.getElementById('fortschritt'); fp.innerHTML = '';
     var st = STATIONEN.filter(function (s) { return S.st[s.id]; }).length;
     var ue = UEBUNGEN.filter(function (u) { return S.ue[u.id]; }).length;
@@ -790,7 +795,7 @@
     else leiste('Bestanden! Sichere jetzt dein Wissen auf dem Merkblatt.', 'Zum Merkblatt ↓', function () { mb.scrollIntoView({ behavior: 'smooth' }); var t = mb.querySelector('textarea'); if (t) t.focus({ preventScroll: true }); });
   }
   function merkblattHtml(felder) {
-    var h = '<h1>Merkblatt: ' + esc(P.titel || '') + '</h1><p class="klein">' + esc(P.untertitel || '') + ' · ' + new Date().toLocaleDateString('de-DE') + '</p>';
+    var h = '<h1>Merkblatt: ' + esc(P.titel || '') + '</h1><p class="klein">' + esc(P.untertitel || '') + (P.version ? ' · Version ' + esc(P.version) : '') + ' · ' + new Date().toLocaleDateString('de-DE') + '</p>';
     P.merkblatt.forEach(function (a) {
       h += '<h2>' + esc(a.lz) + ' · ' + (a.titel || lz(a.lz).kurz || '') + '</h2><table class="tab"><tr><th>Satz</th><th>Mein Eintrag</th><th>Muster</th></tr>';
       felder.filter(function (x) { return x.a === a; }).forEach(function (x) { h += '<tr><td>' + x.zl.text + '</td><td>' + esc(x.ta.value || '—') + '</td><td>' + x.zl.loesung + '</td></tr>'; });
@@ -815,7 +820,7 @@
     return h;
   }
   function ergebnisHtml(name) {
-    var h = '<h1>Ergebnis: ' + esc(P.titel || '') + '</h1><p>Name: <b>' + esc(name || '________________') + '</b> · Datum: ' + new Date().toLocaleDateString('de-DE') + '</p>';
+    var h = '<h1>Ergebnis: ' + esc(P.titel || '') + '</h1><p>Name: <b>' + esc(name || '________________') + '</b> · Datum: ' + new Date().toLocaleDateString('de-DE') + (P.version ? ' · Paketversion ' + esc(P.version) : '') + '</p>';
     h += '<p>Bestes Ergebnis im Kompetenznachweis: <b>' + S.best + ' %</b> (' + (S.best >= BESTEHEN ? 'bestanden' : 'nicht bestanden') + ', Grenze ' + BESTEHEN + ' %) · Versuche: ' + S.n + '</p>';
     h += '<table class="tab"><tr><th>Lernziel</th><th>Letzter Versuch</th><th>Selbsteinschätzung vorher → nachher</th></tr>';
     LZ.forEach(function (z) { h += '<tr><td><b>' + esc(z.id) + '</b> ' + z.text + '</td><td>' + (S.lz[z.id] || 0) + ' %</td><td>' + (S.se[z.id] || '–') + ' → ' + (S.sn[z.id] || '–') + ' (von 5)</td></tr>'; });

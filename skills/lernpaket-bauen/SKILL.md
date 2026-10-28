@@ -33,7 +33,7 @@ python3 <skill>/scripts/paket.py neu <arbeitsordner>/<name> --id ping-<name> --t
 
 ### 2. Prototyp: eine Station, zwei Fragen
 
-Ersetze den Beispielinhalt in `js/inhalt.js` durch: Titel, Figur, Leitsituation, alle Lernziele, **Station 1 vollständig** (inkl. Interaktion und Lösungsbeispiel) und ihren Kurz-Check. Die übrigen Teile dürfen noch fehlen; die rote Box „Hinweis für Autor:innen“ zeigt dann, was noch fehlt – das ist im Prototyp normal.
+Ersetze den Beispielinhalt in `js/inhalt.js` durch: Titel, Version (`0.1` für den Prototyp), Figur, Leitsituation, alle Lernziele, **Station 1 vollständig** (inkl. Interaktion und Lösungsbeispiel) und ihren Kurz-Check. Die übrigen Teile dürfen noch fehlen; die rote Box „Hinweis für Autor:innen“ zeigt dann, was noch fehlt – das ist im Prototyp normal.
 
 Teste (Schritt 5; im Prototyp sind rote Punkte zu Nachweis und Datenübergabe erwartbar, alles andere muss grün sein), baue das ZIP (Schritt 6) und gib es der Lehrkraft mit der Bitte, es auszuprobieren: `index.html` im entpackten Ordner per Doppelklick im Browser öffnen oder das ZIP in einen Testkurs laden. Frage nach Rückmeldung in normaler Sprache: Was ist unklar, zu lang, zu schwer, sieht falsch aus?
 
@@ -104,7 +104,7 @@ Wenn im PING-Repository gearbeitet wird: Quellen nach `packages/<name>/src/`, St
 
 ## Änderungen an bestehenden Paketen
 
-Version in `inhalt.js` erhöhen, Änderung im Steckbrief notieren, Fragen-IDs beibehalten (geänderte Frage = neue ID), danach Schritte 5 und 6.
+Version in `inhalt.js` erhöhen (sie steht klein in der Kopfzeile und auf den PDFs, damit Lehrkraft und Schüler bei Rückfragen sagen können, welche Fassung sie haben; erster Einsatz `1.0`, kleine Korrekturen `1.1`, größere Umbauten `2.0`), Änderung im Steckbrief notieren, Fragen-IDs beibehalten (geänderte Frage = neue ID), danach Schritte 5 und 6.
 
 ## Grenzen
 

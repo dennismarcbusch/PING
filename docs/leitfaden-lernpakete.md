@@ -179,6 +179,15 @@ Jedes Paket folgt demselben Grundmuster aus fünf Teilen. Es ist aus den PING-Pa
 
 **Merkblatt (P13).** Nach dem Nachweis öffnet sich ein halb vorgefülltes Merkblatt, gegliedert nach Lernzielen. Lernende ergänzen die Kernaussagen ohne Zurückblättern und vergleichen dann mit dem Muster. Zum Herunterladen gibt es eine Seite als PDF: vorne die eigenen Einträge neben dem Muster, der typische Fehler mit Korrektur, ein kurzes gelöstes Beispiel und bei Abläufen das Schritt-Schema. Hinten stehen fünf Selbsttest-Fragen ohne Lösung mit dem Hinweis „In 1–2 Wochen nochmal beantworten“; die Lösungen sind im Paket. Früher freigeschaltet würde das Merkblatt nur gelesen oder zum Spickzettel für den Nachweis. Im SeGeL-Unterricht gehört es ins Lernportfolio. Wir nennen es bewusst „Merkblatt“, nicht „Cheat Sheet“.
 
+**Optional: Input mit Tafelbild.** Zu einem Paket kann es einen freiwilligen Lehrer-Input von etwa 20 Minuten geben, wenn sich das Thema gut gemeinsam vorführen lässt (typisch: Simulationen, Abläufe, Vergleiche). Er ist kein Pflichtteil und lohnt sich nicht für jedes Paket. Der Input nutzt die interaktiven Bilder des Pakets als **Tafelbild**: groß, Schritt für Schritt, ohne erklärenden Text; die Lehrkraft erklärt mündlich (Bild plus gesprochenes Wort statt Bild plus Text an der Wand, vgl. Redundanzprinzip). Jede Szene folgt dem Muster *Vorhersagen → Klicken → Deuten*, die letzte Szene sichert das Ergebnis. Regeln:
+
+- Der Input ist **Einstieg, nicht Ersatz.** Schüler entscheiden selbst, ob sie teilnehmen; das Paket bleibt allein vollständig. Das Tafelbild zeigt nichts, was im Paket fehlt, und jede Szene verweist auf ihre Station. Formeln, Vor-/Nachteil-Listen und Details bleiben in den Stationen.
+- Das Tafelbild steckt im Paket (Symbol „Tafelbild“ in der Kopfzeile, Hinweis auf der Startseite, Aufruf als Präsentation über `index.html#tafel`). Öffnen Schüler es selbst, sind kurze Erklärungen zuschaltbar.
+- Das Tafelbild speichert nichts und verändert weder Fortschritt noch Ergebnis.
+- Zum Input gehört ein **Ablaufplan** für die Lehrkraft (Szene, Klicks, Impulsfrage, erwartete Fehlvorstellung, Merksatz), abgelegt neben dem Paket, nicht im ZIP.
+
+Beispiel: „Netzwerktopologien erleben“ (Version 2) mit sechs Szenen und Ablaufplan unter `packages/netzwerktopologien/lehrer/`.
+
 **Größe.** Ein Paket deckt ein Thema ab, das sich in einem Satz benennen lässt. Wird das Drehbuch länger als etwa acht Stationen, lohnt es sich, zwei Pakete daraus zu machen.
 
 Kerres (2024) nennt als Richtwert Lerneinheiten von 30 bis 45 Minuten, drei bis neun davon pro Kapitel und höchstens drei Gliederungsebenen. Wichtiger als die genaue Zahl ist, dass alle Einheiten gleich gerahmt sind: Jede beginnt mit Orientierung (worum es geht, wozu, wie lange) und endet mit einem Abschluss (Kurz-Check oder Zusammenfassung).
@@ -293,7 +302,7 @@ Kerres (2024) bestätigt das aus der Forschung zum digitalen Lernen: Wer allein 
 | --- | --- | --- |
 | Rolle des Pakets | Trägt die gesamte Lerneinheit von Einstieg bis Nachweis | Baustein für eine Phase: Erarbeitung, Übung, Simulation oder Vorbereitung (Flipped) |
 | Zeitstruktur | Kein 45/90-Minuten-Raster; Fortschritt wird gespeichert, Wiedereinstieg jederzeit | Abschnitte von etwa 20–30 Minuten, die in eine Stunde passen; Stationen einzeln aufrufbar |
-| Einstieg | Im Paket: Leitsituation, Lernziele, Vorwissens-Check, Hinweis zum Vorgehen | Durch die Lehrkraft; das Paket kann den Einstieg kurz halten |
+| Einstieg | Im Paket: Leitsituation, Lernziele, Vorwissens-Check, Hinweis zum Vorgehen; optional ein freiwilliger Input mit Tafelbild (C2) | Durch die Lehrkraft, z. B. mit dem Tafelbild des Pakets; das Paket kann den Einstieg kurz halten |
 | Steuerung | Empfohlener Pfad mit Freiheit beim Tempo; Springen möglich, aber mit Hinweis, was vorausgesetzt wird | Lehrkraft gibt Abschnitte frei bzw. vor |
 | Hilfe | Drei gestufte Tipps, Lösungsbeispiele, Glossar und Steckbriefe immer erreichbar; Hinweis, wann man die Lehrkraft fragen sollte | Tipps im Paket; vertiefende Hilfe durch Lehrkraft und Mitschüler |
 | Selbstregulation | Verbindlich: Lernziele mit Selbsteinschätzung vorher/nachher, Fortschrittsanzeige, Reflexionsfragen mit Musterantwort, Lernempfehlung nach dem Nachweis | Optional; Reflexion und Sicherung im Plenum |
@@ -333,6 +342,7 @@ Die Standards stammen aus den bisherigen PING-Paketen und den Tests in der ByCS-
 | Qualitätssicherung | Test im SCORM-1.2-Testplayer; automatisierter Test, dass alle Aufgaben mit der Musterlösung lösbar sind; Test in der echten ByCS-Lernplattform vor dem ersten Einsatz |
 | Ablage | Quellcode und ZIP im gemeinsamen Repository, einheitliche Benennung, Versionsnummer und Änderungsprotokoll |
 | Lizenz | Lizenz festlegen (z. B. CC BY-SA), damit Kollegen Pakete anpassen und weitergeben dürfen |
+| Tafelbild (optional) | Präsentationsmodus im Paket (`js/tafel.js`, Daten in `PAKET.tafel`); Bedienung per Pfeiltasten und Presenter, Schaltflächen mindestens 48 px, lesbar am Beamer; schreibt keine SCORM-Werte, kein `suspend_data`, kein `localStorage` |
 | Merkblatt (P13) | Wird im Browser als druckbare Seite erzeugt und als PDF gespeichert, ohne Server. Einträge nicht dauerhaft in suspend\_data ablegen (SCORM 1.2: höchstens 4096 Zeichen); das Merkblatt braucht keinen Namen. |
 
 Kolleginnen und Kollegen ohne Programmiererfahrung müssen diese Details nicht selbst umsetzen; das Skill-Set (Teil C7) baut sie automatisch ein. Sie sollten aber wissen, dass es sie gibt, um die Checkliste abhaken zu können.
@@ -389,6 +399,7 @@ Ein Paket ist einsatzbereit, wenn alle Muss-Punkte erfüllt sind; die Checkliste
 - [ ] Mit drei bis fünf Schülern erprobt; Änderungen eingearbeitet.
 - [ ] Am Ende gibt es ein halb vorgefülltes Merkblatt zum Ergänzen und Herunterladen, freigeschaltet erst nach dem Nachweis, mit Selbsttest-Fragen zum späteren Wiederholen. (P13)
 - [ ] Lösungsbeispiele enthalten eine Frage zum Selbsterklären; nach Stationen oder Übungen gibt es Aufträge zum Skizzieren, Zusammenfassen oder Erklären. (P3)
+- [ ] Falls es einen Input gibt: Tafelbild ohne erklärenden Text, jede Szene mit ihrer Station verknüpft, nichts, was im Paket fehlt; Erklärungen für Schüler zuschaltbar; Tafelbild speichert nichts; Ablaufplan liegt bei.
 - [ ] Glossar mit allen Fachbegriffen, jederzeit erreichbar; die wichtigsten Begriffe werden am Anfang vorgestellt; kurze Sätze, geläufige Wörter (auch für Lernende, die Deutsch lernen).
 
 ## Teil C7: Der Leitfaden als Skill-Set
@@ -431,6 +442,8 @@ Gemeinsame Grundlage aller Skills ist eine Referenzdatei mit den dreizehn Prinzi
 - [ ] Skill-Set (gebaut am 27.10.2026) mit dem ersten neuen Paket erproben und die Anleitung um Screenshots ergänzen.
 - [ ] Lizenz und Ablage für Pakete anderer Fächer klären (Repository, SCORM Hub).
 - [x] Kapitel aus Kerres (2024) im Original prüfen und die Zusammenfassung in Teil A1 abgleichen.
+- [ ] Tafelbild in die Paketvorlage übernehmen (`tafel.js`/`tafel.css`, Startseiten-Hinweis als Hook in der Engine statt nachträglich eingehängt) und in `lernpaket-planen` (Drehbuch-Abschnitt „Input und Tafelbild“) sowie `lernpaket-bauen` (Feld `tafel`) ergänzen.
+- [ ] Eigenen Skill `tafelbild-erstellen` bauen: erzeugt nur ein Tafelbild mit Ablaufplan, ohne Lernpaket – für Themen, die praktisch, in einer anderen Simulation (z. B. Packet Tracer) oder ganz ohne Paket umgesetzt werden.
 - [ ] Bestehensgrenze der vorhandenen PING-Pakete von 70 % bzw. 60 % auf 80 % umstellen (Prüfen, ob die Fragen dazu passen).
 
 ## Literatur

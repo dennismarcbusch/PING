@@ -54,4 +54,5 @@ Ein Paket ist einsatzbereit, wenn alle Muss-Punkte erfüllt sind; die Checkliste
 - [ ] Mit drei bis fünf Schülern erprobt; Änderungen eingearbeitet.
 - [ ] Am Ende gibt es ein halb vorgefülltes Merkblatt zum Ergänzen und Herunterladen, freigeschaltet erst nach dem Nachweis, mit Selbsttest-Fragen zum späteren Wiederholen. (P13)
 - [ ] Lösungsbeispiele enthalten eine Frage zum Selbsterklären; nach Stationen oder Übungen gibt es Aufträge zum Skizzieren, Zusammenfassen oder Erklären. (P3)
+- [ ] Falls es einen Input gibt: Tafelbild ohne erklärenden Text, jede Szene mit ihrer Station verknüpft, nichts, was im Paket fehlt; Erklärungen für Schüler zuschaltbar; Tafelbild speichert nichts; Ablaufplan liegt bei.
 - [ ] Glossar mit allen Fachbegriffen, jederzeit erreichbar; die wichtigsten Begriffe werden am Anfang vorgestellt; kurze Sätze, geläufige Wörter (auch für Lernende, die Deutsch lernen).

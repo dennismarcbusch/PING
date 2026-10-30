@@ -137,6 +137,13 @@ svg .zone.near{fill:rgba(47,111,222,.38);stroke-width:3}
 svg .lbl{font:700 13px system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;paint-order:stroke;stroke:var(--canvas);stroke-width:4px;fill:var(--ink);pointer-events:none}
 svg .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
 svg .fade{transition:transform .38s ease-in,opacity .38s ease-in}
+.v3wrap{position:relative}
+.v3cv{aspect-ratio:664/606;cursor:grab}
+.v3cv:active{cursor:grabbing}
+.v3bar{position:absolute;right:8px;top:8px;display:flex;gap:4px}
+.v3bar button{padding:4px 9px;background:var(--card);box-shadow:var(--shadow)}
+.v3hint{position:absolute;left:8px;bottom:8px;font-size:.78rem;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);padding:2px 8px;border-radius:8px;pointer-events:none;opacity:.92}
+.v3part{width:100%;aspect-ratio:4/3;display:block;border-radius:12px;background:var(--canvas);border:1px solid var(--line);touch-action:none;cursor:grab;margin:4px 0 8px}
 .noprint{}
 /*@print*/@media print{.tabs,.hdr .chip,.noprint,details.lz{display:none!important}.app{background:#fff}.card{box-shadow:none}}/*@end*/
 </style>
@@ -155,6 +162,7 @@ svg .fade{transition:transform .38s ease-in,opacity .38s ease-in}
       <h1>Plug &amp; Pray</h1>
       <p>Aufbau eines modernen PCs · Zerlegen · Zusammenbauen · Kompetenznachweis</p>
     </div>
+    <button id="t3d" class="small" hidden title="3D-Ansichten ein- oder ausschalten">🧊 3D: an</button>
     <span class="chip" id="scormChip">Vorschau</span>
   </header>
 
@@ -1469,6 +1477,9 @@ function expBlockers(id){ return EXP_DEPS[id].filter(function(d){ return EXP.rem
 function expInit(){
   EXP.S = fullState(); EXP.removed = []; EXP.sel = null; EXP.view = 'case'; EXP.hotSel = null;
   $('#expSvg').addEventListener('click', expClick);
+  EXP.v3 = new Stage3($('#expSvg'), function(b){ $('#expViewBoard').insertAdjacentElement('afterend', b); },
+    function(){ return EXP.view === 'case' ? { scene: build3D('A', EXP.S), sel: EXP.sel, mode: 'case' } : { scene: build3D('A', EXP.S, { bench: true }), sel: EXP.hotSel, mode: 'bench' }; },
+    function(id){ if (EXP.busy) return; if (EXP.view === 'board') expHot(id); else expSelect(id); });
   $('#expViewCase').onclick = function(){ EXP.view = 'case'; expRender(); };
   $('#expViewBoard').onclick = function(){ if (EXP.S.board) return; EXP.view = 'board'; expRender(); };
   $('#expReset').onclick = function(){ EXP.S = fullState(); EXP.removed = []; EXP.sel = null; EXP.hotSel = null; EXP.view = 'case'; expRender(); expInfo(); };
@@ -1479,13 +1490,20 @@ function expClick(ev){
   var t = ev.target;
   if (EXP.view === 'board'){
     var h = t.closest ? t.closest('[data-hot]') : null;
-    if (!h) return;
-    EXP.hotSel = h.getAttribute('data-hot');
-    if ((STORE.hs || (STORE.hs = [])).indexOf(EXP.hotSel) < 0){ STORE.hs.push(EXP.hotSel); save(); }
-    expRender(); expInfo(); return;
+    if (h) expHot(h.getAttribute('data-hot'));
+    return;
   }
   var c = t.closest ? t.closest('[data-comp]') : null;
-  EXP.sel = c ? c.getAttribute('data-comp') : null;
+  expSelect(c ? c.getAttribute('data-comp') : null);
+}
+function expHot(id){
+  if (!id) return;
+  EXP.hotSel = id;
+  if ((STORE.hs || (STORE.hs = [])).indexOf(id) < 0){ STORE.hs.push(id); save(); }
+  expRender(); expInfo();
+}
+function expSelect(id){
+  EXP.sel = id || null;
   if (EXP.sel && STORE.seen.indexOf(EXP.sel) < 0){ STORE.seen.push(EXP.sel); save(); }
   expRender(); expInfo();
 }
@@ -1511,6 +1529,7 @@ function expRender(){
   var svg = $('#expSvg');
   if (EXP.view === 'case') renderPC(svg, 'A', EXP.S, { comp: true, sel: EXP.sel });
   else benchRender(svg);
+  if (EXP.v3) EXP.v3.update(true);
   var n = EXP.removed.length, hs = (STORE.hs || []).length;
   $('#expBar').style.width = Math.round(100 * (n / EXP_ORDER.length * 0.7 + hs / HOT_ORDER.length * 0.3)) + '%';
   $('#expStat').textContent = 'Ausgebaut: ' + n + ' / ' + EXP_ORDER.length + ' · Mainboard-Details entdeckt: ' + hs + ' / ' + HOT_ORDER.length;
@@ -1544,7 +1563,7 @@ function infoCard(box, I, extra, mid){
   h += '<div class="good"><b>💡 Gut zu wissen</b>' + esc(I.good) + '</div>';
   box.innerHTML = (mid ? '' : (extra || '')) + h;
   var k = Object.keys(INFO).filter(function(x){ return INFO[x] === I; })[0];
-  if (k && EXP_KIND[k]) $('.figslot', box).appendChild(partFigure(EXP_KIND[k], 'A'));
+  if (k && EXP_KIND[k]){ $('.figslot', box).appendChild(partFigure(EXP_KIND[k], 'A')); part3D($('.figslot', box), k); }
 }
 function expInfo(justRemoved){
   var box = $('#expInfo');
@@ -1738,7 +1757,9 @@ function cardState(ctx, it){
   return 'free';
 }
 function renderBuild(ctx){
+  if (ctx.v3 && ctx.v3.on && ctx.sel) ctx.v3.set(false);
   renderPC(ctx.svg, ctx.key, ctx.S, { zones: shownZones(ctx), near: ctx.near });
+  if (ctx.v3) ctx.v3.update(true);
   renderParts(ctx);
 }
 function renderParts(ctx){
@@ -1766,7 +1787,7 @@ function bindCard(ctx, el, it){
     function mv(ev){
       if (ev.pointerId !== st.id) return;
       if (!st.drag && Math.abs(ev.clientX - st.x) + Math.abs(ev.clientY - st.y) > 8){
-        st.drag = true; ctx.sel = it.id; ctx.near = null; renderPC(ctx.svg, ctx.key, ctx.S, { zones: shownZones(ctx) });
+        st.drag = true; ctx.sel = it.id; ctx.near = null; if (ctx.v3 && ctx.v3.on) ctx.v3.set(false); renderPC(ctx.svg, ctx.key, ctx.S, { zones: shownZones(ctx) });
         var g = $('#ghost'); clear(g); g.appendChild(icon(it.icon, ctx.key)); g.hidden = false; GHOST = g;
       }
       if (st.drag){
@@ -1989,6 +2010,8 @@ var USTEPS = [
 var UEB = { ctx: null, cur: 0, tips: 0, preOk: false, finished: false, refDone: false };
 function uebInit(){
   $('#uebReset').onclick = uebStart;
+  UEB.v3 = new Stage3($('#uebSvg'), function(b){ $('#uebReset').insertAdjacentElement('beforebegin', b); },
+    function(){ return UEB.ctx ? { scene: build3D('A', UEB.ctx.S), mode: 'ueb' } : null; }, build3DHint);
   uebStart();
 }
 function uebStart(){
@@ -1998,7 +2021,7 @@ function uebStart(){
   c.pop = H('div', 'pop'); c.pop.hidden = true;
   var stage = svg.parentNode; $$('.pop', stage).forEach(function(n){ n.remove(); }); stage.appendChild(c.pop);
   c.onMsg = uebMsg; c.onChange = uebCheck;
-  UEB.ctx = c; UEB.cur = 0; UEB.tips = 0; UEB.preOk = false; UEB.finished = false; UEB.refDone = false;
+  c.v3 = UEB.v3; UEB.ctx = c; UEB.cur = 0; UEB.tips = 0; UEB.preOk = false; UEB.finished = false; UEB.refDone = false;
   uebStep();
 }
 function uebStep(){
@@ -2174,6 +2197,8 @@ function knBuild(){
   c.pop = H('div', 'pop'); $('#knStage').appendChild(c.pop);
   c.onMsg = knMsg; c.onChange = knRight;
   c.locked = true; KN.ctx = c;
+  V3.stages = V3.stages.filter(function(st){ return document.body.contains(st.svg); });
+  c.v3 = new Stage3($('#knSvg'), function(b){ $('#knStage .stagebar').appendChild(b); }, function(){ return { scene: build3D('B', c.S), mode: 'kn' }; }, build3DHint);
   var o = shuffle([0, 1, 2, 3]), P = ['Ich entlade mich am Gehäusemetall bzw. lege ein ESD-Armband an und lege die Teile auf eine antistatische Unterlage.', 'Ich schalte den PC erst einmal ein, um zu prüfen, ob das Netzteil funktioniert.', 'Ich nehme alle Teile aus den Schutzhüllen und sortiere sie auf dem Teppich.', 'Ich fange direkt mit der Grafikkarte an – das ist das wichtigste Teil.'];
   c.pop.innerHTML = '<h3>🧰 Bevor es losgeht</h3><p style="margin:0 0 6px">Du hast alle Teile bekommen. Womit beginnst du?</p><div class="opts">' + o.map(function(i){ return '<button data-i="' + i + '">' + esc(P[i]) + '</button>'; }).join('') + '</div>';
   $$('[data-i]', c.pop).forEach(function(b){ b.onclick = function(){ ck(c, 'prep', b.getAttribute('data-i') === '0'); c.pop.hidden = true; c.locked = false; say(c, '', 'Los geht’s! Wähle die Teile passend zum Kundenauftrag.'); renderBuild(c); }; });
@@ -2297,6 +2322,474 @@ function printResult(boxSel){
   w.document.close(); setTimeout(function(){ try { w.focus(); w.print(); } catch (_){} }, 300);
 }
 
+/* ================== 3D-Ansicht: PC und Bauteile frei drehen (WebGL, ohne Bibliothek) ==================
+   Das Modell entsteht aus denselben Maßen wie die Schrägbilder (GEO: x/y wie auf dem Tray, z Richtung Glas).
+   Abschalten: ALLOW_3D = false (für alle), Startadresse mit ?3d=0 oder Schalter „3D“ im Kopf (pro Person, gespeichert). */
+var ALLOW_3D = true;
+var V3 = { ok: null, stages: [] };
+function has3D(){
+  if (!ALLOW_3D || /[?&]3d=0/.test(location.search || '')) return false;
+  if (V3.ok === null){ try { var c = document.createElement('canvas'); V3.ok = !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl'))); } catch (e){ V3.ok = false; } }
+  return V3.ok;
+}
+function on3D(){ return has3D() && !STORE.no3d; }
+
+/* ---------- Vektor-/Matrix-Helfer ---------- */
+function v3sub(a, b){ return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+function v3add(a, b){ return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; }
+function v3mul(a, s){ return [a[0] * s, a[1] * s, a[2] * s]; }
+function v3dot(a, b){ return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
+function v3cross(a, b){ return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; }
+function v3nrm(a){ var l = Math.sqrt(v3dot(a, a)) || 1; return [a[0] / l, a[1] / l, a[2] / l]; }
+function m4persp(f, a, n, fa){ var t = 1 / Math.tan(f / 2), nf = 1 / (n - fa); return [t / a, 0, 0, 0, 0, t, 0, 0, 0, 0, (fa + n) * nf, -1, 0, 0, 2 * fa * n * nf, 0]; }
+function m4look(e, c, u){ var z = v3nrm(v3sub(e, c)), x = v3nrm(v3cross(u, z)), y = v3cross(z, x); return [x[0], y[0], z[0], 0, x[1], y[1], z[1], 0, x[2], y[2], z[2], 0, -v3dot(x, e), -v3dot(y, e), -v3dot(z, e), 1]; }
+function m4mul(a, b){ var o = []; for (var i = 0; i < 4; i++) for (var j = 0; j < 4; j++){ var s = 0; for (var k = 0; k < 4; k++) s += a[k * 4 + j] * b[i * 4 + k]; o[i * 4 + j] = s; } return o; }
+function hexRGB(h){ var n = parseInt(h.slice(1), 16); return [(n >> 16) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255]; }
+function bez3(a, b, c, d, n){ var o = []; for (var i = 0; i <= n; i++){ var t = i / n, u = 1 - t; o.push([0, 1, 2].map(function(k){ return u * u * u * a[k] + 3 * u * u * t * b[k] + 3 * u * t * t * c[k] + t * t * t * d[k]; })); } return o; }
+function qbez3(a, c, b, n){ var o = []; for (var i = 0; i <= n; i++){ var t = i / n, u = 1 - t; o.push([0, 1, 2].map(function(k){ return u * u * a[k] + 2 * u * t * c[k] + t * t * b[k]; })); } return o; }
+
+/* ---------- Szene: Dreiecke mit Farbe und Bauteil-Kennung ---------- */
+function Scene3(only){ this.v = []; this.gv = []; this.ids = ['']; this.id = 0; this.only = only || null; this.skip = false; this.lo = [1e9, 1e9, 1e9]; this.hi = [-1e9, -1e9, -1e9]; }
+Scene3.prototype.tag = function(name){
+  this.skip = !!(this.only && name !== this.only);
+  if (!name){ this.id = 0; return; }
+  var i = this.ids.indexOf(name); if (i < 0){ i = this.ids.length; this.ids.push(name); }
+  this.id = i;
+};
+/* Modellkoordinaten (x, y nach unten, z zum Glas) -> Welt (y nach oben, Mitte des Gehäuses im Ursprung) */
+Scene3.prototype.W = function(p){ return [p[0] - 320, 300 - p[1], p[2] - 60]; };
+Scene3.prototype.tri = function(a, b, c, col, na, nb, nc, glass){
+  if (this.skip) return;
+  a = this.W(a); b = this.W(b); c = this.W(c);
+  var n = v3nrm(v3cross(v3sub(b, a), v3sub(c, a))), rgb = typeof col === 'string' ? hexRGB(col) : col, out = glass ? this.gv : this.v, id = this.id, self = this;
+  [[a, na], [b, nb], [c, nc]].forEach(function(q){
+    var p = q[0], nn = q[1] ? [q[1][0], -q[1][1], q[1][2]] : n;
+    out.push(p[0], p[1], p[2], nn[0], nn[1], nn[2], rgb[0], rgb[1], rgb[2], id);
+    for (var k = 0; k < 3; k++){ if (p[k] < self.lo[k]) self.lo[k] = p[k]; if (p[k] > self.hi[k]) self.hi[k] = p[k]; }
+  });
+};
+Scene3.prototype.quad = function(a, b, c, d, col, glass){ this.tri(a, b, c, col, null, null, null, glass); this.tri(a, c, d, col, null, null, null, glass); };
+/* Quader zwischen zwei Ecken */
+Scene3.prototype.bx = function(x0, y0, z0, x1, y1, z1, col, glass){
+  var a = Math.min(x0, x1), b = Math.max(x0, x1), c = Math.min(y0, y1), d = Math.max(y0, y1), e = Math.min(z0, z1), f = Math.max(z0, z1);
+  var P = [[a, c, e], [b, c, e], [b, d, e], [a, d, e], [a, c, f], [b, c, f], [b, d, f], [a, d, f]], s = this;
+  [[0, 1, 2, 3], [4, 5, 6, 7], [0, 1, 5, 4], [3, 2, 6, 7], [0, 3, 7, 4], [1, 2, 6, 5]].forEach(function(q){ s.quad(P[q[0]], P[q[1]], P[q[2]], P[q[3]], col, glass); });
+};
+Scene3.prototype.rb = function(r, z0, z1, col, glass){ this.bx(r.x, r.y, z0, r.x + r.w, r.y + r.h, z1, col, glass); };
+/* Zylinder bzw. Kegel von a nach b */
+Scene3.prototype.cyl = function(a, b, r0, r1, col, seg, caps){
+  seg = seg || 16;
+  var d = v3sub(b, a), dn = v3nrm(d), up = Math.abs(dn[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0];
+  var u = v3nrm(v3cross(dn, up)), w = v3cross(dn, u), s = this, A = [], B = [], N = [];
+  for (var i = 0; i <= seg; i++){
+    var t = i / seg * Math.PI * 2, rad = v3add(v3mul(u, Math.cos(t)), v3mul(w, Math.sin(t)));
+    A.push(v3add(a, v3mul(rad, r0))); B.push(v3add(b, v3mul(rad, r1))); N.push(rad);
+  }
+  for (var j = 0; j < seg; j++){
+    s.tri(A[j], A[j + 1], B[j + 1], col, N[j], N[j + 1], N[j + 1]);
+    s.tri(A[j], B[j + 1], B[j], col, N[j], N[j + 1], N[j]);
+    if (caps !== false){ if (r0 > 0) s.tri(a, A[j], A[j + 1], col); if (r1 > 0) s.tri(b, B[j], B[j + 1], col); }
+  }
+};
+Scene3.prototype.tube = function(pts, r, col){ for (var i = 0; i < pts.length - 1; i++) this.cyl(pts[i], pts[i + 1], r, r, col, 8, i === 0 || i === pts.length - 2); };
+/* Lüfter: axis 'x' (Wand-/Kühlerlüfter) oder 'y' (Grafikkarte, Radiator); su/sv = Rahmengröße, th = Dicke */
+Scene3.prototype.fan = function(axis, c, su, sv, th, frame, blade, hub){
+  var s = this;
+  function M(u, v, w){ return axis === 'x' ? [c[0] + w, c[1] + u, c[2] + v] : [c[0] + u, c[1] + w, c[2] + v]; }
+  var hu = su / 2, hv = sv / 2, t = th / 2, b = Math.min(5, su / 12);
+  [[-hu, -hv, hu, -hv + b], [-hu, hv - b, hu, hv], [-hu, -hv, -hu + b, hv], [hu - b, -hv, hu, hv]].forEach(function(q){
+    var p = M(q[0], q[1], -t), r = M(q[2], q[3], t); s.bx(p[0], p[1], p[2], r[0], r[1], r[2], frame);
+  });
+  var ru = hu * 0.93, rv = hv * 0.93;
+  for (var i = 0; i < 24; i++){   // Rückwand mit Streben (dunkle Scheibe)
+    var a0 = i / 24 * Math.PI * 2, a1 = (i + 1) / 24 * Math.PI * 2;
+    s.tri(M(0, 0, -t * 0.9), M(Math.cos(a0) * ru, Math.sin(a0) * rv, -t * 0.9), M(Math.cos(a1) * ru, Math.sin(a1) * rv, -t * 0.9), shade(frame, -0.45));
+  }
+  for (var k = 0; k < 7; k++){
+    var a = k * Math.PI * 2 / 7, f = function(rr, an, w){ return M(Math.cos(an) * ru * rr, Math.sin(an) * rv * rr, w); };
+    s.quad(f(0.3, a, -t * 0.5), f(0.95, a + 0.25, -t * 0.5), f(0.95, a + 0.85, t * 0.5), f(0.3, a + 0.5, t * 0.5), blade);
+  }
+  s.cyl(M(0, 0, -t * 0.7), M(0, 0, t * 0.7), Math.min(ru, rv) * 0.3, Math.min(ru, rv) * 0.3, hub, 18);
+};
+Scene3.prototype.arrow = function(a, b, col){
+  var d = v3nrm(v3sub(b, a)), tip = v3sub(b, v3mul(d, 12));
+  this.cyl(a, tip, 2.5, 2.5, col, 8); this.cyl(tip, b, 7, 0, col, 12);
+};
+Scene3.prototype.center = function(){ return [0, 1, 2].map(function(k){ return (this.lo[k] + this.hi[k]) / 2; }, this); };
+Scene3.prototype.radius = function(){ return Math.max(1, Math.sqrt(v3dot(v3sub(this.hi, this.lo), v3sub(this.hi, this.lo))) / 2); };
+
+/* ---------- Der PC als 3D-Modell ----------
+   opt.only = nur ein Bauteil (Nahansicht), opt.bench = nur das Mainboard mit Kennungen der Details (Werkbank) */
+function build3D(key, S, opt){
+  opt = opt || {};
+  var s = new Scene3(opt.only), g = GEO[key], P = PAL[key], A = key === 'A', o = g.caseO, ci = g.caseI, pl = S.plugs || {};
+  if (opt.bench){ board3D(s, key, true); return s; }
+  // Gehäuse
+  s.tag('');
+  s.bx(o.x, o.y, -5, o.x + o.w, o.y + o.h, 0, P.caseI);
+  s.bx(o.x, o.y, 0, ci.x, o.y + o.h, DEP, P.caseO);
+  s.bx(ci.x + ci.w, o.y, 0, o.x + o.w, o.y + o.h, DEP, P.caseO);
+  s.bx(ci.x, o.y, 0, ci.x + ci.w, ci.y, DEP, P.caseO);
+  s.bx(ci.x, ci.y + ci.h, 0, ci.x + ci.w, o.y + o.h, DEP, P.caseO);
+  [50, 520].forEach(function(x){ s.bx(x, o.y + o.h, 10, x + 60, o.y + o.h + 7, 40, P.edge); });
+  for (var vx = ci.x + 30; vx < ci.x + ci.w - 30; vx += 14) s.bx(vx, ci.y - 0.2, 30, vx + 6, ci.y + 0.6, 90, shade(P.caseI, -0.25));
+  for (var my = ci.y + 14; my < 440; my += 20) s.bx(ci.x + ci.w - 0.6, my, 10, ci.x + ci.w + 0.2, my + 4, DEP - 10, shade(P.caseI, -0.3));
+  (g.grom || []).forEach(function(r){ s.rb(r, 0, 0.8, P.edge); });
+  if (!S.board) g.holes.forEach(function(h){ s.cyl([h[0], h[1], 0], [h[0], h[1], 6], 4.5, 4.5, P.std, 12); });
+  // Rückwand außen: I/O-Ausschnitt, Lüftergitter, Slotblenden
+  var io = g.io, fr = g.fan_rear;
+  s.bx(o.x - 1, io.y, 4, o.x, io.y + io.h, 38, S.board ? P.heat : '#0b0d10');
+  if (S.board) for (var pi = 0; pi < 6; pi++){ s.bx(o.x - 2, io.y + 8 + pi * 18, 9, o.x - 1, io.y + 17 + pi * 18, 21, '#1a1d22'); s.bx(o.x - 2, io.y + 9 + pi * 18, 24, o.x - 1, io.y + 16 + pi * 18, 33, pi % 2 ? '#2f7fd6' : '#1a1d22'); }
+  s.cyl([o.x - 0.8, fr.y + fr.h / 2, 62], [o.x - 0.2, fr.y + fr.h / 2, 62], 50, 50, '#0b0d10', 28);
+  for (var sl = 0; sl < 7; sl++){ if (S.gpu && sl < 3) continue; var vy = g.covers + sl * 26; s.bx(o.x - 1, vy, 8, o.x, vy + 21, 104, shade(P.caseO, 0.08)); }
+  if (S.gpu){
+    s.tag('gpu');
+    s.bx(o.x - 1.2, g.covers - 2, 6, o.x, g.covers + 76, 106, '#c3c9d0');
+    for (var dp = 0; dp < 3; dp++) s.bx(o.x - 2, g.covers + 10, 14 + dp * 24, o.x - 1, g.covers + 22, 30 + dp * 24, '#1a1d22');
+  }
+  // Laufwerkskäfig
+  s.tag('');
+  var cg = g.cage, cc = A ? '#4a515c' : '#cfd5dc', sr = g.sata25;
+  s.bx(cg.x, cg.y, 10, cg.x + cg.w, cg.y + 7, 104, cc);
+  s.bx(sr.x - 4, sr.y + sr.h, 30, sr.x + sr.w + 4, sr.y + sr.h + 4, 90, cc);
+  s.bx(cg.x + cg.w - 7, cg.y, 10, cg.x + cg.w, cg.y + cg.h, 104, cc);
+  s.bx(cg.x, cg.y + cg.h - 7, 103, cg.x + cg.w, cg.y + cg.h, 105, cc);
+  s.bx(cg.x, cg.y, 103, cg.x + 2, cg.y + cg.h, 105, cc);
+  // Bauteile
+  if (S.board) board3D(s, key, false);
+  if (S.cpu){
+    s.tag('cpu');
+    var cs = pad(g.socket, -5);
+    s.rb(cs, 3, 10, P.cpu); s.rb(pad(cs, -6), 10, 10.6, '#d7dbe0');
+    s.bx(cs.x + 3, cs.y + cs.h - 12, 10, cs.x + 12, cs.y + cs.h - 3, 10.8, '#c9a943');
+    if (S.paste && !S.cooler){ var pr = S.paste === 'much' ? cs.w / 2 + 3 : S.paste === 'ok' ? 6 : 3; s.cyl([cs.x + cs.w / 2, cs.y + cs.h / 2, 10.4], [cs.x + cs.w / 2, cs.y + cs.h / 2, 12], pr, pr * 0.8, '#9aa1aa', 18); }
+  }
+  if (S.ram && S.ram.some(Boolean)){
+    s.tag('ram');
+    [0, 1, 2, 3].forEach(function(i){
+      if (!S.ram[i]) return;
+      var r = ramRect({ g: g }, i);
+      s.bx(r.x + 1, r.y + 2, 6, r.x + r.w - 1, r.y + r.h - 2, 13, '#2e6b3a');
+      if (A){
+        s.rb(r, 13, 48, '#2a2e35');
+        s.bx(r.x - 0.6, r.y + 4, 15, r.x + r.w + 0.6, r.y + r.h - 4, 46, P.acc);
+        s.bx(r.x + 2, r.y + 2, 48, r.x + r.w - 2, r.y + r.h - 2, 49, '#c46a17');
+      } else {
+        s.rb(r, 13, 48, '#eef1f4');
+        ['#ff5fa2', '#8e5bd6', '#2f9ee0', '#2fd0a0', '#ffd166'].forEach(function(c, k){ var h = (r.h - 2) / 5; s.bx(r.x + 1, r.y + 1 + k * h, 48, r.x + r.w - 1, r.y + 1 + (k + 1) * h, 51, c); });
+      }
+    });
+  }
+  if (S.ssd){
+    s.tag('ssd');
+    var m = g.m2, mr = { x: m.x + 5, y: m.y + 1, w: m.w - 6, h: m.h - 2 };
+    s.rb(mr, 6, 8, '#1b1e23');
+    if (A){ [[8, 3, 14, 14], [26, 4, 7, 12], [37, 2, 19, 16], [59, 2, 19, 16]].forEach(function(q){ s.bx(mr.x + q[0], mr.y + q[1], 8, mr.x + q[0] + q[2], mr.y + q[1] + q[3], 9.5, '#30343b'); }); }
+    else { s.bx(mr.x + 4, mr.y + 1.5, 8, mr.x + mr.w - 8, mr.y + mr.h - 1.5, 8.6, '#f6f8fa'); s.bx(mr.x + 4, mr.y + 1.5, 8.6, mr.x + 14, mr.y + mr.h - 1.5, 8.9, '#14958a'); }
+    s.cyl([m.x + m.w - 3, m.y + m.h / 2, 6], [m.x + m.w - 3, m.y + m.h / 2, 10], 3.2, 3.2, '#cfd4da', 12);
+  }
+  if (S.cooler){
+    s.tag('cooler');
+    if (A){
+      s.rb(pad(g.socket, -6), 10, 22, '#c9ced5');
+      var fin = { x: 158, y: 70, w: 118, h: 140 };
+      for (var fz = 34; fz < 110; fz += 4) s.rb(fin, fz, fz + 1.6, '#b9c0c8');
+      [0, 1, 2, 3].forEach(function(i){ [fin.y + 18, fin.y + fin.h - 18].forEach(function(py){ var px = fin.x + 22 + i * 25; s.cyl([px, 140, 20], [px, py, 34], 3.2, 3.2, '#c48a4a', 10); s.cyl([px, py, 34], [px, py, 111], 3.2, 3.2, '#c48a4a', 10); }); });
+      s.rb(pad(fin, -10), 110, 111.5, '#2a2d33');
+      s.bx(fin.x + 20, fin.y + fin.h / 2 - 3, 111.5, fin.x + fin.w - 20, fin.y + fin.h / 2 + 3, 112, P.acc);
+      s.fan('x', [145, 142, 72], 128, 66, 24, '#1d2026', '#59626d', '#2b3039');
+    } else {
+      var pm = g.pump, rad = g.rad, rf = { x: rad.x + 4, y: rad.y + rad.h, w: rad.w - 8, h: 24 };
+      s.rb(pm, 10, 40, P.cooler);
+      s.cyl([pm.x + pm.w / 2, pm.y + pm.h / 2, 40], [pm.x + pm.w / 2, pm.y + pm.h / 2, 41.5], pm.w / 2 - 6, pm.w / 2 - 6, '#8e5bd6', 24);
+      s.cyl([pm.x + pm.w / 2, pm.y + pm.h / 2, 41.5], [pm.x + pm.w / 2, pm.y + pm.h / 2, 42], pm.w / 2 - 11, pm.w / 2 - 11, '#2a2d33', 24);
+      s.rb(rad, 12, 104, '#26292f');
+      [rf.x + rf.w * 0.25, rf.x + rf.w * 0.75].forEach(function(cx){ s.fan('y', [cx, rf.y + rf.h / 2, 58], rf.w / 2 - 4, 88, rf.h, '#d9dee5', '#aeb6c1', '#eef1f4'); });
+      [180, 204].forEach(function(x0, i){ s.tube(bez3([x0, pm.y + 4, 36], [x0 + 10, pm.y - 40, 52], [380 + i * 16, 120, 56], [392 + i * 16, rf.y + rf.h, 58], 18), 4, '#16181c'); });
+    }
+  }
+  if (S.gpu){
+    s.tag('gpu');
+    var gr = g.gpu;
+    s.rb(gr, 4, 98, P.gpu);
+    s.bx(gr.x, gr.y + 2, 4, gr.x + gr.w - 10, gr.y + 6, 10, '#1d5233');
+    if (A){
+      [gr.x + 70, gr.x + 175, gr.x + 280].forEach(function(cx){ s.fan('y', [cx, gr.y + gr.h + 2, 51], 88, 80, 4, '#111317', '#4c5460', '#2b3039'); });
+      s.bx(gr.x + 6, gr.y + gr.h - 12, 98, gr.x + gr.w - 6, gr.y + gr.h - 8, 99, P.acc);
+    } else {
+      for (var gv = 0; gv < 8; gv++) s.bx(gr.x + 14 + gv * 22, gr.y + gr.h, 30, gr.x + 26 + gv * 22, gr.y + gr.h + 2, 70, '#c3cad3');
+      s.fan('y', [gr.x + gr.w - 50, gr.y + gr.h + 2, 51], 80, 76, 4, '#c7ced6', '#8f98a4', '#e9edf1');
+      s.bx(gr.x + 6, gr.y + gr.h / 2 - 2, 98, gr.x + 156, gr.y + gr.h / 2 + 2, 99, P.acc);
+    }
+    if (!pl.gpu) s.rb(g.gpuPwr, 98, 100, '#111317');
+  }
+  if (S.sata){
+    s.tag('sata');
+    s.rb(sr, SZ0, SZ1, A ? '#2a2e35' : '#eef1f4');
+    s.bx(sr.x + 10, sr.y + 12, SZ1, sr.x + sr.w - 10, sr.y + sr.h - 12, SZ1 + 0.6, A ? '#e8862a' : '#14958a');
+    var pt = sataPorts(g); [pt.data, pt.pwr].forEach(function(q){ s.rb(q, SZ0 + 1, SZ1 - 1, '#15171b'); });
+  }
+  // Kabel
+  var cab = P.cable;
+  if (pl.atx || pl.eps || pl.fp){
+    s.tag('cables');
+    if (pl.atx){ var ra = pad(g.atx, 1), ay = ra.y + ra.h / 2; s.tube(bez3([ra.x + ra.w, ay, 20], [ra.x + ra.w + 26, ay, 22], [424, ay, 14], [425, ay, 0], 14), 6.5, cab); s.rb(ra, 14, 30, cab); }
+    if (pl.eps){ var re = pad(g.eps, 1), ex = re.x + re.w / 2; s.tube(bez3([ex, re.y, 18], [ex, re.y - 10, 18], [ex, 46, 8], [ex, 40, 0], 12), 4.5, cab); s.rb(re, 12, 26, cab); }
+    if (pl.fp){ var fp = g.fpanel; ['#d64545', '#111111', '#2f7fd6', '#e8e8e8'].forEach(function(col, i){ s.tube(qbez3([fp.x + 6 + i * 11, fp.y + fp.h, 13], [fp.x + 10 + i * 10, fp.y + 30, 20], [400 + i * 6, g.shroud.y + g.shroud.h - 10, 30], 12), 1.2, col); }); s.rb(pad(fp, 0.5), 9, 16, '#2a2d33'); }
+  }
+  if (pl.gpu){
+    s.tag('gpucable');
+    var q = g.gpuPwr, gx = q.x + q.w / 2;
+    s.tube(bez3([gx, q.y + 2, 104], [gx + 50, q.y - 10, 104], [480, 380, 70], [g.psu.x + g.psu.w - 20, g.psu.y + 10, 60], 18), 4.5, LIGHT);
+    s.bx(q.x - 1, q.y - 1, 98, q.x + q.w + 1, q.y + q.h + 1, 110, LIGHT);
+  }
+  if (S.sata){
+    var sp = sataPorts(g), ss = g.sata, ps = g.psu;
+    if (pl.sdata){ s.tag('sdata'); var dy = sp.data.y + sp.data.h / 2; s.tube(bez3([sp.data.x, dy, 60], [sp.data.x - 40, dy, 50], [ss.x + ss.w / 2, ss.y + ss.h + 50, 20], [ss.x + ss.w / 2, ss.y + ss.h - 4, 12], 18), 2.5, '#d64545'); s.bx(sp.data.x - 6, sp.data.y - 1, SZ0, sp.data.x + 2, sp.data.y + sp.data.h + 1, SZ1, '#b83232'); }
+    if (pl.spwr){ s.tag('spwr'); var py = sp.pwr.y + sp.pwr.h / 2; s.tube(bez3([sp.pwr.x, py, 60], [sp.pwr.x - 60, py, 60], [ps.x + ps.w + 20, ps.y - 10, 70], [ps.x + ps.w - 40, ps.y + 4, 80], 18), 3.5, LIGHT); s.bx(sp.pwr.x - 7, sp.pwr.y - 1, SZ0 - 1, sp.pwr.x + 2, sp.pwr.y + sp.pwr.h + 1, SZ1 + 1, LIGHT); }
+  }
+  if (S.psu){
+    s.tag('psu');
+    var pr2 = g.psu;
+    s.rb(pr2, 8, 112, P.psu);
+    s.bx(pr2.x + 22, pr2.y + 18, 112, pr2.x + pr2.w - 48, pr2.y + 22, 112.6, P.psuTxt);
+    s.bx(pr2.x + 22, pr2.y + pr2.h - 22, 112, pr2.x + pr2.w - 48, pr2.y + pr2.h - 18, 112.6, P.psuTxt);
+    for (var mi = 0; mi < 4; mi++) s.bx(pr2.x + pr2.w - 30, pr2.y + 12 + mi * 17, 112, pr2.x + pr2.w - 12, pr2.y + 23 + mi * 17, 113, '#0e1013');
+    s.bx(o.x - 1, pr2.y, 8, o.x, pr2.y + pr2.h, 112, P.psu);
+    s.bx(o.x - 2, 494, 68, o.x - 1, 524, 90, '#0e1013');
+    s.bx(o.x - 2, 498, 94, o.x - 1, 516, 104, '#c0392b');
+  }
+  ['fan_f1', 'fan_f2', 'fan_rear'].forEach(function(z){
+    var dir = S.fans && S.fans[z]; if (!dir) return;
+    s.tag('fans');
+    var r = g[z], cy = r.y + r.h / 2, B = key === 'B';
+    s.fan('x', [r.x + r.w / 2, cy, 60], r.h, 104, r.w, P.fan, P.fanBlade, P.fanHub);
+    var rear = z === 'fan_rear', x0 = rear ? r.x + r.w + 6 : r.x - 6, sg = rear ? 1 : -1, col = dir === 'in' ? '#2f7fd6' : '#d64545';
+    [cy - 34, cy, cy + 34].forEach(function(yy){ var a = [x0, yy, 60], e = [x0 + sg * 40, yy, 60]; if (dir === 'in') s.arrow(a, e, col); else s.arrow(e, a, col); });
+  });
+  if (S.power){
+    s.tag('power');
+    s.bx(4, 494, 66, 32, 524, 90, '#d5dae0');
+    s.tube(bez3([4, 509, 78], [-24, 512, 78], [-40, 540, 78], [-44, 620, 78], 16), 3.5, '#b8bec6');
+  }
+  if (S.panel){
+    s.tag('panel');
+    s.rb(ci, DEP, DEP + 3, [0.74, 0.84, 1], true);
+    [[ci.x + 10, ci.y + 10], [ci.x + ci.w - 10, ci.y + 10], [ci.x + 10, ci.y + ci.h - 10], [ci.x + ci.w - 10, ci.y + ci.h - 10]].forEach(function(c){ s.cyl([c[0], c[1], DEP + 3], [c[0], c[1], DEP + 7], 5.5, 5.5, '#c3c9d0', 14); });
+  }
+  return s;
+}
+/* Mainboard; hot = jedes Detail bekommt seine Kennung (Werkbank) */
+function board3D(s, key, hot){
+  var g = GEO[key], P = PAL[key], b = g.board, hd = '#111317';
+  function T(id){ s.tag(hot ? id : 'board'); }
+  T(hot ? '' : 'board');
+  s.rb(b, 0, 3, P.pcb);
+  g.holes.forEach(function(h){ s.cyl([h[0], h[1], 3], [h[0], h[1], 3.4], 4.5, 4.5, '#cfb262', 12); });
+  T('io'); s.rb(g.io, 3, 36, P.heat); s.bx(g.io.x - 0.6, g.io.y + 6, 6, g.io.x, g.io.y + g.io.h - 6, 34, '#1a1d22');
+  for (var k = 0; k < 6; k++) s.bx(g.io.x - 1.4, g.io.y + 10 + k * 17, 10, g.io.x - 0.6, g.io.y + 17 + k * 17, 30, k % 3 === 1 ? '#2f7fd6' : k === 3 ? '#d64545' : '#c3c9d0');
+  T('vrm'); s.rb(g.vrmT, 3, 17, P.heat); s.rb(g.vrmL, 3, 17, P.heat);
+  T('socket'); var so = g.socket; s.rb(pad(so, 3), 3, 7, '#2a2d33'); s.rb(pad(so, -5), 7, 7.4, '#3b3220');
+  s.bx(so.x + so.w + 5, so.y - 2, 3, so.x + so.w + 9, so.y + so.h + 8, 9, P.heat2);
+  T('dimm'); g.dimm.forEach(function(d){ s.rb(d, 3, 11, P.slot); s.bx(d.x - 1, d.y - 6, 3, d.x + d.w + 1, d.y, 12, P.slotEdge); s.bx(d.x - 1, d.y + d.h, 3, d.x + d.w + 1, d.y + d.h + 6, 12, P.slotEdge); });
+  T('pcie16'); s.rb(g.pcie16, 3, 12, P.slot); s.bx(g.pcie16.x - 1, g.pcie16.y - 1, 3, g.pcie16.x + g.pcie16.w - 1, g.pcie16.y + g.pcie16.h + 1, 11, '#c9ced5'); s.bx(g.pcie16.x + g.pcie16.w - 2, g.pcie16.y - 2, 3, g.pcie16.x + g.pcie16.w + 7, g.pcie16.y + g.pcie16.h + 2, 12, P.slotEdge);
+  T('pcieX'); s.rb(g.pcieX, 3, 11, P.slot);
+  T('m2'); var m = g.m2; s.bx(m.x, m.y - 1, 3, m.x + 9, m.y + m.h + 1, 7, P.slot); s.cyl([m.x + m.w - 3, m.y + m.h / 2, 3], [m.x + m.w - 3, m.y + m.h / 2, 3.6], 3.4, 3.4, '#cfb262', 10);
+  T('chipset'); s.rb(g.chipset, 3, 9, P.heat);
+  T('bios'); s.rb(g.bios, 3, 5, '#15171b');
+  T('sata'); s.rb(g.sata, 3, 12, '#1d2a4a');
+  T('atx'); s.rb(g.atx, 3, 14, hd);
+  T('eps'); s.rb(g.eps, 3, 12, hd);
+  T('fpanel'); s.rb(g.fpanel, 3, 9, hd);
+  T('cpufan'); s.rb(g.cpufan, 3, 8, '#e9edf1');
+  T('cmos'); s.cyl([g.cmos.x + 12, g.cmos.y + 12, 3], [g.cmos.x + 12, g.cmos.y + 12, 6], 12, 12, '#c9ced5', 22);
+  T(hot ? '' : 'board');
+  var vt = g.vrmT, vl = g.vrmL;
+  for (var cx = vt.x + 4; cx < vt.x + vt.w - 8; cx += 11) s.bx(cx, vt.y + vt.h + 2, 3, cx + 8, vt.y + vt.h + 8, 8, '#5d646d');
+  for (var cy = vl.y + 4; cy < vl.y + vl.h - 8; cy += 11) s.bx(vl.x + vl.w + 2, cy, 3, vl.x + vl.w + 8, cy + 8, 8, '#5d646d');
+  [[6, 12], [16, 12], [11, 21]].forEach(function(q){ s.cyl([g.io.x + q[0], g.io.y + g.io.h + q[1], 3], [g.io.x + q[0], g.io.y + g.io.h + q[1], 11], 3.5, 3.5, '#2a2e35', 10); });
+}
+
+/* ---------- WebGL-Betrachter: ziehen = drehen, Mausrad/zwei Finger = zoomen, tippen = auswählen ---------- */
+var V3_VS = 'attribute vec3 aP;attribute vec3 aN;attribute vec3 aC;attribute float aI;uniform mat4 uM;uniform mat3 uR;uniform float uSel;uniform float uHov;uniform float uPick;uniform float uA;varying vec4 vC;' +
+  'void main(){gl_Position=uM*vec4(aP,1.0);if(uPick>0.5){vC=vec4(aI/255.0,0.0,0.0,1.0);}else{vec3 n=normalize(uR*aN);float d=abs(dot(n,normalize(vec3(-0.35,0.55,0.75))));float e=abs(dot(n,vec3(0.0,0.0,1.0)));' +
+  'vec3 c=aC*(0.36+0.46*d+0.22*e);if(aI>0.5&&abs(aI-uSel)<0.5)c=mix(c,vec3(1.0,0.8,0.3),0.5);else if(aI>0.5&&abs(aI-uHov)<0.5)c=mix(c,vec3(1.0,0.82,0.4),0.3);vC=vec4(c,uA);}}';
+var V3_FS = 'precision mediump float;varying vec4 vC;void main(){gl_FragColor=vC;}';
+function Viewer3(canvas, onPick){
+  var gl = canvas.getContext('webgl', { antialias: true, alpha: true, premultipliedAlpha: false }) || canvas.getContext('experimental-webgl');
+  this.cv = canvas; this.gl = gl; this.onPick = onPick; this.sel = 0; this.hov = 0; this.scene = null; this.yaw = 0.42; this.pitch = 0.32; this.zoom = 0.8; this.spin = false;
+  function sh(t, src){ var x = gl.createShader(t); gl.shaderSource(x, src); gl.compileShader(x); return x; }
+  var pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, V3_VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, V3_FS)); gl.linkProgram(pr); gl.useProgram(pr);
+  this.pr = pr; this.loc = {};
+  var self = this;
+  ['aP', 'aN', 'aC', 'aI'].forEach(function(n){ self.loc[n] = gl.getAttribLocation(pr, n); });
+  ['uM', 'uR', 'uSel', 'uHov', 'uPick', 'uA'].forEach(function(n){ self.loc[n] = gl.getUniformLocation(pr, n); });
+  this.buf = gl.createBuffer(); this.gbuf = gl.createBuffer();
+  this.bind();
+}
+Viewer3.prototype.setScene = function(s, keepView){
+  var gl = this.gl;
+  this.scene = s; this.n = s.v.length / 10; this.gn = s.gv.length / 10;
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(s.v), gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.gbuf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(s.gv), gl.STATIC_DRAW);
+  if (!keepView || !this.tgt){ this.reset(); return; }
+  this.draw();
+};
+Viewer3.prototype.select = function(name){ this.sel = this.scene ? Math.max(0, this.scene.ids.indexOf(name || '')) : 0; this.draw(); };
+Viewer3.prototype.reset = function(){ this.yaw = 0.42; this.pitch = 0.32; this.zoom = 0.8; if (this.scene){ this.tgt = this.scene.center(); this.rad = this.scene.radius(); } this.draw(); };
+Viewer3.prototype.matrices = function(){
+  var cv = this.cv, w = cv.width, h = cv.height, cp = Math.cos(this.pitch), d = this.rad / Math.sin(0.33) * this.zoom;
+  var eye = v3add(this.tgt, [d * cp * Math.sin(this.yaw), d * Math.sin(this.pitch), d * cp * Math.cos(this.yaw)]);
+  var V = m4look(eye, this.tgt, [0, 1, 0]);
+  return { M: m4mul(m4persp(0.66, w / h, Math.max(1, d - this.rad * 2), d + this.rad * 2), V), R: [V[0], V[1], V[2], V[4], V[5], V[6], V[8], V[9], V[10]] };
+};
+Viewer3.prototype.attribs = function(b){
+  var gl = this.gl, L = this.loc;
+  gl.bindBuffer(gl.ARRAY_BUFFER, b);
+  [['aP', 3, 0], ['aN', 3, 12], ['aC', 3, 24], ['aI', 1, 36]].forEach(function(a){ gl.enableVertexAttribArray(L[a[0]]); gl.vertexAttribPointer(L[a[0]], a[1], gl.FLOAT, false, 40, a[2]); });
+};
+Viewer3.prototype.fit = function(){
+  var cv = this.cv, dpr = Math.min(2, window.devicePixelRatio || 1), w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
+  if (w && h && (cv.width !== w || cv.height !== h)){ cv.width = w; cv.height = h; }
+  return w && h;
+};
+Viewer3.prototype.render = function(pick){
+  var gl = this.gl, L = this.loc, m = this.matrices();
+  gl.viewport(0, 0, this.cv.width, this.cv.height);
+  gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.enable(gl.DEPTH_TEST); gl.disable(gl.CULL_FACE);
+  gl.uniformMatrix4fv(L.uM, false, new Float32Array(m.M)); gl.uniformMatrix3fv(L.uR, false, new Float32Array(m.R));
+  gl.uniform1f(L.uSel, this.sel); gl.uniform1f(L.uHov, this.hov); gl.uniform1f(L.uPick, pick ? 1 : 0); gl.uniform1f(L.uA, 1);
+  gl.disable(gl.BLEND);
+  if (this.n){ this.attribs(this.buf); gl.drawArrays(gl.TRIANGLES, 0, this.n); }
+  if (this.gn){
+    this.attribs(this.gbuf);
+    if (!pick){ gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(L.uA, 0.15); }
+    gl.drawArrays(gl.TRIANGLES, 0, this.gn);
+    gl.depthMask(true); gl.disable(gl.BLEND);
+  }
+};
+Viewer3.prototype.draw = function(){
+  var self = this;
+  if (this.raf) return;
+  this.raf = requestAnimationFrame(function(){
+    self.raf = 0;
+    if (!self.scene || !self.fit()) return;
+    if (self.spin){ self.yaw += 0.008; self.draw(); }
+    self.render(false);
+  });
+};
+Viewer3.prototype.pickAt = function(cx, cy){
+  if (!this.scene || !this.fit()) return '';
+  var gl = this.gl, w = this.cv.width, h = this.cv.height, r = this.cv.getBoundingClientRect();
+  if (!this.fb || this.fbw !== w || this.fbh !== h){
+    this.fb = gl.createFramebuffer(); var tx = gl.createTexture(), db = gl.createRenderbuffer();
+    gl.bindTexture(gl.TEXTURE_2D, tx); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, db); gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, w, h);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tx, 0);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, db);
+    this.fbw = w; this.fbh = h;
+  }
+  gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
+  this.render(true);
+  var px = new Uint8Array(4), x = Math.round((cx - r.left) / r.width * w), y = Math.round((1 - (cy - r.top) / r.height) * h);
+  gl.readPixels(Math.max(0, Math.min(w - 1, x)), Math.max(0, Math.min(h - 1, y)), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  this.draw();
+  return px[3] ? (this.scene.ids[px[0]] || '') : '';
+};
+Viewer3.prototype.bind = function(){
+  var self = this, cv = this.cv, pts = {}, st = null, hovRaf = 0;
+  function n(){ return Object.keys(pts).length; }
+  function pinch(){ var k = Object.keys(pts); var a = pts[k[0]], b = pts[k[1]]; return Math.hypot(a.x - b.x, a.y - b.y); }
+  cv.addEventListener('pointerdown', function(e){
+    try { cv.setPointerCapture(e.pointerId); } catch (_){}
+    pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+    self.spin = false;
+    st = n() === 1 ? { x: e.clientX, y: e.clientY, moved: false } : { pinch: pinch(), zoom: self.zoom, moved: true };
+  });
+  cv.addEventListener('pointermove', function(e){
+    if (!pts[e.pointerId]){
+      if (e.pointerType === 'mouse' && self.onPick && !hovRaf){ hovRaf = requestAnimationFrame(function(){ hovRaf = 0; var h = self.pickAt(e.clientX, e.clientY), i = h ? self.scene.ids.indexOf(h) : 0; if (i !== self.hov){ self.hov = i; cv.style.cursor = i ? 'pointer' : 'grab'; self.draw(); } }); }
+      return;
+    }
+    var p = pts[e.pointerId], dx = e.clientX - p.x, dy = e.clientY - p.y;
+    p.x = e.clientX; p.y = e.clientY;
+    if (n() >= 2 && st && st.pinch){ self.zoom = Math.max(0.35, Math.min(2.5, st.zoom * st.pinch / Math.max(10, pinch()))); self.draw(); return; }
+    if (st && !st.moved && Math.abs(e.clientX - st.x) + Math.abs(e.clientY - st.y) > 5) st.moved = true;
+    if (st && st.moved){ self.yaw -= dx * 0.009; self.pitch = Math.max(-1.45, Math.min(1.45, self.pitch + dy * 0.009)); self.draw(); }
+  });
+  function up(e){
+    if (!pts[e.pointerId]) return;
+    delete pts[e.pointerId];
+    if (e.type === 'pointerup' && st && !st.moved && n() === 0 && self.onPick) self.onPick(self.pickAt(e.clientX, e.clientY));
+    if (n() === 0) st = null;
+  }
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('pointerleave', function(){ if (self.hov){ self.hov = 0; self.draw(); } });
+  cv.addEventListener('wheel', function(e){ e.preventDefault(); self.zoom = Math.max(0.35, Math.min(2.5, self.zoom * Math.exp(e.deltaY * 0.0012))); self.draw(); }, { passive: false });
+  window.addEventListener('resize', function(){ self.draw(); });
+};
+
+/* ---------- 3D-Bühne: Umschalter 2D/3D neben einer SVG-Ansicht ---------- */
+function Stage3(svg, btnHost, getScene, onPick){
+  var wrap = H('div', 'v3wrap'), cv = H('canvas', 'pcsvg v3cv'), self = this;
+  wrap.hidden = true; wrap.appendChild(cv);
+  wrap.appendChild(H('div', 'v3bar', '<button data-a="spin" title="Automatisch drehen">⟳ Drehen</button><button data-a="in" title="Näher heran">＋</button><button data-a="out" title="Weiter weg">－</button><button data-a="reset" title="Ansicht zurücksetzen">⟲</button>'));
+  wrap.appendChild(H('div', 'v3hint', 'Ziehen = drehen · Mausrad oder zwei Finger = zoomen' + (onPick && onPick !== build3DHint ? ' · Tippen = auswählen' : ' · zum Einbauen zurück auf 2D')));
+  svg.parentNode.insertBefore(wrap, svg.nextSibling);
+  this.btn = H('button', 'v3btn', '🧊 3D'); this.btn.title = '3D-Ansicht: PC frei drehen';
+  btnHost(this.btn);
+  this.svg = svg; this.wrap = wrap; this.cv = cv; this.getScene = getScene; this.onPick = onPick; this.on = false; this.v = null;
+  this.btn.onclick = function(){ self.set(!self.on); };
+  $$('[data-a]', wrap).forEach(function(b){ b.onclick = function(){
+    var v = self.v, a = b.getAttribute('data-a'); if (!v) return;
+    if (a === 'spin'){ v.spin = !v.spin; b.classList.toggle('active', v.spin); }
+    else if (a === 'reset') v.reset();
+    else v.zoom = Math.max(0.35, Math.min(2.5, v.zoom * (a === 'in' ? 0.8 : 1.25)));
+    v.draw();
+  }; });
+  V3.stages.push(this);
+  this.avail();
+}
+Stage3.prototype.avail = function(){ var ok = on3D(); this.btn.hidden = !ok; if (!ok && this.on) this.set(false); };
+Stage3.prototype.set = function(on){
+  this.on = !!on && on3D();
+  this.wrap.hidden = !this.on; this.svg.style.display = this.on ? 'none' : '';
+  this.btn.classList.toggle('active', this.on); this.btn.textContent = this.on ? '🖼 2D' : '🧊 3D';
+  this.btn.title = this.on ? 'Zurück zur gezeichneten Ansicht' : '3D-Ansicht: PC frei drehen';
+  if (this.on){
+    if (!this.v) this.v = new Viewer3(this.cv, this.onPick);
+    this.update(false);
+  } else if (this.v){ this.v.spin = false; $$('[data-a="spin"]', this.wrap).forEach(function(b){ b.classList.remove('active'); }); }
+};
+Stage3.prototype.update = function(keep){
+  if (!this.on || !this.v) return;
+  var r = this.getScene(); if (!r) return;
+  this.v.setScene(r.scene, keep !== false && r.mode === this.mode); this.mode = r.mode;
+  this.v.sel = Math.max(0, r.scene.ids.indexOf(r.sel || '')); this.v.hov = 0; this.v.draw();
+};
+/* Nahansicht eines einzelnen Bauteils im Steckbrief */
+function part3D(host, id){
+  if (!on3D()) return;
+  var b = H('button', 'small', '🧊 In 3D drehen'); b.style.marginBottom = '8px';
+  host.appendChild(b);
+  b.onclick = function(){
+    var fig = $('.figure', host); if (fig) fig.hidden = true; b.remove();
+    var cv = H('canvas', 'v3part'); host.insertBefore(cv, host.firstChild);
+    var v = new Viewer3(cv, null); v.spin = true;
+    var s = build3D('A', fullState(), { only: id }); v.setScene(s); v.zoom = 1.05; v.draw();
+  };
+}
+function build3DHint(){ var c = KN.phase === 'build' && !$('#tab-kn').hidden ? KN.ctx : UEB.ctx; if (c) say(c, '', '🧊 In der 3D-Ansicht kannst du nur schauen. Zum Einbauen ein Teil in der Teilekiste antippen – dann geht es in der 2D-Ansicht weiter.'); }
+function apply3D(){
+  V3.stages.forEach(function(s){ s.avail(); });
+  var t = $('#t3d'); if (!t) return;
+  t.hidden = !has3D(); t.textContent = STORE.no3d ? '🧊 3D: aus' : '🧊 3D: an'; t.classList.toggle('active', !STORE.no3d);
+}
+
 /* ================== Start ================== */
 function showTab(t){
   $$('#tabs button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab') === t); });
@@ -2308,6 +2801,8 @@ function init(){
   $('#lzGrid').innerHTML = LZ.map(function(l){ return '<div class="lzt"><b>' + l.id + ' · ' + esc(l.t) + '</b><span>' + esc(l.d) + '</span></div>'; }).join('');
   $$('#tabs button').forEach(function(b){ b.onclick = function(){ showTab(b.getAttribute('data-tab')); }; });
   expInit(); uebInit(); knInit();
+  $('#t3d').onclick = function(){ STORE.no3d = !STORE.no3d; save(); apply3D(); };
+  apply3D();
 }
 init();
 

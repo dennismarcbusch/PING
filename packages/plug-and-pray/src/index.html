@@ -2434,6 +2434,7 @@ function build3D(key, S, opt){
   [50, 520].forEach(function(x){ s.bx(x, o.y + o.h, 10, x + 60, o.y + o.h + 7, 40, P.edge); });
   for (var vx = ci.x + 30; vx < ci.x + ci.w - 30; vx += 14) s.bx(vx, ci.y - 0.2, 30, vx + 6, ci.y + 0.6, 90, shade(P.caseI, -0.25));
   for (var my = ci.y + 14; my < 440; my += 20) s.bx(ci.x + ci.w - 0.6, my, 10, ci.x + ci.w + 0.2, my + 4, DEP - 10, shade(P.caseI, -0.3));
+  front3D(s, key);
   (g.grom || []).forEach(function(r){ s.rb(r, 0, 0.8, P.edge); });
   if (!S.board) g.holes.forEach(function(h){ s.cyl([h[0], h[1], 0], [h[0], h[1], 6], 4.5, 4.5, P.std, 12); });
   // Rückwand außen: I/O-Ausschnitt, Lüftergitter, Slotblenden
@@ -2578,6 +2579,36 @@ function build3D(key, S, opt){
     [[ci.x + 10, ci.y + 10], [ci.x + ci.w - 10, ci.y + 10], [ci.x + 10, ci.y + ci.h - 10], [ci.x + ci.w - 10, ci.y + ci.h - 10]].forEach(function(c){ s.cyl([c[0], c[1], DEP + 3], [c[0], c[1], DEP + 7], 5.5, 5.5, '#c3c9d0', 14); });
   }
   return s;
+}
+/* Außenseite: Front mit Lüftungsgitter und Front-I/O, Staubfilter im Deckel */
+function front3D(s, key){
+  var g = GEO[key], P = PAL[key], o = g.caseO, A = key === 'A', x0 = o.x + o.w, dark = A ? '#0b0d10' : '#b9c1cb', bar = A ? shade(P.caseO, 0.12) : '#f4f6f8';
+  // Frontblende, etwas vorgesetzt
+  s.bx(x0, o.y, -3, x0 + 4, o.y + o.h, DEP + 3, A ? shade(P.caseO, -0.1) : '#f1f4f7');
+  if (A){
+    // großes Mesh-Gitter vor den Frontlüftern: dunkle Mulde mit Gitterstäben
+    var m = { y0: 92, y1: 548, z0: 10, z1: DEP - 10 };
+    s.bx(x0 + 4, m.y0, m.z0, x0 + 4.4, m.y1, m.z1, dark);
+    for (var y = m.y0 + 4; y < m.y1; y += 7) s.bx(x0 + 4.2, y, m.z0, x0 + 5.4, y + 2, m.z1, bar);
+    for (var z = m.z0 + 4; z < m.z1; z += 7) s.bx(x0 + 4.2, m.y0, z, x0 + 5.4, m.y1, z + 2, bar);
+    [[m.y0 - 3, m.y0], [m.y1, m.y1 + 3]].forEach(function(q){ s.bx(x0 + 4, q[0], m.z0 - 3, x0 + 6, q[1], m.z1 + 3, P.acc); });
+  } else {
+    // glatte Front, seitliche Lüftungsschlitze
+    [6, DEP - 12].forEach(function(z){ for (var y = 90; y < 540; y += 10) s.bx(x0 + 3.6, y, z, x0 + 4.4, y + 6, z + 6, dark); });
+    s.bx(x0 + 4, 300, DEP / 2 - 18, x0 + 4.6, 304, DEP / 2 + 18, P.acc);
+  }
+  // Front-I/O oben: Power-Taste mit LED-Ring, Reset, USB-A, USB-C, Audio
+  var fy = o.y + 30;
+  s.cyl([x0 + 4, fy, DEP / 2], [x0 + 6, fy, DEP / 2], 10, 10, A ? '#2a2e35' : '#dde2e8', 24);
+  s.cyl([x0 + 6, fy, DEP / 2], [x0 + 7.5, fy, DEP / 2], 7.5, 7.5, A ? '#3a404c' : '#f6f8fa', 24);
+  s.cyl([x0 + 5.6, fy, DEP / 2], [x0 + 6.4, fy, DEP / 2], 10.5, 10.5, A ? P.acc : '#14958a', 24);
+  s.cyl([x0 + 4, fy, DEP / 2 + 20], [x0 + 5.5, fy, DEP / 2 + 20], 3, 3, '#5d646d', 12);
+  [[14, 26, '#2f7fd6'], [28, 40, '#2f7fd6'], [-36, -26, '#1a1d22']].forEach(function(q){ s.bx(x0 + 4, fy - 3, DEP / 2 + q[0] + 12, x0 + 4.8, fy + 3, DEP / 2 + q[1] + 12, '#0e1013'); s.bx(x0 + 4.6, fy - 1, DEP / 2 + q[0] + 13.5, x0 + 5, fy + 1, DEP / 2 + q[1] + 10.5, q[2]); });
+  [-48, -40].forEach(function(z, i){ s.cyl([x0 + 4, fy, DEP / 2 + z], [x0 + 5, fy, DEP / 2 + z], 2.6, 2.6, i ? '#e88fb4' : '#7cc36a', 12); });
+  // Deckel außen: Staubfilter über dem Lüftungsbereich
+  var ci = g.caseI;
+  s.bx(ci.x + 24, o.y - 1.2, 12, ci.x + ci.w - 24, o.y, DEP - 12, dark);
+  for (var tx = ci.x + 28; tx < ci.x + ci.w - 26; tx += 8) s.bx(tx, o.y - 1.8, 12, tx + 3, o.y - 1, DEP - 12, bar);
 }
 /* Mainboard; hot = jedes Detail bekommt seine Kennung (Werkbank) */
 function board3D(s, key, hot){

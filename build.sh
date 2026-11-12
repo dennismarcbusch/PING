@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Baut aus packages/<name>/src ein SCORM-ZIP: dist/<name>_scorm12.zip
+# Baut aus packages/<name>/src ein SCORM-ZIP: dist/<name>_scorm12.zip (ohne quelle/ – Quellen der Kompass-Pakete)
 # Aufruf: ./build.sh            (alle Pakete)
 #         ./build.sh plug-and-pray (nur ein Paket)
 set -euo pipefail
@@ -12,7 +12,7 @@ for p in "${slugs[@]}"; do
   [ -f "$src/imsmanifest.xml" ] || { echo "FEHLER: $src/imsmanifest.xml fehlt (muss im Wurzelverzeichnis des Pakets liegen)" >&2; exit 1; }
   out="$PWD/dist/${p}_scorm12.zip"
   rm -f "$out"
-  (cd "$src" && zip -r -X -q "$out" .)
+  (cd "$src" && zip -r -X -q "$out" . -x "quelle/*")
   unzip -l "$out" | awk '{print $4}' | grep -qx imsmanifest.xml \
     || { echo "FEHLER: imsmanifest.xml nicht im ZIP-Wurzelverzeichnis ($p)" >&2; exit 1; }
   echo "OK  $out ($(du -h "$out" | cut -f1))"

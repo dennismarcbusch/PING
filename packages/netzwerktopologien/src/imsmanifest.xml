@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<manifest identifier="BSLIF_Netzwerktopologien_v1" version="1.0"
+<manifest identifier="ping-netzwerktopologien" version="0.1"
   xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
   xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -8,18 +8,30 @@
     <schema>ADL SCORM</schema>
     <schemaversion>1.2</schemaversion>
   </metadata>
-  <organizations default="ORG_TOPO">
-    <organization identifier="ORG_TOPO">
+  <organizations default="ORG">
+    <organization identifier="ORG">
       <title>Netzwerktopologien erleben</title>
-      <item identifier="ITEM_TOPO" identifierref="RES_TOPO" isvisible="true">
+      <item identifier="ITEM" identifierref="RES" isvisible="true">
         <title>Netzwerktopologien erleben</title>
-        <adlcp:masteryscore>60</adlcp:masteryscore>
       </item>
     </organization>
   </organizations>
   <resources>
-    <resource identifier="RES_TOPO" type="webcontent" adlcp:scormtype="sco" href="index.html">
+    <resource identifier="RES" type="webcontent" adlcp:scormtype="sco" href="index.html">
       <file href="index.html"/>
+      <file href="css/baukasten.css"/>
+      <file href="css/schrift/OFL-BricolageGrotesque.txt"/>
+      <file href="css/schrift/OFL-Lexend.txt"/>
+      <file href="css/schrift/bricolage-grotesque-latin-700-normal.woff2"/>
+      <file href="css/schrift/bricolage-grotesque-latin-800-normal.woff2"/>
+      <file href="css/schrift/lexend-latin-400-normal.woff2"/>
+      <file href="css/schrift/lexend-latin-700-normal.woff2"/>
+      <file href="css/stil.css"/>
+      <file href="css/tafel.css"/>
+      <file href="js/baukasten.js"/>
+      <file href="js/engine.js"/>
+      <file href="js/inhalt.js"/>
+      <file href="js/tafel.js"/>
     </resource>
   </resources>
 </manifest>

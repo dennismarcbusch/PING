@@ -1,0 +1,119 @@
+/* Baukasten (js/baukasten.js) – nicht pro Paket verändern. */
+.kit-wackeln{animation:kit-wackeln .35s}
+@keyframes kit-wackeln{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes kit-auf{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+
+/* Figuren und Szene */
+.kit-figur{display:block;width:100%;height:auto}
+.kit-szene{position:relative;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,var(--card),var(--k1));isolation:isolate}
+.kit-kulisse{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.kit-ebene{position:relative;min-height:inherit;padding:12px}
+.kit-person{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center}
+.kit-person-bild{width:100%}
+.kit-person-name{font-size:.78rem;font-weight:700;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:1px 9px;margin-top:-6px;position:relative}
+.kit-blase{position:absolute;bottom:calc(100% - 6px);left:50%;width:max-content;max-width:300px;background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:8px 11px;font-size:.95rem;box-shadow:var(--shadow);transform:translateX(-30%)}
+.kit-person.rechts .kit-blase{transform:translateX(-70%)}
+.kit-blase::after{content:"";position:absolute;top:100%;left:28%;border:9px solid transparent;border-top-color:var(--ink)}
+.kit-person.rechts .kit-blase::after{left:auto;right:28%}
+.kit-blase.neu{animation:kit-auf .25s ease-out}
+.kit-ding{position:absolute}
+
+/* Dialog */
+.kit-dialog{display:flex;flex-direction:column;gap:10px}
+.kit-verlauf{display:flex;flex-direction:column;gap:8px;max-height:380px;overflow:auto;padding:4px}
+.kit-zeile{display:flex;gap:8px;align-items:flex-end;animation:kit-auf .25s ease-out}
+.kit-zeile.ich{justify-content:flex-end}
+.kit-mini{width:42px;flex:0 0 auto}
+.kit-sprech{background:var(--card);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:8px 11px;max-width:80%}
+.kit-zeile.ich .kit-sprech{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);border-radius:14px 14px 4px 14px}
+.kit-wahl{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.kit-wahl button{border-color:var(--accent);background:var(--card);text-align:left}
+.kit-wahl button.kit-weiter{background:var(--card2);border-color:var(--line)}
+
+/* Simulierter Rechner */
+.kit-pc{max-width:880px;margin:0 auto}
+.kit-schirm{position:relative;background:linear-gradient(135deg,var(--kopf-a),var(--kopf-b));border:10px solid #23262d;border-radius:14px 14px 4px 4px;padding:12px 12px 78px;display:flex;flex-direction:column}
+.kit-pc-fuss{height:16px;margin:0 -4%;background:linear-gradient(#cfd3da,#a9aeb8);border-radius:0 0 16px 16px}
+.kit-fensterbox{flex:1;display:flex}
+.kit-desktop-hinweis{margin:auto;color:#fff;opacity:.85;font-weight:700}
+.kit-fenster{flex:1;display:flex;flex-direction:column;background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:kit-auf .2s ease-out}
+.kit-titelleiste{display:flex;align-items:center;gap:10px;background:#eceef2;border-bottom:1px solid var(--line);padding:6px 10px;font-size:.88rem;font-weight:700}
+.kit-punkte{width:46px;height:12px;background:radial-gradient(circle at 6px 6px,#ff5f57 5px,transparent 5.5px),radial-gradient(circle at 23px 6px,#febc2e 5px,transparent 5.5px),radial-gradient(circle at 40px 6px,#28c840 5px,transparent 5.5px)}
+.kit-fensterinhalt{flex:1;display:flex;flex-direction:column;min-height:0}
+.kit-dock{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);display:flex;gap:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:16px;padding:5px;backdrop-filter:blur(4px)}
+.kit-app{display:flex;flex-direction:column;align-items:center;gap:0;min-width:66px;padding:4px 6px;background:transparent;border-color:transparent;color:#fff;border-radius:12px;min-height:46px}
+.kit-app:hover,.kit-app.aktiv{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.4)}
+.kit-app-symbol{font-size:1.35rem;line-height:1.1}
+.kit-app-name{font-size:.7rem;font-weight:700}
+.kit-browserleiste{display:flex;gap:8px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--line);background:var(--card2)}
+.kit-zurueck{min-height:32px;padding:2px 10px}
+.kit-adresse{flex:1;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.85rem;color:var(--ink-soft);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.kit-seite{flex:1;overflow:auto;padding:14px 16px;max-height:420px}
+.kit-seite h3:first-child{margin-top:0}
+.kit-mail{display:grid;grid-template-columns:220px minmax(0,1fr);flex:1;min-height:260px}
+@media (max-width:640px){.kit-mail{grid-template-columns:1fr}}
+.kit-mailliste{border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:auto}
+.kit-mailzeile{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:0;border-bottom:1px solid var(--line);border-radius:0;background:var(--card);font-size:.88rem;min-height:56px}
+.kit-mailzeile.neu b::before{content:"● ";color:var(--accent)}
+.kit-mailzeile.aktiv{background:var(--accent-soft)}
+.kit-mailtext{padding:12px 14px;overflow:auto}
+.kit-mailkopf{border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:8px}
+.kit-mailkopf span{font-size:.85rem;color:var(--muted)}
+.kit-leer{color:var(--muted)}
+.kit-anhang{margin-top:8px}
+
+/* Formular */
+.kit-formular{display:flex;flex-direction:column;gap:10px;max-width:520px}
+.kit-formtitel{font-family:var(--titel);font-weight:800;font-size:1.1rem}
+.kit-feld{display:flex;flex-direction:column;gap:3px}
+.kit-feld label{font-weight:700;font-size:.92rem}
+.kit-feld input,.kit-feld select{width:100%}
+.kit-feld.ok input,.kit-feld.ok select{border-color:var(--ok);background:var(--ok-soft)}
+.kit-feld.falsch input,.kit-feld.falsch select{border-color:var(--bad);background:var(--bad-soft)}
+.kit-feldhinweis{font-size:.85rem;color:var(--bad)}
+.kit-senden{align-self:flex-start;background:var(--card);border:2px solid var(--accent);color:var(--accent);font-weight:700}
+.kit-senden:hover{background:var(--accent-soft)}
+
+/* Dokument */
+.kit-dok{position:relative;background:#fffdf8;border:1px solid #e4dccb;border-radius:4px;box-shadow:0 2px 0 #eee6d4,0 10px 26px rgba(60,40,10,.12);padding:18px 20px;max-width:720px;margin:0 auto;font-size:.95rem}
+.kit-dokkopf{font-size:.85rem;color:var(--ink-soft);border-bottom:2px solid var(--ink);padding-bottom:6px;margin-bottom:8px}
+.kit-doktitel{font-family:var(--titel);font-weight:800;font-size:1.15rem;margin-bottom:8px}
+.kit-dokzeilen{display:flex;flex-direction:column}
+.kit-dokzeile{display:grid;grid-template-columns:2.2em minmax(120px,.8fr) minmax(0,1.6fr);gap:8px;text-align:left;align-items:start;border:0;border-bottom:1px dotted #cfc4ac;border-radius:0;background:transparent;padding:7px 4px;min-height:0;font-size:inherit}
+button.kit-dokzeile:hover{background:#fff3c4}
+.kit-doknr{color:var(--muted);font-variant-numeric:tabular-nums}
+.kit-doklabel{font-weight:700;color:var(--ink-soft)}
+.kit-dokzeile.markiert{background:#fff0a6;box-shadow:inset 4px 0 0 #f2c200}
+.kit-dokzeile.richtig{background:var(--ok-soft);box-shadow:inset 4px 0 0 var(--ok)}
+.kit-dokzeile.falsch{background:var(--bad-soft);box-shadow:inset 4px 0 0 var(--bad)}
+.kit-dokfuss{margin-top:10px;font-size:.82rem;color:var(--muted)}
+.kit-stempel{position:absolute;right:18px;bottom:16px;transform:rotate(-12deg);border:3px solid rgba(180,40,40,.55);color:rgba(180,40,40,.6);font-weight:800;letter-spacing:.08em;padding:4px 10px;border-radius:6px;font-family:var(--titel);text-transform:uppercase;font-size:.9rem}
+@media (max-width:600px){.kit-dokzeile{grid-template-columns:1.6em minmax(0,1fr)}.kit-dokwert{grid-column:2}}
+
+/* Sortieren und Reihenfolge */
+.kit-sort{display:flex;flex-direction:column;gap:12px}
+.kit-stapel{display:flex;flex-wrap:wrap;gap:8px;min-height:56px;padding:8px;border-radius:12px;background:var(--card2);border:1px dashed var(--line)}
+.kit-karte{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 0 var(--line);padding:9px 12px;text-align:left;transition:transform .12s}
+.kit-karte:hover{transform:translateY(-2px)}
+.kit-karte.gewaehlt{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent);transform:translateY(-4px)}
+.kit-karte.richtig{border-color:var(--ok);background:var(--ok-soft);opacity:1;box-shadow:none;transform:none}
+.kit-faecher{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.kit-fachspalte{display:flex;flex-direction:column;gap:6px}
+.kit-fach{border:2px dashed var(--accent);background:var(--card);border-radius:12px;padding:10px;text-align:left;min-height:64px}
+.kit-sort.waehlt .kit-fach{background:var(--accent-soft)}
+.kit-fachtitel{font-family:var(--titel);font-weight:800}
+.kit-fachhinweis{font-size:.85rem;color:var(--ink-soft)}
+.kit-fachinhalt{display:flex;flex-direction:column;gap:6px}
+.kit-reihe{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:700px){.kit-reihe{grid-template-columns:1fr}}
+.kit-reihe-ziel{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.kit-platz{display:flex;gap:8px;align-items:center;min-height:48px;border:2px dashed var(--line);border-radius:12px;padding:4px 8px}
+.kit-platz>span{font-weight:800;color:var(--muted);min-width:1.4em}
+.kit-platz .kit-karte{flex:1}
+.kit-reihe-pool{display:flex;flex-direction:column;gap:6px}
+
+/* Regler */
+.kit-regler{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center}
+.kit-regler label{grid-column:1/-1;font-weight:700}
+.kit-regler input[type=range]{width:100%;accent-color:var(--accent);min-height:32px}
+.kit-reglerwert{font-family:var(--titel);font-weight:800;font-size:1.2rem;min-width:5ch;text-align:right}

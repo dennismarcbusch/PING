@@ -4,15 +4,15 @@
 
 Fünf selbstgesteuerte Lernmodule für die Berufsschule (Fachinformatik, Einstiegsklasse). Jedes Modul läuft komplett im Browser, braucht keinen Server und lässt sich als SCORM-1.2-Paket in jede Lernplattform einbinden, z. B. Moodle, ILIAS oder die bayerische ByCS-Plattform.
 
-Alle Module folgen demselben didaktischen Muster aus Erkunden, Üben und einer Lernzielkontrolle. Bei Shell Yeah! und Get-Going! heißt das **① Tutorial → ② Üben → ③ Kompetenznachweis**. Die Kontrolle wird automatisch bewertet und ans LMS gemeldet (bei diesen beiden bestanden ab 70 %).
+Alle Module folgen demselben didaktischen Muster aus Erkunden, Üben und einer Überprüfung am Ende. **Netzwerktopologien erleben** und **Strukturierte Verkabelung** sind auf dem Stand des Lernpaket-Kompass 4.0: ① Entdecken → ② Üben → ③ Selbstüberprüfung → ④ Abschluss. Die Selbstüberprüfung zählt nicht; ans LMS gehen das beste Ergebnis als Information und der Status „abgeschlossen“, den Kompetenznachweis legt die Lehrkraft in der Lernplattform an. Die übrigen drei Module nutzen noch ihren eigenen Rahmen mit Kompetenznachweis (bestanden ab 70 %).
 
 ## Die Module
 
 | Modul | Thema | Inhalt |
 |---|---|---|
 | [Plug & Pray](packages/plug-and-pray) | Aufbau eines modernen PCs | PC zerlegen, zusammenbauen und nach Kundenauftrag konfigurieren – per Drag & Drop oder Antippen |
-| [Netzwerktopologien erleben](packages/netzwerktopologien) | Netzwerktopologien | Topologien ausprobieren, mit Lernzielkontrolle |
-| [Strukturierte Verkabelung](packages/strukturierte-verkabelung) | Gebäudeverkabelung (DIN EN 50173-1) | Planspiel zur Verkabelungsplanung |
+| [Netzwerktopologien erleben](packages/netzwerktopologien) | Netzwerktopologien | Am Netzplan Geräte ausfallen lassen, Pakete schicken und umbauen – Kompass 4.0, mit Tafelbild |
+| [Strukturierte Verkabelung](packages/strukturierte-verkabelung) | Gebäudeverkabelung (DIN EN 50173-1) | Ein Schulzentrum Schritt für Schritt verkabeln: Verteiler aufstellen, Medien wählen, Längen einhalten – Kompass 4.0, mit Tafelbild |
 | [Shell Yeah!](packages/shell-yeah) | Linux im Terminal | Simuliertes Ubuntu 24.04: Dateien, Rechte, Suchen, Prozesse, nano, Archive, `ip` |
 | [Get-Going!](packages/get-going) | Windows PowerShell | Simulierter Windows Server 2025 mit PowerShell 5.1: Objekt-Pipeline, Skripte, Active Directory, Remoting |
 
@@ -20,13 +20,13 @@ Alle Module folgen demselben didaktischen Muster aus Erkunden, Üben und einer L
 
 <table>
 <tr><td width="50%"><a href="packages/plug-and-pray"><img src="packages/plug-and-pray/screenshots/entdecken.webp" alt="Plug & Pray"></a><br><b>Plug & Pray</b></td><td width="50%"><a href="packages/netzwerktopologien"><img src="packages/netzwerktopologien/screenshots/entdecken.webp" alt="Netzwerktopologien erleben"></a><br><b>Netzwerktopologien erleben</b></td></tr>
-<tr><td width="50%"><a href="packages/strukturierte-verkabelung"><img src="packages/strukturierte-verkabelung/screenshots/planen.webp" alt="Strukturierte Verkabelung"></a><br><b>Strukturierte Verkabelung</b></td><td width="50%"><a href="packages/shell-yeah"><img src="packages/shell-yeah/screenshots/ueben.webp" alt="Shell Yeah!"></a><br><b>Shell Yeah!</b></td></tr>
+<tr><td width="50%"><a href="packages/strukturierte-verkabelung"><img src="packages/strukturierte-verkabelung/screenshots/entdecken.webp" alt="Strukturierte Verkabelung"></a><br><b>Strukturierte Verkabelung</b></td><td width="50%"><a href="packages/shell-yeah"><img src="packages/shell-yeah/screenshots/ueben.webp" alt="Shell Yeah!"></a><br><b>Shell Yeah!</b></td></tr>
 <tr><td width="50%"><a href="packages/get-going"><img src="packages/get-going/screenshots/tutorial.webp" alt="Get-Going!"></a><br><b>Get-Going!</b></td></tr>
 </table>
 
 Weitere Bilder in den Steckbriefen der Module.
 
-Die Inhalte sind auf Deutsch. Shell Yeah! und Get-Going! sind reine JavaScript-Simulationen, es wird nichts auf Deinem Rechner ausgeführt. Die Ordner `packages/<name>/` enthalten jeweils einen Steckbrief mit Lernzielen, Aufbau und didaktischen Entscheidungen (bei Netzwerktopologien und Strukturierte Verkabelung steht er noch aus).
+Die Inhalte sind auf Deutsch. Shell Yeah! und Get-Going! sind reine JavaScript-Simulationen, es wird nichts auf Deinem Rechner ausgeführt. Die Ordner `packages/<name>/` enthalten jeweils einen Steckbrief mit Lernzielen, Aufbau und didaktischen Entscheidungen; bei den Kompass-Paketen dazu `planung/` und `lehrer/` (Hinweise für das Tafelbild, Beobachtungsbogen).
 
 ## Benutzen
 
@@ -51,6 +51,9 @@ Das Skript bricht ab, wenn `imsmanifest.xml` nicht im Wurzelverzeichnis des ZIPs
 packages/<name>/
   README.md   Steckbrief des Moduls
   src/        entpackter Paketinhalt (index.html, imsmanifest.xml, js/, css/ …)
+  src/quelle/ nur Kompass-Pakete: Quellen (paket.js, fragen.md, Gerät); js/inhalt.js wird daraus gebaut, nicht im ZIP
+  planung/    nur Kompass-Pakete: Steckbrief, Lernziele, Konzept
+  lehrer/     nur Kompass-Pakete: Hinweise für das Tafelbild, Beobachtungsbogen
   screenshots/  Bilder für die READMEs (nicht im ZIP)
 tools/bycs-lernmodul/   älterer Skill für HTML-Schnipsel ohne SCORM (aufgegangen im Lernpaket-Kompass, Skill lernpaket-bauen)
 tools/screenshots/      erzeugt die Screenshots neu (Node + Edge headless)
@@ -58,6 +61,8 @@ build.sh                baut die ZIPs
 ```
 
 Screenshots neu erzeugen (Windows, Node ≥ 22, Microsoft Edge): `node tools/screenshots/shots.mjs packages [paket …]`.
+
+Kompass-Pakete nach Änderungen in `src/quelle/` mit `paket.py bauen` (Kompass-Skill `lernpaket-bauen`) neu bauen und mit `pruefe_paket.py` prüfen.
 
 Im Repo liegen die Quellen, keine ZIPs (`dist/` ist ignoriert). Namen sind klein geschrieben mit Bindestrichen, ZIPs heißen `<name>_scorm12.zip`.
 

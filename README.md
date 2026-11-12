@@ -11,7 +11,7 @@ Alle Module folgen demselben didaktischen Muster aus Erkunden, Üben und einer L
 | Modul | Thema | Inhalt |
 |---|---|---|
 | [Plug & Pray](packages/plug-and-pray) | Aufbau eines modernen PCs | PC zerlegen, zusammenbauen und nach Kundenauftrag konfigurieren – per Drag & Drop oder Antippen |
-| [Netzwerktopologien erleben](packages/netzwerktopologien) | Netzwerktopologien | Topologien ausprobieren, mit Lernzielkontrolle |
+| [Netzwerktopologien erleben](packages/netzwerktopologien) | Netzwerktopologien | Am Netzplan Geräte ausfallen lassen, Pakete schicken und umbauen – Kompass 4.0, mit Tafelbild |
 | [Strukturierte Verkabelung](packages/strukturierte-verkabelung) | Gebäudeverkabelung (DIN EN 50173-1) | Planspiel zur Verkabelungsplanung |
 | [Shell Yeah!](packages/shell-yeah) | Linux im Terminal | Simuliertes Ubuntu 24.04: Dateien, Rechte, Suchen, Prozesse, nano, Archive, `ip` |
 | [Get-Going!](packages/get-going) | Windows PowerShell | Simulierter Windows Server 2025 mit PowerShell 5.1: Objekt-Pipeline, Skripte, Active Directory, Remoting |

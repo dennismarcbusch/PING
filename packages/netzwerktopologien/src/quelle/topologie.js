@@ -380,7 +380,13 @@ var WERKZEUG = {
   reparieren:     { text: '🔧 Alles reparieren' },
   schwachstellen: { text: '🔥 Schwachstellen', schalter: true },
   doppelring:     { text: '🔁 Doppelring', schalter: true },
-  kollision:      { text: '💥 Gleichzeitig senden' }
+  kollision:      { text: '💥 Gleichzeitig senden' },
+  verbinden:      { text: '🔗 Verbinden', modus: true, hilfe: 'Tippe nacheinander zwei Geräte an: Sie werden mit einem Kabel verbunden. Sind sie schon verbunden, wird das Kabel entfernt.' },
+  loeschen:       { text: '🗑 Entfernen', modus: true, hilfe: 'Tippe ein Gerät oder Kabel an, um es zu entfernen.' },
+  pc:             { text: '+ PC' },
+  sw:             { text: '+ Switch' },
+  bus:            { text: '+ Bus-Kabel' },
+  loesen:         { text: '✂ Alle Kabel lösen' }
 };
 
 function netz(box, opt) {
@@ -436,7 +442,9 @@ function netz(box, opt) {
       color: colorOf(st.key), interactive: !!st.tool && !st.gesperrt, ring: st.key === 'ring' ? (st.dbl ? 'double' : 'single') : null });
     if (fokus) { var f = gScene.querySelector('[data-id="' + fokus + '"]'); if (f) f.focus(); }
     var r = reachStats(st.G, st.failed, rs()), pct = r.all ? Math.round(r.ok / r.all * 100) : 100;
-    if (st.tool === 'paket' && st.sel && !st.gesperrt) { status.innerHTML = '<span><b>Jetzt den Empfänger-PC antippen.</b></span>'; } else status.innerHTML = '<span class="tn-balken"><i style="width:' + pct + '%;background:' + (pct >= 99 ? 'var(--ok)' : pct >= 50 ? 'var(--warn)' : 'var(--bad)') + '"></i></span>' +
+    if (st.sel && !st.gesperrt) { status.innerHTML = '<span><b>' + (st.tool === 'paket' ? 'Jetzt den Empfänger-PC antippen.' : 'Jetzt das zweite Gerät antippen.') + '</b></span>'; }
+    else if (opt.anzeige === 'aufbau') { var c = classify(st.G), m = metrics(st.G, rs()); status.innerHTML = '<span>Erkannt: <b>' + c.name + '</b></span><span class="tn-chip">Kabel <b>' + m.cables + '</b></span>'; }
+    else status.innerHTML = '<span class="tn-balken"><i style="width:' + pct + '%;background:' + (pct >= 99 ? 'var(--ok)' : pct >= 50 ? 'var(--warn)' : 'var(--bad)') + '"></i></span>' +
       '<span><b>' + r.ok + ' von ' + r.all + '</b> PC-Paaren können Daten austauschen</span>';
     rahmen();
     Object.keys(knoepfe).forEach(function (w) {
@@ -449,6 +457,7 @@ function netz(box, opt) {
     });
   }
   function rahmen() {   // Ausschnitt passend zum Netz, damit der Plan groß erscheint
+    if (opt.fest) { svg.setAttribute('viewBox', '0 0 800 480'); return; }
     var x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
     st.G.nodes.forEach(function (n) {
       var hw = n.type === 'bus' ? n.w / 2 + 16 : 48;
@@ -467,7 +476,42 @@ function netz(box, opt) {
     if (w === 'reparieren') { repariere(); return; }
     if (w === 'schwachstellen') { st.heat = !st.heat; zeichne(); melde({ typ: 'schwachstellen', an: st.heat }); return; }
     if (w === 'doppelring') { st.dbl = !st.dbl; stoppe(); zeichne(); melde({ typ: 'doppelring', an: st.dbl }); return; }
-    if (w === 'kollision') { kollision(); }
+    if (w === 'kollision') { kollision(); return; }
+    if (w === 'pc' || w === 'sw' || w === 'bus') { neuesGeraet(w); return; }
+    if (w === 'loesen') { st.G.links = []; st.sel = null; umgebaut(); }
+  }
+  function frei() {
+    for (var t = 0; t < 300; t++) {
+      var x = 70 + Math.random() * 660, y = 60 + Math.random() * 360;
+      if (st.G.nodes.every(function (n) { return n.type === 'bus' ? Math.abs(n.y - y) > 60 : Math.hypot(n.x - x, n.y - y) > 95; })) return { x: Math.round(x), y: Math.round(y) };
+    }
+    return { x: 400, y: 240 };
+  }
+  function naechster(prefix) { var k = 1; while (st.G.nodes.some(function (n) { return n.label === prefix + k; })) k++; return prefix + k; }
+  function neuesGeraet(typ) {
+    var p = frei(), n;
+    if (typ === 'pc') n = { id: nid(), type: 'pc', x: p.x, y: p.y, label: naechster('PC') };
+    else if (typ === 'sw') n = { id: nid(), type: 'switch', x: p.x, y: p.y, label: st.G.nodes.some(function (k) { return k.type === 'switch'; }) ? naechster('SW') : 'Switch' };
+    else n = { id: nid(), type: 'bus', x: 400, y: p.y, w: 560, label: 'Bus' };
+    st.G.nodes.push(n); umgebaut(); return n.label;
+  }
+  function umgebaut() {
+    var c = classify(st.G); if (c.key && TOPO[c.key]) st.key = c.key; else st.key = 'mixed';
+    stoppe(); zeichne(); melde({ typ: 'umbau', topologie: c, kennzahlen: metrics(st.G, rs()) });
+  }
+  function verbinde(a, b) {
+    a = finde(a); b = finde(b); var A = byId(st.G, a), B = byId(st.G, b);
+    if (!A || !B || a === b) return;
+    if (A.type === 'bus' && B.type === 'bus') { melde({ typ: 'hinweis', text: 'Zwei Bus-Kabel lassen sich nicht direkt verbinden.' }); return; }
+    var da = st.G.links.find(function (l) { return (l.a === a && l.b === b) || (l.a === b && l.b === a); });
+    if (da) st.G.links = st.G.links.filter(function (l) { return l !== da; }); else st.G.links.push({ id: nid(), a: a, b: b });
+    umgebaut();
+  }
+  function entferne(x) {
+    var id = finde(x); if (!id) return;
+    if (byId(st.G, id)) { st.G.nodes = st.G.nodes.filter(function (n) { return n.id !== id; }); st.G.links = st.G.links.filter(function (l) { return l.a !== id && l.b !== id; }); }
+    else st.G.links = st.G.links.filter(function (l) { return l.id !== id; });
+    st.failed.delete(id); st.sel = null; umgebaut();
   }
   function ausfall(x) {
     var id = finde(x); if (!id) return;
@@ -541,7 +585,14 @@ function netz(box, opt) {
       if (!st.sel) { st.sel = id; zeichne(); return; }
       if (st.sel === id) { st.sel = null; zeichne(); return; }
       var s = st.sel; st.sel = null; sende(s, id);
+      return;
     }
+    if (st.tool === 'verbinden') {
+      if (!st.sel) { st.sel = id; zeichne(); return; }
+      if (st.sel === id) { st.sel = null; zeichne(); return; }
+      var a = st.sel; st.sel = null; verbinde(a, id); return;
+    }
+    if (st.tool === 'loeschen') entferne(id);
   }
   svg.addEventListener('click', function (e) {
     var el = e.target.closest ? e.target.closest('[data-id]') : null;
@@ -553,9 +604,16 @@ function netz(box, opt) {
     if (el) { e.preventDefault(); bedien(el.getAttribute('data-id')); }
   });
 
+  function baue(spec) {   // {knoten: [{name, typ: 'pc'|'switch'|'bus', x, y, w}], kabel: [[name, name], …]}
+    var G = { nodes: [], links: [] }, ids = {};
+    spec.knoten.forEach(function (k) { var o = { id: nid(), type: k.typ || 'pc', x: k.x, y: k.y, label: k.name }; if (o.type === 'bus') o.w = k.w || 400; ids[k.name] = o.id; G.nodes.push(o); });
+    spec.kabel.forEach(function (c) { G.links.push({ id: nid(), a: ids[c[0]], b: ids[c[1]] }); });
+    return G;
+  }
   function neu(key, n, namen) {
     st.key = key || st.key; st.n = n || st.n; namen = namen || opt.namen;
-    st.G = makeGraph(st.key, st.n); st.failed = new Set(); st.sel = null; st.dbl = false; st.heat = false;
+    st.G = st.key === 'plan' ? baue(opt.plan) : makeGraph(st.key, st.n); st.failed = new Set(); st.sel = null; st.dbl = false; st.heat = false;
+    if (st.key === 'plan') { var c0 = classify(st.G); st.key = c0.key && TOPO[c0.key] ? c0.key : 'mixed'; }
     var k = 0;
     if (namen) st.G.nodes.forEach(function (x) { if (x.type === 'pc' && namen[k]) x.label = namen[k++]; else if (x.type === 'pc') k++; });
     if (opt.switchName) st.G.nodes.forEach(function (x) { if (x.type === 'switch' && x.label === 'Switch') x.label = opt.switchName; });
@@ -566,6 +624,9 @@ function netz(box, opt) {
 
   return {
     el: root, stand: stand, ausfall: ausfall, repariere: repariere, sende: sende, neu: neu, kabelVon: kabelVon,
+    verbinde: verbinde, entferne: entferne, neuesGeraet: neuesGeraet, loeseAlle: function () { klick('loesen'); },
+    erkannt: function () { return classify(st.G); }, kabel: function (a, b) { a = finde(a); b = finde(b); return st.G.links.some(function (l) { return (l.a === a && l.b === b) || (l.a === b && l.b === a); }); },
+    geraete: function () { return st.G.nodes.map(function (n) { return { name: n.label, typ: n.type }; }); },
     werkzeug: function (w) { klick(w); },
     sperre: function (b) { st.gesperrt = !!b; st.sel = null; zeichne(); },
     markiere: function (namen) { stoppe(); (namen || []).forEach(function (x) { var id = finde(x); if (!id) return; if (byId(st.G, id)) st.hiN.add(id); else st.hiL.add(id); }); zeichne(); },
@@ -574,6 +635,12 @@ function netz(box, opt) {
   };
 }
 
+/* Netz als SVG-Text (für Hotspot-Fragen): Koordinaten wie im Graphen, viewBox 0 0 800 480 */
+function grafik(G, o) {
+  o = o || {};
+  return '<svg viewBox="0 0 800 480" class="tn-bild" role="img" aria-label="' + esc(o.label || 'Netzplan') + '">' +
+    scene(G, { labels: o.labels !== false, color: o.farbe || '#475569' }) + '</svg>';
+}
 /* Kleines Bild einer Topologie für Bildfragen (ohne Bedienung) */
 function bild(key, n, o) {
   o = o || {};
@@ -585,12 +652,14 @@ function bild(key, n, o) {
 (function () {
   var css =
     '.tn{--tn-draht:#7b879b;--tn-weg:#2563eb;display:flex;flex-direction:column;gap:6px}' +
+    '.tn-bild{--tn-draht:#7b879b;--tn-weg:#2563eb}' +
     '.tn-leiste{display:flex;flex-wrap:wrap;gap:6px;align-items:center}' +
     '.tn-leiste button{min-height:40px}' +
     '.tn-leiste button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}' +
     '.tn-hilfe{font-size:.85rem;color:var(--muted);min-height:1.3em}' +
     '.tn-svg{width:100%;display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;touch-action:manipulation}' +
     '.tn-status{display:flex;align-items:center;gap:8px;font-size:.85rem;margin-left:auto}' +
+    '.tn-chip{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:2px 8px}' +
     '.tn-balken{flex:0 0 90px;height:10px;border-radius:5px;background:var(--grid);overflow:hidden}.tn-balken i{display:block;height:100%;transition:width .3s}' +
     '.tn-svg [data-id]{outline:none}.tn-svg [data-id]:focus-visible .hit,.tn-svg [data-id]:focus-visible .pc-body,.tn-svg [data-id]:focus-visible .sw-body{stroke:var(--ink);stroke-width:4}' +
     '.tn-svg [data-id]:focus-visible line.hit{stroke:rgba(26,33,48,.25)}' +
@@ -626,5 +695,5 @@ function bild(key, n, o) {
   var s = document.createElement('style'); s.textContent = css; document.head.appendChild(s);
 })();
 
-return { netz: netz, bild: bild, TOPO: TOPO, ORDER: ORDER, makeGraph: makeGraph, classify: classify, metrics: metrics, reachStats: reachStats };
+return { netz: netz, bild: bild, grafik: grafik, TOPO: TOPO, ORDER: ORDER, makeGraph: makeGraph, classify: classify, metrics: metrics, reachStats: reachStats };
 })();
